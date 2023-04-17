@@ -1,9 +1,10 @@
-function forward(el, target, directionVec3) {
-    // https://aframe.io/docs/1.4.0/introduction/writing-a-component.html#example-follow-component
-
+/* Updates the position of the element `el` to move towards to the target.
+ * https://aframe.io/docs/1.4.0/introduction/writing-a-component.html#example-follow-component
+ */
+function forward(el, target, directionVec3, timeDelta, speed) {
     // Grab position vectors (THREE.Vector3) from the entities' three.js objects.
-    var targetPosition = this.data.target.object3D.position;
-    var currentPosition = this.el.object3D.position;
+    var targetPosition = target.object3D.position;
+    var currentPosition = el.object3D.position;
 
     // Subtract the vectors to get the direction the entity should head in.
     directionVec3.copy(targetPosition).sub(currentPosition);
@@ -15,7 +16,7 @@ function forward(el, target, directionVec3) {
     if (distance < 1) { return; }
 
     // Scale the direction vector's magnitude down to match the speed.
-    var factor = this.data.speed / distance;
+    var factor = speed / distance;
     ['x', 'y', 'z'].forEach(function (axis) {
         directionVec3[axis] *= factor * (timeDelta / 1000);
     });

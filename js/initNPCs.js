@@ -23,30 +23,6 @@ const AMOUNT_COLS = Math.ceil(WIDTH / CELL_SIZE);
 // const AMOUNT_ROWS = Math.ceil(HEIGHT / CELL_SIZE);
 
 
-
-
-
-AFRAME.registerComponent('NPC', {
-    schema: {
-        path: { type: 'string', default: null },
-        speed: { type: 'number', default: 0.1 }
-    },
-    init: function () {
-        this.model = null;
-        this.target = this.el.object3D.position.copy();
-        this.directionVec3 = new THREE.Vector3();
-
-        if (this.data.url) {
-            this.el.setObject3D('NPC_Object', this.data.path);
-        }
-    },
-
-    tick: function (time) {
-        nextMove(this.data.target, this.el.object3D.position, this.el.object3D.rotation);
-        forward(this.el, this.data.target, this.directionVec3);
-    }
-});
-
 function initializeNPCs() {
     var npcs = []
     var scene = document.querySelector("a-scene");

@@ -5,13 +5,13 @@ const PROB_FORWARD = 0.8;
 // The probability a NPC will walk to the left or right diagonal forward cell.
 const PROB_FORWARD_DIAG = 0.15;
 
-// The probability a NPC will walk to the cell behind the NPC.
-const PROB_TURN_AROUND = 0.2;
+// // The probability a NPC will walk to the cell behind the NPC.
+// const PROB_TURN_AROUND = 0.2;
 
-// The probability of two NPCs (still) talking to each other. This could happen
-// when the other NPC is one cell further away and when they are faced to each
-// other.
-const PROB_TALK = 0.1;
+// // The probability of two NPCs (still) talking to each other. This could happen
+// // when the other NPC is one cell further away and when they are faced to each
+// // other.
+// const PROB_TALK = 0.1;
 
 
 
