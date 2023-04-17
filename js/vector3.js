@@ -5,8 +5,14 @@ class Vector3 {
         this.z = z;
     }
 
-    toString() {
-        return "(" + [this.x, this.y, this.z].join(', ') + ")";
+    toString(asTuple = false) {
+        l = [this.x, this.y, this.z]
+
+        if (asTuple) {
+            return "(" + l.join(", ") + ")";
+        }
+
+        return l.join(" ")
     }
 
     addBy(v2) {
