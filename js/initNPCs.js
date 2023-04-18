@@ -4,8 +4,11 @@ var AMOUNT_NPCS = 10
 var START_CELL_NUM = 0
 var AMOUNT_NPCS_PER_ROW = 3
 
-// TODO: update to correct filename
-NPC_MODEL_FILE = "/models/a.gltf"
+// TODO: this should be in a-assets
+NPC_MODEL = "#Roman3D"
+NPC_SPRITE = "#RomanSprite"
+
+
 
 
 // TODO: how to find these?
@@ -22,14 +25,13 @@ const WIDTH = MAX_X - MIN_X;
 const AMOUNT_COLS = Math.ceil(WIDTH / CELL_SIZE);
 // const AMOUNT_ROWS = Math.ceil(HEIGHT / CELL_SIZE);
 
-
+/* Generates the NPC objects and adds them to the scene. */
 function initializeNPCs() {
     var npcs = []
     var scene = document.querySelector("a-scene");
 
     for (var i = 0; i < AMOUNT_NPCS; i++) {
-        var el = document.createElement("a-entity");
-        el.setAttribute("NPC", "path:" + NPC_MODEL_FILE);
+        var el = document.createElement("a-gltf-model", { "src": NPC_MODEL });
         scene.appendChild(el);
         npcs.push();
     }

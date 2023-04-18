@@ -1,3 +1,5 @@
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
 // Function as shown in
 // https://www.youtube.com/watch?v=sq8d2-M-O_Q&t=1742s at 29:35
 function loadAssetFromURL(url) {
@@ -29,4 +31,14 @@ function HubsElementChange(el, newScale = null, newPos = null, newRot = null) {
         if (newPos) networkedEl.setAttribute("position", newPos.toString());
         if (newRot) networkedEl.setAttribute("rotation", newRot.toString());
     });
+}
+
+const loader = new GLTFLoader();
+
+function loadFromGLTF(gltfFilePath) {
+    return loader.load(gltfFilePath, (gltf) => {
+        return gltf.scene.children[0];
+        // gltf.asset
+    });
+
 }

@@ -18,28 +18,29 @@ const PROB_FORWARD_DIAG = 0.15;
 
 /* Sets the new position of the target based on the decision of the next move. */
 function nextMove(target, position, rotation) {
-    var curCellNum = getCellNum(position.x, position.y);
+    // var curCellNum = getCellNum(position.x, position.y);
 
     // The cell number of the next target relative to the current cell.
-    var newCell = null;
+    var direction = null;
 
     if (Math.random() < PROB_FORWARD) {
         // Choose the forward cell.
-        newCell = MID_ABOVE;
+        direction = FORWARD;
     }
 
     if (Math.random() < PROB_FORWARD_DIAG) {
         // Choose the left diagonal forward cell.
-        newCell = LEFT_ABOVE;
+        direction = LEFT_FORWARD;
 
         if (Math.random() < 0.5) {
             // Choose the right diagonal forward cell.
-            newCell = RIGHT_ABOVE;
+            direction = RIGHT_FORWARD;
         }
     }
 
-    if (newCell) {
-        var xy = getMidCell(getNeighbourCellNum(curCellNum, newCell, rotation));
+    if (direction) {
+        var xy = nextDirection(position.x, position.y, rotation, direction);
+        // var xy = getMidCell(getNeighbourCellNum(curCellNum, newCell, rotation));
         target.x = xy[0];
         target.y = xy[1];
     }
