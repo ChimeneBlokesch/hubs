@@ -87,13 +87,14 @@ function wrapPosition(position) {
         return false;
     }
 
-
+    position.x += -MAX_X + MIN_X;
+    position.z += -MAX_Z + MIN_Z;
     return true;
 }
 
 /* Returns true if the x- and z-coordinates of a position is within the grid. */
 function isInGrid(position) {
-    return MIN_X < position.x < MAX_X && MIN_Y < position.z < MAX_Y;
+    return MIN_X < position.x < MAX_X && MIN_Z < position.z < MAX_Z;
 }
 
 

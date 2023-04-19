@@ -14,9 +14,9 @@ NPC_SPRITE = "#RomanSprite"
 // TODO: how to find these?
 // The range of the x- and y-coordinates in the room.
 const MIN_X = 0;
-const MIN_Y = 0;
+const MIN_Z = 0;
 const MAX_X = 5;
-const MAX_Y = 5;
+const MAX_Z = 5;
 
 
 const WIDTH = MAX_X - MIN_X;
@@ -34,6 +34,7 @@ function initializeNPCs() {
         var el = document.createElement("a-entity");
         el.setAttribute("gltf-model", NPC_MODEL);
         el.setAttribute("npc",);
+        el.setAttribute("networked");
         parent.appendChild(el);
         npcs.push(el);
     }
