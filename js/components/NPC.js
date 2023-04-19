@@ -31,52 +31,5 @@ AFRAME.registerComponent('npc', {
             // Determine a new target.
             nextMove(this.target, this.el.object3D.position, this.el.object3D.rotation);
         }
-    },
-
-    chooseType: function (init = false) {
-        switch (RENDERING_TYPE) {
-            case RENDERING_TYPES.MODEL:
-                // Only specify the type at initialize.
-                if (init) {
-                    this.changeType(RENDERING_TYPES.MODEL);
-                }
-
-                break;
-            case RENDERING_TYPES.SPRITE:
-                // Only specify the type at initialize.
-                if (init) {
-                    this.changeType(RENDERING_TYPES.SPRITE);
-                }
-
-                break;
-            case RENDERING_TYPES.COMBI:
-                // Choose the type based on the distance to the player.
-                var type = RENDERING_TYPES.SPRITE;
-
-                if (userAvatar.position.distanceTo(this.position) < RENDERING_DISTANCE) {
-                    type = RENDERING_TYPES.MODEL;
-                }
-
-                this.changeType(type);
-                break;
-            default:
-                break;
-        }
-    },
-
-    changeType: function (type) {
-        switch (type) {
-            case RENDERING_TYPES.MODEL:
-                this.el.removeAttribute("src");
-                this.el.setAttribute("gltf-model", NPC_MODEL);
-                break;
-            case RENDERING_TYPES.SPRITE:
-                this.el.removeAttribute("gltf-model");
-                this.el.setAttribute("src", NPC_SPRITE);
-                break;
-            default:
-                break;
-        }
-
     }
 });
