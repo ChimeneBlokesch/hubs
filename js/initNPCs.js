@@ -11,7 +11,7 @@ var AMOUNT_NPCS_PER_ROW = 3
 const MIN_X = 0;
 const MIN_Z = 0;
 const MAX_X = 5;
-const MAX_Z = 500;
+const MAX_Z = 6;
 
 const LENGTH_X = MAX_X - MIN_X;
 const LENGTH_Z = MAX_Z - MIN_Z;
@@ -26,7 +26,6 @@ const AMOUNT_COLS = Math.ceil(LENGTH_X / CELL_SIZE);
 /* Returns the next position. If the width is full, return the beginning of
  * the next row  */
 function nextPosition(curPosX, curPosZ) {
-    console.log("widthAxis " + widthAxis);
     switch (widthAxis) {
         case 'x':
             if (curPosX + CELL_SIZE > MAX_X) {
@@ -60,7 +59,6 @@ function initializeNPCs() {
     curPosZ = MIN_Z + CELL_SIZE / 2;
 
     for (var i = 0; i < AMOUNT_NPCS; i++) {
-        console.log("(x,z) (" + curPosX + "," + curPosZ + ")");
         var el = document.createElement("a-entity");
         el.setAttribute("npc", "");
         el.setAttribute("networked", "");

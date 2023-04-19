@@ -89,8 +89,8 @@ function forward(el, target, directionVec3, timeDelta, speed) {
 /* Update the position if it's outside the grid to the position in
  * the wrapped grid. Returns true if the update was needed and false otherwise. */
 function wrapPosition(position) {
-    var inRangeX = MIN_X < position.x < MAX_X;
-    var inRangeZ = MIN_Z < position.z < MAX_Z;
+    var inRangeX = MIN_X < position.x && position.x < MAX_X;
+    var inRangeZ = MIN_Z < position.z && position.z < MAX_Z;
 
     if (inRangeX && inRangeZ) {
         // No wrapping needed.
