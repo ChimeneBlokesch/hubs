@@ -20,7 +20,7 @@ const MAX_Z = 5;
 
 
 const WIDTH = MAX_X - MIN_X;
-// const HEIGHT = MAX_Y - MIN_Y;
+const HEIGHT = MAX_Z - MIN_Z;
 
 const AMOUNT_COLS = Math.ceil(WIDTH / CELL_SIZE);
 // const AMOUNT_ROWS = Math.ceil(HEIGHT / CELL_SIZE);

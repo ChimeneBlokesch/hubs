@@ -82,20 +82,27 @@ function forward(el, target, directionVec3, timeDelta, speed) {
 /* Update the position if it's outside the grid to the position in
  * the wrapped grid. Returns true if the update was needed and false otherwise. */
 function wrapPosition(position) {
-    if (isInGrid(position)) {
+    var inRangeX = MIN_X < position.x < MAX_X;
+    var inRangeZ = MIN_Z < position.z < MAX_Z;
+
+    if (inRangeX && inRangeZ) {
         // No wrapping needed.
         return false;
     }
 
-    position.x += -MAX_X + MIN_X;
-    position.z += -MAX_Z + MIN_Z;
+    if (!inRangeX) {
+        var sign = -1 ? position.x > MAX_X : 1;
+        position.x += sign * WIDTH;
+    }
+
+    if (!inRangeZ) {
+        var sign = -1 ? position.z > MAX_Z : 1;
+        position.z += sign * HEIGHT;
+    }
+
     return true;
 }
 
-/* Returns true if the x- and z-coordinates of a position is within the grid. */
-function isInGrid(position) {
-    return MIN_X < position.x < MAX_X && MIN_Z < position.z < MAX_Z;
-}
 
 
 // /* Calculates the cell number based on the x- and y-coordinates. */

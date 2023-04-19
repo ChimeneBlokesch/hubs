@@ -24,7 +24,9 @@ AFRAME.registerComponent('npc', {
         // and calculate new target. So target can be outside grid.
 
         if (wrapPosition(this.el.object3D.position)) {
-
+            // The position is changed, because the target is outside the grid.
+            // Determine a new target.
+            nextMove(this.target, this.el.object3D.position, this.el.object3D.rotation);
         }
     }
 });
