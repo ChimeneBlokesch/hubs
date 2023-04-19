@@ -20,33 +20,9 @@ const LENGTH_Z = MAX_Z - MIN_Z;
 var widthAxis = 'x' ? LENGTH_X < LENGTH_Z : 'z';
 
 const AMOUNT_COLS = Math.ceil(LENGTH_X / CELL_SIZE);
+
+
 // const AMOUNT_ROWS = Math.ceil(HEIGHT / CELL_SIZE);
-
-/* Generates the NPC objects and adds them to the scene. */
-function initializeNPCs() {
-    var npcs = []
-    var parent = document.querySelector("a-scene");
-    curPosX = MIN_X + CELL_SIZE / 2;
-    curPosZ = MIN_Z + CELL_SIZE / 2;
-
-    for (var i = 0; i < AMOUNT_NPCS; i++) {
-        var el = document.createElement("a-entity");
-        el.setAttribute("npc", "");
-        el.setAttribute("networked", "");
-        parent.appendChild(el);
-        npcs.push(el);
-
-        // Set the position of the NPC.
-        el.object3D.position.x = curPosX;
-        el.object3D.position.z = curPosZ;
-
-        // Calculate the position of the next NPC.
-        [curPosX, curPosZ] = nextPosition(curPosX, curPosZ);
-    }
-
-    return npcs;
-}
-
 /* Returns the next position. If the width is full, return the beginning of
  * the next row  */
 function nextPosition(curPosX, curPosZ) {
@@ -71,4 +47,31 @@ function nextPosition(curPosX, curPosZ) {
             break;
     }
 
+    return [curPosX, curPosZ];
+}
+
+
+/* Generates the NPC objects and adds them to the scene. */
+function initializeNPCs() {
+    var npcs = []
+    var parent = document.querySelector("a-scene");
+    curPosX = MIN_X + CELL_SIZE / 2;
+    curPosZ = MIN_Z + CELL_SIZE / 2;
+
+    for (var i = 0; i < AMOUNT_NPCS; i++) {
+        var el = document.createElement("a-entity");
+        el.setAttribute("npc", "");
+        el.setAttribute("networked", "");
+        parent.appendChild(el);
+        npcs.push(el);
+
+        // Set the position of the NPC.
+        el.object3D.position.x = curPosX;
+        el.object3D.position.z = curPosZ;
+
+        // Calculate the position of the next NPC.
+        [curPosX, curPosZ] = nextPosition(curPosX, curPosZ);
+    }
+
+    return npcs;
 }
