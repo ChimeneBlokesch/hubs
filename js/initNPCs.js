@@ -28,13 +28,13 @@ const AMOUNT_COLS = Math.ceil(WIDTH / CELL_SIZE);
 /* Generates the NPC objects and adds them to the scene. */
 function initializeNPCs() {
     var npcs = []
-    var parent = document.querySelector("a-scene"); // TODO: maybe a-objects
+    var parent = document.querySelector("a-scene");
 
     for (var i = 0; i < AMOUNT_NPCS; i++) {
         var el = document.createElement("a-entity");
-        el.setAttribute("gltf-model", NPC_MODEL);
-        el.setAttribute("npc",);
-        el.setAttribute("networked");
+        el.setAttribute("npc", "");
+        el.setAttribute("networked", "");
+        el.chooseType(init = true);
         parent.appendChild(el);
         npcs.push(el);
     }
