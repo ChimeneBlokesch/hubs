@@ -31,11 +31,11 @@ const LOD = {
 // The used algorithm for rendering.
 const RENDERING_ALGO = RENDERING_ALGORITHMS.MODEL_COMBI;
 
-// Below this distance, the low LOD is used.
-const RENDERING_DISTANCE_LOW = 50;
+// Below this distance, the high LOD is used.
+const RENDERING_DISTANCE_HIGH = 50;
 
-// Above this distance, the high LOD is used.
-const RENDERING_DISTANCE_HIGH = 150;
+// Above this distance, the low LOD is used.
+const RENDERING_DISTANCE_LOW = 150;
 
 // TODO: el should be in a-assets
 // The file ids based on the rendering type and optionally the LOD.
@@ -95,10 +95,10 @@ function chooseType(el, init = false) {
             var dist = userAvatar.position.distanceTo(el.object3D.position);
             var lod = LOD.MEDIUM;
 
-            if (dist < RENDERING_DISTANCE_LOW) {
-                lod = LOD.LOW;
-            } else if (dist > RENDERING_DISTANCE_HIGH) {
+            if (dist < RENDERING_DISTANCE_HIGH) {
                 lod = LOD.HIGH;
+            } else if (dist > RENDERING_DISTANCE_LOW) {
+                lod = LOD.LOW;
             }
 
             changeType(el, RENDERING_TYPES.MODEL, RENDERING_FILE[RENDERING_TYPES.MODEL][lod]);
