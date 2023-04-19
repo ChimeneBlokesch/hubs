@@ -1,6 +1,6 @@
 AFRAME.registerComponent('npc', {
     schema: {
-        speed: { type: 'number', default: 0.1 }
+        speed: { type: 'number', default: 0.01 }
     },
     init: function () {
         // The position to move towards to.

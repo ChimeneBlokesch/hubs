@@ -11,8 +11,6 @@ const PROB_FORWARD_DIAG = 0.15;
 /* Sets the new position of the target and new rotation of the
  * based on the decision of the next move. */
 function nextMove(target, position, rotation) {
-    // var curCellNum = getCellNum(position.x, position.z);
-
     // The cell number of the next target relative to the current cell.
     var direction = null;
 
