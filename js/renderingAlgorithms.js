@@ -53,7 +53,7 @@ RENDERING_FILE = {
     // }
 };
 
-/* Changes the type of the rendering (2D,3D / low, medium, high LOD) if needed.
+/* Changes the type of the rendering (2D / 3D and low / medium / high LOD) if needed.
  * When init is set to true, it will always change. The changes are based
  * on the used rendering algorithm. */
 function chooseType(el, init = false) {
