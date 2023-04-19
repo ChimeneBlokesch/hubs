@@ -1,6 +1,6 @@
 
 // The probability a NPC will walk to the forward cell.
-const PROB_FORWARD = 0.8;
+const PROB_FORWARD = 1;
 
 // The probability a NPC will walk to the left or right diagonal forward cell.
 const PROB_FORWARD_DIAG = 0.15;
@@ -14,9 +14,8 @@ const PROB_FORWARD_DIAG = 0.15;
 // const PROB_TALK = 0.1;
 
 
-
-
-/* Sets the new position of the target based on the decision of the next move. */
+/* Sets the new position of the target and new rotation of the
+ * based on the decision of the next move. */
 function nextMove(target, position, rotation) {
     // var curCellNum = getCellNum(position.x, position.y);
 
@@ -25,23 +24,22 @@ function nextMove(target, position, rotation) {
 
     if (Math.random() < PROB_FORWARD) {
         // Choose the forward cell.
-        direction = FORWARD;
-    }
-
-    if (Math.random() < PROB_FORWARD_DIAG) {
+        direction = DIRECTION.FORWARD;
+    } else if (Math.random() < PROB_FORWARD_DIAG) {
         // Choose the left diagonal forward cell.
-        direction = LEFT_FORWARD;
+        direction = DIRECTION.LEFT_FORWARD;
 
         if (Math.random() < 0.5) {
             // Choose the right diagonal forward cell.
-            direction = RIGHT_FORWARD;
+            direction = DIRECTION.RIGHT_FORWARD;
         }
     }
 
     if (direction) {
-        var xy = nextDirection(position.x, position.y, rotation, direction);
+        var xz = nextDirection(position.x, position.z, rotation.y, direction);
         // var xy = getMidCell(getNeighbourCellNum(curCellNum, newCell, rotation));
-        target.x = xy[0];
-        target.y = xy[1];
+        target.x = xz[0];
+        target.z = xz[1];
+        rotation.y += xz[2];
     }
 }
