@@ -4,11 +4,6 @@ var AMOUNT_NPCS = 10
 var START_CELL_NUM = 0
 var AMOUNT_NPCS_PER_ROW = 3
 
-// TODO: this should be in a-assets
-NPC_MODEL = "#Roman3D"
-NPC_SPRITE = "#RomanSprite"
-
-
 
 
 // TODO: how to find these?

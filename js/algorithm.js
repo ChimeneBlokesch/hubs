@@ -13,14 +13,6 @@ const PROB_FORWARD_DIAG = 0.15;
 // // other.
 // const PROB_TALK = 0.1;
 
-const RENDERING_TYPES = {
-    MODEL: 0,
-    SPRITE: 1,
-    COMBI: 2
-}
-
-const RENDERING_TYPE = RENDERING_TYPES.SPRITE;
-const RENDERING_DISTANCE = 50;
 
 /* Sets the new position of the target and new rotation of the
  * based on the decision of the next move. */
