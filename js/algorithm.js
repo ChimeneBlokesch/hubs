@@ -19,7 +19,7 @@ const RENDERING_TYPES = {
     COMBI: 2
 }
 
-const RENDERING_TYPE = RENDERING_TYPES.MODEL;
+const RENDERING_TYPE = RENDERING_TYPES.SPRITE;
 const RENDERING_DISTANCE = 50;
 
 /* Sets the new position of the target and new rotation of the

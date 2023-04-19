@@ -1,17 +1,19 @@
 AFRAME.registerComponent('npc', {
     schema: {
-        speed: { type: 'number', default: 0.1 }
+        speed: { type: 'number', default: 0 }
     },
     init: function () {
         // The position to move towards to.
         this.target = this.el.object3D.position.clone();
 
         this.helperVector = new THREE.Vector3();
+
+        this.chooseType(init = true);
     },
 
     tick: function (timeDelta) {
         if (this.data.speed == 0) {
-            chooseType();
+            this.chooseType();
             return;
         }
 
@@ -43,7 +45,7 @@ AFRAME.registerComponent('npc', {
             case RENDERING_TYPES.SPRITE:
                 // Only specify the type at initialize.
                 if (init) {
-                    this.changeType(RENDERING_TYPES.MODEL);
+                    this.changeType(RENDERING_TYPES.SPRITE);
                 }
 
                 break;
@@ -65,15 +67,16 @@ AFRAME.registerComponent('npc', {
     changeType: function (type) {
         switch (type) {
             case RENDERING_TYPES.MODEL:
-                this.removeAttribute("image");
-                this.setAttribute("gltf-model", NPC_MODEL);
+                this.el.removeAttribute("src");
+                this.el.setAttribute("gltf-model", NPC_MODEL);
                 break;
             case RENDERING_TYPES.SPRITE:
-                this.removeAttribute("gltf-model");
-                this.setAttribute("image", NPC_SPRITE);
+                this.el.removeAttribute("gltf-model");
+                this.el.setAttribute("src", NPC_SPRITE);
                 break;
             default:
                 break;
         }
 
-    });
+    }
+});

@@ -29,12 +29,14 @@ const AMOUNT_COLS = Math.ceil(WIDTH / CELL_SIZE);
 function initializeNPCs() {
     var npcs = []
     var parent = document.querySelector("a-scene");
+    var start = THREE.Vector3();
+    start.x = MIN_X + CELL_SIZE / 2;
+    start.z = MIN_Z + CELL_SIZE / 2;
 
     for (var i = 0; i < AMOUNT_NPCS; i++) {
         var el = document.createElement("a-entity");
         el.setAttribute("npc", "");
         el.setAttribute("networked", "");
-        el.chooseType(init = true);
         parent.appendChild(el);
         npcs.push(el);
     }
