@@ -14,31 +14,41 @@ var axis = new THREE.Vector3(0, 1, 0);
 // Already initialize helper vector.
 var v = new THREE.Vector3();
 
-/* Returns the x- and y-coordinates of the next direction and the
+/* Returns the x- and z-coordinates of the next direction and the
  * based on the position and orientation of the object.
  * (x, z): the position of the object on the ground
  * angle: the orientation of the object in radians
  * direction: one of the values of DIRECTION */
 function nextDirection(x, z, angle, direction) {
-    // Initialize direction vector
-    v.x = 0;
-    v.z = CELL_SIZE;
+    // Value delta of the width axis.
+    i = 0;
+    // Value delta of the other axis.
+    j = CELL_SIZE;
+
     rotationDelta = 0;
 
     switch (direction) {
         case DIRECTION.LEFT_FORWARD:
-            v.x = -CELL_SIZE;
+            j = -CELL_SIZE;
             rotationDelta -= ANGLE_DIAG;
             break;
         case DIRECTION.FORWARD:
             break;
         case DIRECTION.RIGHT_FORWARD:
-            v.x = CELL_SIZE;
+            j = CELL_SIZE;
             rotationDelta += ANGLE_DIAG;
             break;
         default:
             // Invalid input, don't change position.
             return [x, z, 0];
+    }
+
+    if (widthAxis == 'x') {
+        v.x = i;
+        v.z = j;
+    } else {
+        v.x = j;
+        v.z = i;
     }
 
     v.applyAxisAngle(axis, angle + rotationDelta);
@@ -88,12 +98,12 @@ function wrapPosition(position) {
     }
 
     if (!inRangeX) {
-        var sign = -1 ? position.x > MAX_X : 1;
+        var sign = position.x > MAX_X ? -1 : 1;
         position.x += sign * LENGTH_X;
     }
 
     if (!inRangeZ) {
-        var sign = -1 ? position.z > MAX_Z : 1;
+        var sign = position.z > MAX_Z ? -1 : 1;
         position.z += sign * LENGTH_Z;
     }
 
