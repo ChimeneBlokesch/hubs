@@ -24,7 +24,7 @@ const AMOUNT_COLS = Math.ceil(WIDTH / CELL_SIZE);
 function initializeNPCs() {
     var npcs = []
     var parent = document.querySelector("a-scene");
-    var start = THREE.Vector3();
+    var start = new THREE.Vector3();
     start.x = MIN_X + CELL_SIZE / 2;
     start.z = MIN_Z + CELL_SIZE / 2;
 

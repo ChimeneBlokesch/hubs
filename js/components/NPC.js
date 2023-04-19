@@ -8,12 +8,12 @@ AFRAME.registerComponent('npc', {
 
         this.helperVector = new THREE.Vector3();
 
-        this.chooseType(init = true);
+        chooseType(this.el, init = true);
     },
 
     tick: function (timeDelta) {
         if (this.data.speed == 0) {
-            this.chooseType();
+            chooseType(this.el);
             return;
         }
 
@@ -31,5 +31,7 @@ AFRAME.registerComponent('npc', {
             // Determine a new target.
             nextMove(this.target, this.el.object3D.position, this.el.object3D.rotation);
         }
+
+        chooseType(this.el);
     }
 });
