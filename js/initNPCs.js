@@ -13,20 +13,21 @@ const MIN_Z = 0;
 const MAX_X = 5;
 const MAX_Z = 5;
 
+const LENGTH_X = MAX_X - MIN_X;
+const LENGTH_Z = MAX_Z - MIN_Z;
 
-const WIDTH = MAX_X - MIN_X;
-const HEIGHT = MAX_Z - MIN_Z;
+// The width axis has the smallest range.
+var widthAxis = 'x' ? LENGTH_X < LENGTH_Z : 'z';
 
-const AMOUNT_COLS = Math.ceil(WIDTH / CELL_SIZE);
+const AMOUNT_COLS = Math.ceil(LENGTH_X / CELL_SIZE);
 // const AMOUNT_ROWS = Math.ceil(HEIGHT / CELL_SIZE);
 
 /* Generates the NPC objects and adds them to the scene. */
 function initializeNPCs() {
     var npcs = []
     var parent = document.querySelector("a-scene");
-    var start = new THREE.Vector3();
-    start.x = MIN_X + CELL_SIZE / 2;
-    start.z = MIN_Z + CELL_SIZE / 2;
+    curPosX = MIN_X + CELL_SIZE / 2;
+    curPosZ = MIN_Z + CELL_SIZE / 2;
 
     for (var i = 0; i < AMOUNT_NPCS; i++) {
         var el = document.createElement("a-entity");
@@ -34,7 +35,40 @@ function initializeNPCs() {
         el.setAttribute("networked", "");
         parent.appendChild(el);
         npcs.push(el);
+
+        // Set the position of the NPC.
+        el.object3D.position.x = curPosX;
+        el.object3D.position.z = curPosZ;
+
+        // Calculate the position of the next NPC.
+        [curPosX, curPosZ] = nextPosition(curPosX, curPosZ);
     }
 
     return npcs;
+}
+
+/* Returns the next position. If the width is full, return the beginning of
+ * the next row  */
+function nextPosition(curPosX, curPosZ) {
+    switch (widthAxis) {
+        case 'x':
+            if (curPosX + CELL_SIZE > MAX_X) {
+                // Go to the beginning of the next row.
+                return [MIN_X, curPosZ + CELL_SIZE];
+            }
+
+            curPosX += CELL_SIZE;
+            break;
+        case 'z':
+            if (curPosZ + CELL_SIZE > MAX_Z) {
+                // Go to the beginning of the next row.
+                return [curPosX + CELL_SIZE, MIN_Z];
+            }
+
+            curPosZ += CELL_SIZE;
+            break;
+        default:
+            break;
+    }
+
 }

@@ -89,12 +89,12 @@ function wrapPosition(position) {
 
     if (!inRangeX) {
         var sign = -1 ? position.x > MAX_X : 1;
-        position.x += sign * WIDTH;
+        position.x += sign * LENGTH_X;
     }
 
     if (!inRangeZ) {
         var sign = -1 ? position.z > MAX_Z : 1;
-        position.z += sign * HEIGHT;
+        position.z += sign * LENGTH_Z;
     }
 
     return true;
