@@ -1,8 +1,10 @@
+const ROOM = selectRomanRoom();
 var userAvatar;
 
 window.onload = function () {
     userAvatar = document.querySelector("#avatar-rig").object3D;
 };
+
 
 // Function as shown in
 // https://www.youtube.com/watch?v=sq8d2-M-O_Q&t=1742s at 4:15

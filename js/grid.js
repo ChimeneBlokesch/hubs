@@ -1,7 +1,3 @@
-// The length of the squared cell.
-const CELL_SIZE = 1;
-const ANGLE_DIAG = Math.cos(CELL_SIZE / CELL_SIZE);
-
 const DIRECTION = {
     LEFT_FORWARD: 0,
     FORWARD: 1,
@@ -23,27 +19,27 @@ function nextDirection(x, z, angle, direction) {
     // Value delta of the width axis.
     i = 0;
     // Value delta of the other axis.
-    j = CELL_SIZE;
+    j = ROOM.cellSize;
 
     rotationDelta = 0;
 
     switch (direction) {
         case DIRECTION.LEFT_FORWARD:
-            j = -CELL_SIZE;
-            rotationDelta -= ANGLE_DIAG;
+            j = -ROOM.cellSize;
+            rotationDelta -= ROOM.angleDiag;
             break;
         case DIRECTION.FORWARD:
             break;
         case DIRECTION.RIGHT_FORWARD:
-            j = CELL_SIZE;
-            rotationDelta += ANGLE_DIAG;
+            j = ROOM.cellSize;
+            rotationDelta += ROOM.angleDiag;
             break;
         default:
             // Invalid input, don't change position.
             return [x, z, 0];
     }
 
-    if (widthAxis == 'x') {
+    if (ROOM.widthAxis == 'x') {
         v.x = i;
         v.z = j;
     } else {
@@ -89,8 +85,8 @@ function forward(el, target, directionVec3, timeDelta, speed) {
 /* Update the position if it's outside the grid to the position in
  * the wrapped grid. Returns true if the update was needed and false otherwise. */
 function wrapPosition(position) {
-    var inRangeX = MIN_X < position.x && position.x < MAX_X;
-    var inRangeZ = MIN_Z < position.z && position.z < MAX_Z;
+    var inRangeX = ROOM.minX < position.x && position.x < ROOM.maxX;
+    var inRangeZ = ROOM.minZ < position.z && position.z < ROOM.maxZ;
 
     if (inRangeX && inRangeZ) {
         // No wrapping needed.
@@ -98,13 +94,13 @@ function wrapPosition(position) {
     }
 
     if (!inRangeX) {
-        var sign = position.x > MAX_X ? -1 : 1;
-        position.x += sign * LENGTH_X;
+        var sign = position.x > ROOM.maxX ? -1 : 1;
+        position.x += sign * ROOM.lengthX;
     }
 
     if (!inRangeZ) {
-        var sign = position.z > MAX_Z ? -1 : 1;
-        position.z += sign * LENGTH_Z;
+        var sign = position.z > ROOM.maxZ ? -1 : 1;
+        position.z += sign * ROOM.lengthZ;
     }
 
     return true;

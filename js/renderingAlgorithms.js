@@ -28,41 +28,16 @@ const LOD = {
     HIGH: 2
 }
 
-// The used algorithm for rendering.
-const RENDERING_ALGO = RENDERING_ALGORITHMS.MODEL_COMBI;
-
-// Below this distance, the high LOD is used.
-const RENDERING_DISTANCE_HIGH = 50;
-
-// Above this distance, the low LOD is used.
-const RENDERING_DISTANCE_LOW = 150;
-
-// TODO: el should be in a-assets
-// The file ids based on the rendering type and optionally the LOD.
-RENDERING_FILE = {
-    [RENDERING_TYPES.MODEL]: {
-        [LOD.LOW]: "#Roman3DLow",
-        [LOD.MEDIUM]: "#Roman3DMedium",
-        [LOD.HIGH]: "#Roman3DHigh"
-    },
-    [RENDERING_TYPES.SPRITE]: "#RomanSprite"
-    // {
-    //     [LOD.LOW]: "#RomanSpriteLow",
-    //     [LOD.MEDIUM]: "#RomanSpriteMedium",
-    //     [LOD.HIGH]: "#RomanSpriteHigh"
-    // }
-};
-
 /* Changes the type of the rendering (2D / 3D and low / medium / high LOD) if needed.
  * When init is set to true, it will always change. The changes are based
  * on the used rendering algorithm. */
 function chooseType(el, init = false) {
-    switch (RENDERING_ALGO) {
+    switch (ROOM.renderingAlgo) {
         case RENDERING_ALGORITHMS.MODEL_LOW:
             // Only specify the type at initialization.
             if (init) {
                 var type = RENDERING_TYPES.MODEL;
-                changeType(el, type, RENDERING_FILE[type][LOD.LOW]);
+                changeType(el, type, ROOM.renderingFiles[type][LOD.LOW]);
             }
 
             break;
@@ -70,7 +45,7 @@ function chooseType(el, init = false) {
             // Only specify the type at initialization.
             if (init) {
                 var type = RENDERING_TYPES.MODEL;
-                changeType(el, type, RENDERING_FILE[type][LOD.MEDIUM]);
+                changeType(el, type, ROOM.renderingFiles[type][LOD.MEDIUM]);
             }
 
             break;
@@ -78,7 +53,7 @@ function chooseType(el, init = false) {
             // Only specify the type at initialization.
             if (init) {
                 var type = RENDERING_TYPES.MODEL;
-                changeType(el, type, RENDERING_FILE[type][LOD.HIGH]);
+                changeType(el, type, ROOM.renderingFiles[type][LOD.HIGH]);
             }
 
             break;
@@ -86,7 +61,7 @@ function chooseType(el, init = false) {
             // Only specify the type at initialize.
             if (init) {
                 var type = RENDERING_TYPES.SPRITE;
-                changeType(el, getType(algo), RENDERING_FILE[type]);
+                changeType(el, getType(algo), ROOM.renderingFiles[type]);
             }
 
             break;
@@ -95,13 +70,14 @@ function chooseType(el, init = false) {
             var dist = userAvatar.position.distanceTo(el.object3D.position);
             var lod = LOD.MEDIUM;
 
-            if (dist < RENDERING_DISTANCE_HIGH) {
+            if (dist < ROOM.renderingDistanceHigh) {
                 lod = LOD.HIGH;
-            } else if (dist > RENDERING_DISTANCE_LOW) {
+            } else if (dist > ROOM.renderingDistanceLow) {
                 lod = LOD.LOW;
             }
 
-            changeType(el, RENDERING_TYPES.MODEL, RENDERING_FILE[RENDERING_TYPES.MODEL][lod]);
+            changeType(el, RENDERING_TYPES.MODEL,
+                ROOM.renderingFiles[RENDERING_TYPES.MODEL][lod]);
             break;
         default:
             break;

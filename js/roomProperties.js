@@ -7,8 +7,13 @@ class RoomProperties {
         this.minZ = minZ;
         this.maxZ = maxZ;
         this.amountNPCs = amountNPCs;
+
+        // The probability a NPC will walk to the forward cell.
         this.probForward = probForward;
+
+        // The probability a NPC will walk to the left or right diagonal forward cell.
         this.probForwardDiag = probForwardDiag;
+
         this.cellSize = cellSize;
         this.renderingFiles = renderingFiles;
         this.renderingAlgo = renderingAlgo;
@@ -29,6 +34,6 @@ class RoomProperties {
     }
 
     get angleDiag() {
-        return Math.cos(CELL_SIZE / CELL_SIZE);
+        return Math.cos(this.cellSize / this.cellSize);
     }
 }

@@ -1,10 +1,4 @@
 
-// The probability a NPC will walk to the forward cell.
-const PROB_FORWARD = 1;
-
-// The probability a NPC will walk to the left or right diagonal forward cell.
-const PROB_FORWARD_DIAG = 0.15;
-
 // // The probability a NPC will walk to the cell behind the NPC.
 // const PROB_TURN_AROUND = 0.2;
 
@@ -14,10 +8,10 @@ function nextMove(target, position, rotation) {
     // The cell number of the next target relative to the current cell.
     var direction = null;
 
-    if (Math.random() < PROB_FORWARD) {
+    if (Math.random() < ROOM.probForward) {
         // Choose the forward cell.
         direction = DIRECTION.FORWARD;
-    } else if (Math.random() < PROB_FORWARD_DIAG) {
+    } else if (Math.random() < ROOM.probForwardDiag) {
         // Choose the left diagonal forward cell.
         direction = DIRECTION.LEFT_FORWARD;
 
