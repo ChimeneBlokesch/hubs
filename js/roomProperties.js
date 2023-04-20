@@ -34,6 +34,7 @@ class RoomProperties {
     }
 
     get angleDiag() {
+        // TODO: maybe split into cellSizeX and cellSizeZ
         return Math.cos(this.cellSize / this.cellSize);
     }
 }

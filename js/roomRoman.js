@@ -1,12 +1,12 @@
 function selectRomanRoom() {
-    var minX = -100;
-    var maxX = 100;
+    var minX = -2;
+    var maxX = 2;
     var minZ = -100;
     var maxZ = 100;
 
     var amountNPCs = 100;
-    var probForward = 0.5;
-    var probForwardDiag = 0.5;
+    var probForward = 1;
+    var probForwardDiag = 0.15;
     var cellSize = 1;
 
     var renderingFile = {
