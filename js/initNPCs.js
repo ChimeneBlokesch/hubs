@@ -1,11 +1,5 @@
 var AMOUNT_NPCS = 10
 
-
-var START_CELL_NUM = 0
-var AMOUNT_NPCS_PER_ROW = 3
-
-
-
 // TODO: how to find these?
 // The range of the x- and y-coordinates in the room.
 const MIN_X = 0;
@@ -19,12 +13,9 @@ const LENGTH_Z = MAX_Z - MIN_Z;
 // The width axis has the smallest range.
 var widthAxis = LENGTH_X < LENGTH_Z ? 'x' : 'z';
 
-const AMOUNT_COLS = Math.ceil(LENGTH_X / CELL_SIZE);
 
-
-// const AMOUNT_ROWS = Math.ceil(HEIGHT / CELL_SIZE);
-/* Returns the next position. If the width is full, return the beginning of
- * the next row  */
+/* Returns the next center. If the width is full, return the center of the cell
+ * at the beginning of the next row.  */
 function nextPosition(curPosX, curPosZ) {
     switch (widthAxis) {
         case 'x':
