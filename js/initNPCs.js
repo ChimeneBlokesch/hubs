@@ -1,6 +1,7 @@
 /* Returns the next center. If the width is full, return the center of the cell
  * at the beginning of the next row.  */
 function nextPosition(curPosX, curPosZ) {
+    // First full up the width axis, then the length axis.
     switch (ROOM.widthAxis) {
         case 'x':
             if (curPosX + ROOM.cellSize > ROOM.maxX) {

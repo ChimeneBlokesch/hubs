@@ -5,7 +5,7 @@ const DIRECTION = {
 }
 
 // The y-axis is the up-down axis in A-Frame.
-var axis = new THREE.Vector3(0, 1, 0);
+var upAxis = new THREE.Vector3(0, 1, 0);
 
 // Already initialize helper vector.
 var v = new THREE.Vector3();
@@ -47,7 +47,7 @@ function nextDirection(x, z, angle, direction) {
         v.z = i;
     }
 
-    v.applyAxisAngle(axis, angle + rotationDelta);
+    v.applyAxisAngle(upAxis, angle + rotationDelta);
     return [x + v.x, z + v.z, rotationDelta];
 }
 
