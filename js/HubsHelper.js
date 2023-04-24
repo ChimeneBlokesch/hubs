@@ -1,8 +1,7 @@
 const ROOM = selectRomanRoom();
-var userAvatar;
 
-window.onload = function () {
-    userAvatar = document.querySelector("#avatar-rig").object3D;
+function getUserAvatar() {
+    return document.querySelector("#avatar-rig").object3D;
 };
 
 

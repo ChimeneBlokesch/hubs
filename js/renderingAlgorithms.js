@@ -67,7 +67,7 @@ function chooseType(el, init = false) {
             break;
         case RENDERING_ALGORITHMS.MODEL_COMBI:
             // Choose the type based on the distance to the player.
-            var dist = userAvatar.position.distanceTo(el.object3D.position);
+            var dist = getUserAvatar().position.distanceTo(el.object3D.position);
             var lod = LOD.MEDIUM;
 
             if (dist < ROOM.renderingDistanceHigh) {
@@ -90,10 +90,10 @@ function changeType(el, type, file) {
     switch (type) {
         case RENDERING_TYPES.MODEL:
             el.removeAttribute("src");
-            el.setAttribute("gltf-model-plus", file);
+            el.setAttribute("gltf-model", file);
             break;
         case RENDERING_TYPES.SPRITE:
-            el.removeAttribute("gltf-model-plus");
+            el.removeAttribute("gltf-model");
             el.setAttribute("src", file);
             break;
         default:

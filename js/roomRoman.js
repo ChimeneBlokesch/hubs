@@ -1,8 +1,8 @@
-function selectRomanRoom() {
+function pathRomanMiddle() {
     var minX = -2;
     var maxX = 2;
-    var minZ = -100;
-    var maxZ = 100;
+    var minZ = -5;
+    var maxZ = 5;
 
     var amountNPCs = 100;
     var cellSize = 1;
@@ -11,14 +11,54 @@ function selectRomanRoom() {
     var probForward = 1;
     var probForwardDiag = 0.15;
 
-    var paths = [new Path(minX, maxX, minZ, maxZ, amountNPCs, cellSize,
-        speedNPC, rotationNPC, probForward, probForwardDiag)];
+    return new Path(minX, maxX, minZ, maxZ, amountNPCs, cellSize,
+        speedNPC, rotationNPC, probForward, probForwardDiag);
+}
+
+function pathRomanLeft() {
+    var minX = -3;
+    var maxX = -2;
+    var minZ = -100;
+    var maxZ = 100;
+
+    var amountNPCs = 20;
+    var cellSize = 3;
+    var speedNPC = 0;
+    var rotationNPC = 0;
+    var probForward = 0;
+    var probForwardDiag = 0;
+
+    return new Path(minX, maxX, minZ, maxZ, amountNPCs, cellSize,
+        speedNPC, rotationNPC, probForward, probForwardDiag);
+}
+
+function pathRomanRight() {
+    var minX = 2;
+    var maxX = 3;
+    var minZ = -100;
+    var maxZ = 100;
+
+    var amountNPCs = 20;
+    var cellSize = 3;
+    var speedNPC = 0;
+    var rotationNPC = 0;
+    var probForward = 0;
+    var probForwardDiag = 0;
+
+    return new Path(minX, maxX, minZ, maxZ, amountNPCs, cellSize,
+        speedNPC, rotationNPC, probForward, probForwardDiag);
+
+}
+
+function selectRomanRoom() {
+
+    var paths = [pathRomanMiddle(), pathRomanLeft(), pathRomanRight()];
 
     var renderingFile = {
         [RENDERING_TYPES.MODEL]: {
-            [LOD.LOW]: "#Roman3DLow",
-            [LOD.MEDIUM]: "#Roman3DMedium",
-            [LOD.HIGH]: "#Roman3DHigh"
+            [LOD.LOW]: "models/low/sprite.gltf",
+            [LOD.MEDIUM]: "models/medium/sprite.gltf",
+            [LOD.HIGH]: "models/high/sprite.gltf"
         },
         [RENDERING_TYPES.SPRITE]: "#RomanSprite"
         // {

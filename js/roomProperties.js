@@ -1,6 +1,5 @@
 class RoomProperties {
-    constructor(paths,
-        renderingFiles, renderingAlgo,
+    constructor(paths, renderingFiles, renderingAlgo,
         renderingDistanceHigh = null, renderingDistanceLow = null) {
         this.paths = paths;
 
