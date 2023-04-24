@@ -5,9 +5,14 @@ function selectRomanRoom() {
     var maxZ = 100;
 
     var amountNPCs = 100;
+    var cellSize = 1;
+    var speedNPC = 0.001;
+    var rotationNPC = 0;
     var probForward = 1;
     var probForwardDiag = 0.15;
-    var cellSize = 1;
+
+    var paths = [new Path(minX, maxX, minZ, maxZ, amountNPCs, cellSize,
+        speedNPC, rotationNPC, probForward, probForwardDiag)];
 
     var renderingFile = {
         [RENDERING_TYPES.MODEL]: {
@@ -27,8 +32,6 @@ function selectRomanRoom() {
     var renderingDistanceHigh = 50;
     var renderingDistanceLow = 150;
 
-    return new RoomProperties(minX, maxX, minZ, maxZ, amountNPCs,
-        probForward, probForwardDiag, cellSize,
-        renderingFile, renderingAlgo,
+    return new RoomProperties(paths, renderingFile, renderingAlgo,
         renderingDistanceHigh = renderingDistanceHigh, renderingDistanceLow = renderingDistanceLow);
 }

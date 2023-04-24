@@ -1,52 +1,26 @@
-/* Returns the next center. If the width is full, return the center of the cell
- * at the beginning of the next row.  */
-function nextPosition(curPosX, curPosZ) {
-    // First full up the width axis, then the length axis.
-    switch (ROOM.widthAxis) {
-        case 'x':
-            if (curPosX + ROOM.cellSize > ROOM.maxX) {
-                // Go to the beginning of the next row.
-                return [ROOM.minX + ROOM.cellSize / 2, curPosZ + ROOM.cellSize];
-            }
-
-            curPosX += ROOM.cellSize;
-            break;
-        case 'z':
-            if (curPosZ + ROOM.cellSize > ROOM.maxZ) {
-                // Go to the beginning of the next row.
-                return [curPosX + ROOM.cellSize, ROOM.minZ + ROOM.cellSize / 2];
-            }
-
-            curPosZ += ROOM.cellSize;
-            break;
-        default:
-            break;
-    }
-
-    return [curPosX, curPosZ];
-}
-
-
 /* Generates the NPC objects and adds them to the scene. */
 function initializeNPCs() {
     var npcs = []
     var parent = document.querySelector("a-scene");
-    curPosX = ROOM.minX + ROOM.cellSize / 2;
-    curPosZ = ROOM.minZ + ROOM.cellSize / 2;
 
-    for (var i = 0; i < ROOM.amountNPCs; i++) {
-        var el = document.createElement("a-entity");
-        el.setAttribute("npc", "");
-        el.setAttribute("networked", "");
-        parent.appendChild(el);
-        npcs.push(el);
+    for (var i = 0; i < ROOM.paths.length; i++) {
+        var path = ROOM.paths[i];
+        var curPosX, curPosZ;
 
-        // Set the position of the NPC.
-        el.object3D.position.x = curPosX;
-        el.object3D.position.z = curPosZ;
+        for (var j = 0; j < path.amountNPCs; j++) {
+            var el = document.createElement("a-entity");
+            el.setAttribute("npc", "speed:" + path.speedNPC + ";pathIndex:" + i + ";");
+            el.setAttribute("networked", "");
+            parent.appendChild(el);
+            npcs.push(el);
 
-        // Calculate the position of the next NPC.
-        [curPosX, curPosZ] = nextPosition(curPosX, curPosZ);
+            // Calculate the position of the next NPC.
+            [curPosX, curPosZ] = path.initNextPosition(curPosX, curPosZ);
+
+            // Set the position of the NPC.
+            el.object3D.position.x = curPosX;
+            el.object3D.position.z = curPosZ;
+        }
     }
 
     return npcs;
