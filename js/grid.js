@@ -11,14 +11,15 @@ var upAxis = new THREE.Vector3(0, 1, 0);
 var v = new THREE.Vector3();
 
 class Path {
-    constructor(minX, maxX, minZ, maxZ, amountNPCs, cellSize,
+    constructor(minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
         speedNPC, rotationNPC, probForward, probForwardDiag) {
         this.minX = minX;
         this.maxX = maxX;
         this.minZ = minZ;
         this.maxZ = maxZ;
         this.amountNPCs = amountNPCs;
-        this.cellSize = cellSize;
+        this.cellSizeX = cellSizeX;
+        this.cellSizeZ = cellSizeZ;
         this.speedNPC = speedNPC;
         this.rotationNPC = rotationNPC;
         this.probForward = probForward;
@@ -37,9 +38,25 @@ class Path {
         return this.lengthX < this.lengthZ ? 'x' : 'z';
     }
 
+    get cellSizeWidth() {
+        return this.widthAxis == 'x' ? this.cellSizeX : this.cellSizeZ;
+    }
+
+    get cellSizeLength() {
+        return this.widthAxis == 'x' ? this.cellSizeZ : this.cellSizeX;
+    }
+
     get angleDiag() {
-        // TODO: maybe split into cellSizeX and cellSizeZ
-        return Math.cos(this.cellSize / this.cellSize);
+        // TODO: maybe flip
+        var a = this.cellSizeX;
+        var b = this.cellSizeZ;
+
+        if (this.widthAxis == 'x') {
+            a = this.cellSizeZ;
+            b = this.cellSizeX;
+        }
+
+        return Math.cos(a / b);
     }
 
     /* Update the position if it's outside the grid to the position in
@@ -75,19 +92,19 @@ class Path {
         // Value delta of the width axis.
         var i = 0;
         // Value delta of the other axis.
-        var j = this.cellSize;
+        var j = this.cellSizeLength;
 
         var rotationDelta = 0;
 
         switch (direction) {
             case DIRECTION.LEFT_FORWARD:
-                j = -this.cellSize;
+                j = -this.cellSizeLength;
                 rotationDelta -= this.angleDiag;
                 break;
             case DIRECTION.FORWARD:
                 break;
             case DIRECTION.RIGHT_FORWARD:
-                j = this.cellSize;
+                j = this.cellSizeLength;
                 rotationDelta += this.angleDiag;
                 break;
             default:
@@ -112,27 +129,27 @@ class Path {
     initNextPosition(curPosX, curPosZ) {
         // First full up the width axis, then the length axis.
         if (curPosX == null || curPosZ == null) {
-            curPosX = this.minX + this.cellSize / 2;
-            curPosZ = this.minZ + this.cellSize / 2;
+            curPosX = this.minX + this.cellSizeX / 2;
+            curPosZ = this.minZ + this.cellSizeZ / 2;
             return [curPosX, curPosZ];
         }
 
         switch (this.widthAxis) {
             case 'x':
-                if (curPosX + this.cellSize > this.maxX) {
+                if (curPosX + this.cellSizeX > this.maxX) {
                     // Go to the beginning of the next row.
-                    return [this.minX + this.cellSize / 2, curPosZ + this.cellSize];
+                    return [this.minX + this.cellSizeX / 2, curPosZ + this.cellSizeZ];
                 }
 
-                curPosX += this.cellSize;
+                curPosX += this.cellSizeX;
                 break;
             case 'z':
-                if (curPosZ + this.cellSize > this.maxZ) {
+                if (curPosZ + this.cellSizeZ > this.maxZ) {
                     // Go to the beginning of the next row.
-                    return [curPosX + this.cellSize, this.minZ + this.cellSize / 2];
+                    return [curPosX + this.cellSizeX, this.minZ + this.cellSizeZ / 2];
                 }
 
-                curPosZ += this.cellSize;
+                curPosZ += this.cellSizeZ;
                 break;
             default:
                 break;
