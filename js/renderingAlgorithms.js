@@ -10,22 +10,18 @@ const RENDERING_ALGORITHMS = {
     // the avatar of the user.
     MODEL_COMBI: 3,
     // All models are shown as 2D sprites.
-    SPRITE: 4
-}
-
-// Rendering type based on amount of dimensions.
-const RENDERING_TYPES = {
-    // 2D
-    SPRITE: 0,
-    // 3D
-    MODEL: 1
+    SPRITE: 4,
+    // Combines the sprite and the three LODs, depending on the distance to
+    // the avatar of the user.
+    MODEL_COMBI_SPRITE: 4,
 }
 
 // Level of detail
 const LOD = {
-    LOW: 0,
-    MEDIUM: 1,
-    HIGH: 2
+    SPRITE: 0,
+    LOW: 1,
+    MEDIUM: 2,
+    HIGH: 3
 }
 
 /* Changes the type of the rendering (2D / 3D and low / medium / high LOD) if needed.
@@ -34,50 +30,45 @@ const LOD = {
 function chooseType(el, init = false) {
     switch (ROOM.renderingAlgo) {
         case RENDERING_ALGORITHMS.MODEL_LOW:
-            // Only specify the type at initialization.
+            // Only specify the lod at initialization.
             if (init) {
-                var type = RENDERING_TYPES.MODEL;
-                changeType(el, type, ROOM.renderingFiles[type][LOD.LOW]);
+                changeType(el, LOD.LOW);
             }
 
             break;
         case RENDERING_ALGORITHMS.MODEL_MEDIUM:
-            // Only specify the type at initialization.
+            // Only specify the lod at initialization.
             if (init) {
-                var type = RENDERING_TYPES.MODEL;
-                changeType(el, type, ROOM.renderingFiles[type][LOD.MEDIUM]);
+                changeType(el, LOD.MEDIUM);
             }
 
             break;
         case RENDERING_ALGORITHMS.MODEL_HIGH:
-            // Only specify the type at initialization.
+            // Only specify the lod at initialization.
             if (init) {
-                var type = RENDERING_TYPES.MODEL;
-                changeType(el, type, ROOM.renderingFiles[type][LOD.HIGH]);
+                changeType(el, LOD.HIGH);
             }
 
             break;
         case RENDERING_ALGORITHMS.SPRITE:
-            // Only specify the type at initialize.
+            // Only specify the lod at initialize.
             if (init) {
-                var type = RENDERING_TYPES.SPRITE;
-                changeType(el, getType(algo), ROOM.renderingFiles[type]);
+                changeType(el, LOD.SPRITE);
             }
 
             break;
         case RENDERING_ALGORITHMS.MODEL_COMBI:
-            // Choose the type based on the distance to the player.
+            // Choose the lod based on the distance to the player.
             var dist = getUserAvatar().position.distanceTo(el.object3D.position);
-            var lod = LOD.MEDIUM;
-
-            if (dist < ROOM.renderingDistanceHigh) {
-                lod = LOD.HIGH;
-            } else if (dist > ROOM.renderingDistanceLow) {
-                lod = LOD.LOW;
-            }
-
-            changeType(el, RENDERING_TYPES.MODEL,
-                ROOM.renderingFiles[RENDERING_TYPES.MODEL][lod]);
+            var lod = lodFromDistance(dist, ROOM.thHighMedium, ROOM.thMediumLow);
+            changeType(el, lod);
+            break;
+        case RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE:
+            // Choose the lod based on the distance to the player.
+            var dist = getUserAvatar().position.distanceTo(el.object3D.position);
+            var lod = lodFromDistance(dist, ROOM.thHighMedium,
+                ROOM.thMediumLow, ROOM.thLowSprite);
+            changeType(el, lod);
             break;
         default:
             break;
@@ -86,18 +77,36 @@ function chooseType(el, init = false) {
 
 /* Changes the rendering type by setting the right attribute and removing the
  * other attribute. */
-function changeType(el, type, file) {
-    switch (type) {
-        case RENDERING_TYPES.MODEL:
-            el.removeAttribute("src");
-            el.setAttribute("gltf-model", file);
-            break;
-        case RENDERING_TYPES.SPRITE:
+function changeType(el, lod) {
+    var file = ROOM.renderingFiles[lod];
+
+    switch (lod) {
+        case LOD.SPRITE:
             el.removeAttribute("gltf-model");
-            el.setAttribute("src", file);
+            el.setAttribute("geometry", "primitive", "plane");
+            el.setAttribute("material", "src", file);
             break;
         default:
+            el.removeAttribute("material");
+            el.removeAttribute("geometry");
+            el.setAttribute("gltf-model", file);
             break;
     }
 
+}
+
+function lodFromDistance(value, thHighMedium, thMediumLow, thLowSprite = null) {
+    if (value < thHighMedium) {
+        return LOD.HIGH;
+    }
+
+    if (value < thMediumLow) {
+        return LOD.MEDIUM;
+    }
+
+    if (thLowSprite == null || value < thLowSprite) {
+        return LOD.LOW;
+    }
+
+    return LOD.SPRITE;
 }

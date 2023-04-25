@@ -58,23 +58,17 @@ function selectRomanRoom() {
     var paths = [pathRomanMiddle(), pathRomanLeft(), pathRomanRight()];
 
     var renderingFile = {
-        [RENDERING_TYPES.MODEL]: {
-            [LOD.LOW]: "models/low/sprite.gltf",
-            [LOD.MEDIUM]: "models/medium/sprite.gltf",
-            [LOD.HIGH]: "models/high/sprite.gltf"
-        },
-        [RENDERING_TYPES.SPRITE]: "#RomanSprite"
-        // {
-        //     [LOD.LOW]: "#RomanSpriteLow",
-        //     [LOD.MEDIUM]: "#RomanSpriteMedium",
-        //     [LOD.HIGH]: "#RomanSpriteHigh"
-        // }
+        [LOD.LOW]: "models/low/sprite.gltf",
+        [LOD.MEDIUM]: "models/medium/sprite.gltf",
+        [LOD.HIGH]: "models/high/sprite.gltf",
+        [LOD.SPRITE]: "models/sprite/sprite.png"
     };
 
-    var renderingAlgo = RENDERING_ALGORITHMS.MODEL_COMBI;
-    var renderingDistanceHigh = 5;
-    var renderingDistanceLow = 10;
+    var renderingAlgo = RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE;
+    var thHighMedium = 2;
+    var thMediumLow = 5;
+    var thLowSprite = 10;
 
     return new RoomProperties(paths, renderingFile, renderingAlgo,
-        renderingDistanceHigh = renderingDistanceHigh, renderingDistanceLow = renderingDistanceLow);
+        thHighMedium, thMediumLow, thLowSprite);
 }

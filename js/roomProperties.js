@@ -1,11 +1,12 @@
 class RoomProperties {
     constructor(paths, renderingFiles, renderingAlgo,
-        renderingDistanceHigh = null, renderingDistanceLow = null) {
+        thHighMedium, thMediumLow, thLowSprite) {
         this.paths = paths;
 
         this.renderingFiles = renderingFiles;
         this.renderingAlgo = renderingAlgo;
-        this.renderingDistanceHigh = renderingDistanceHigh;
-        this.renderingDistanceLow = renderingDistanceLow;
+        this.thHighMedium = thHighMedium;
+        this.thMediumLow = thMediumLow;
+        this.thLowSprite = thLowSprite;
     }
 }
