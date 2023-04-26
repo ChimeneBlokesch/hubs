@@ -13,7 +13,7 @@ const RENDERING_ALGORITHMS = {
     SPRITE: 4,
     // Combines the sprite and the three LODs, depending on the distance to
     // the avatar of the user.
-    MODEL_COMBI_SPRITE: 4,
+    MODEL_COMBI_SPRITE: 5,
 }
 
 // Level of detail
@@ -78,21 +78,46 @@ function chooseType(el, init = false) {
 /* Changes the rendering type by setting the right attribute and removing the
  * other attribute. */
 function changeType(el, lod) {
+    if (el.childCount == 0) {
+        el.appendChild(loadModel(lod));
+        return;
+    }
+
+    var found = false;
+
+    for (var child of el.children) {
+        if (child.getAttribute("lod") == lod) {
+            child.setAttribute("visible", "true");
+            found = true;
+            return;
+        }
+
+        child.setAttribute("visible", "false");
+    }
+
+    if (!found) {
+        el.appendChild(loadModel(lod));
+    }
+}
+
+function loadModel(lod) {
     var file = ROOM.renderingFiles[lod];
+    var modelEl = document.createElement("a-entity");
+    modelEl.setAttribute("lod", lod);
+    modelEl.setAttribute("visible", "true");
 
     switch (lod) {
         case LOD.SPRITE:
-            el.removeAttribute("gltf-model");
-            el.setAttribute("geometry", "primitive", "plane");
-            el.setAttribute("material", "src", file);
+            // TODO: maybe add a position offset to the sprite.
+            modelEl.setAttribute("geometry", "primitive", "plane");
+            modelEl.setAttribute("material", "src", file);
             break;
         default:
-            el.removeAttribute("material");
-            el.removeAttribute("geometry");
-            el.setAttribute("gltf-model", file);
+            modelEl.setAttribute("gltf-model", file);
             break;
     }
 
+    return modelEl;
 }
 
 function lodFromDistance(value, thHighMedium, thMediumLow, thLowSprite = null) {
