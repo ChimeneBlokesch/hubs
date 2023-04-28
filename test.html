@@ -27,14 +27,38 @@
 <!-- NPCs.map(function(n){return n.object3D.position}) -->
 
 <body>
-    <a-scene>
-        <a-box id="mesh1" color="red"
-            instanced-mesh="debug:true;positioning:world;updateMode:auto;capacity:5000;"></a-box>
+    <a-scene stats>
+        <a-assets>
+            <a-asset-item id="assetlod0"
+                src="models/sprite/sprite.png"></a-asset-item>
+            <a-asset-item id="assetlod1"
+                src="models/cylinder.gltf"></a-asset-item>
+            <a-asset-item id="assetlod2"
+                src="models/cylinder.gltf"></a-asset-item>
+            <a-asset-item id="assetlod3"
+                src="models/cylinder.gltf"></a-asset-item>
+        </a-assets>
+        <a-entity id="lod0" geometry="primitive:plane" material="src:#assetlod0"
+            instanced-mesh="positioning:world;updateMode:auto;capacity:50;"></a-entity>
+        <a-entity id="lod1" gltf-model="#assetlod1"
+            instanced-mesh="positioning:world;updateMode:auto;capacity:50;"></a-entity>
+        <a-entity id="lod2" gltf-model="#assetlod2"
+            instanced-mesh="positioning:world;updateMode:auto;capacity:50;"></a-entity>
+        <a-entity id="lod3" gltf-model="#assetlod3"
+            instanced-mesh="positioning:world;updateMode:auto;capacity:50;"></a-entity>
+        <!-- <a-box id="mesh1" color="red"
+            instanced-mesh="debug:true;positioning:world;updateMode:auto;capacity:5000;"></a-box> -->
         <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4"
             color="#7BC8A4"></a-plane>
-        <a-sky color="#ECECEC"></a-sky>
         <!-- <a-entity image="#RomanSprite" npc></a-entity> -->
-        <a-sphere width="3"></a-sphere>
+        <!-- <a-sphere width="3"></a-sphere> -->
+        <!-- <a-entity id="lod4" geometry="primitive:plane"
+            material="src:url(models/sprite/sprite.png)"
+            instanced-mesh="debug:true;positioning:world;updateMode:auto;capacity:5000;"></a-entity>
+        <a-entity instanced-mesh-member="mesh:#lod4"
+            position="2 2 -2"></a-entity> -->
+        <!-- <a-image id="lod5"
+            instanced-mesh="debug:true;positioning:world;updateMode:auto;capacity:5000;"></a-image> -->
         <a-entity id="avatar-rig" position="0 0 -4"></a-entity>
         <!-- <a-entity position="2 2 -2" geometry="primitive:plane"
             material="src:url(models/sprite/sprite.png)"></a-entity> -->

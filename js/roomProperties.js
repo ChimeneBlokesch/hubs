@@ -12,17 +12,28 @@ class RoomProperties {
     }
 
     loadModels(parent) {
+        return;
         for (let lod in this.renderingFiles) {
-            if (lod == LOD.SPRITE) {
-                continue;
+            let el = document.createElement("a-entity");
+            let attName = "gltf-model";
+
+            if (lod == LOD.sprite) {
+                el.setAttribute("geometry", "primitive:plane");
+                el.setAttribute("material", "src", this.renderingFiles[lod]);
             }
 
-            let el = document.createElement("a-gltf-model");
+            el.setAttribute(attName, this.renderingFiles[lod]);
+
             el.setAttribute("id", "lod" + lod);
-            el.setAttribute("instanced-mesh", "positioning:world;updateMode:auto;capacity:10000;");
-            el.setAttribute("src", this.renderingFiles[lod]);
+            el.setAttribute("instanced-mesh", "positioning:world;updateMode:auto;capacity:1000; drainColor: true");
+            // el.setAttribute("visible", false);
             parent.appendChild(el);
+            this.loadedEntities[lod] = el;
         }
+    }
+
+    setLoadedEntity(lod) {
+        document.getElementById("lod" + lod).removeAttribute("visible");
     }
 
     getLoadedGLTF(lod) {

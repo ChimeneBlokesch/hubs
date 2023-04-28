@@ -68,6 +68,10 @@ function changeType(el, lod) {
 }
 
 function loadModel(el, lod) {
+    ROOM.setLoadedEntity(lod);
+    el.removeAttribute("instanced-mesh-member");
+    el.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
+    return;
     switch (lod) {
         case LOD.SPRITE:
             var file = ROOM.renderingFiles[lod];
