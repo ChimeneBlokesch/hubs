@@ -35,10 +35,13 @@ const ALGO2LOD = {
  * When init is set to true, it will always change. The changes are based
  * on the used rendering algorithm. */
 function chooseType(el, init = false) {
+    var thLowSprite;
+
     switch (ROOM.renderingAlgo) {
         case RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE:
+            // Only set threshold when sprites are used.
+            thLowSprite = ROOM.thLowSprite;
         case RENDERING_ALGORITHMS.MODEL_COMBI:
-            var thLowSprite = (ROOM.renderingAlgo == RENDERING_ALGORITHMS.MODEL_COMBI) ? null : ROOM.thLowSprite;
             // Choose the lod based on the distance to the player.
             var dist = getUserAvatar().position.distanceTo(el.object3D.position);
             var lod = lodFromDistance(dist, ROOM.thHighMedium,
@@ -65,10 +68,9 @@ function changeType(el, lod) {
 }
 
 function loadModel(el, lod) {
-    var file = ROOM.renderingFiles[lod];
-
     switch (lod) {
         case LOD.SPRITE:
+            var file = ROOM.renderingFiles[lod];
             // TODO: maybe add a position offset to the sprite.
             el.removeAttribute("instanced-mesh-member");
             el.setAttribute("geometry", "primitive", "plane");
