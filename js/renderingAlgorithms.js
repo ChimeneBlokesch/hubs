@@ -82,51 +82,29 @@ function changeType(el, lod) {
         return;
     }
 
-    if (el.childCount == 0) {
-        el.appendChild(loadModel(lod));
-        return;
-    }
-
-    var found = false;
-
-    for (var child of el.childNodes) {
-        if (child.getAttribute("lod") == lod) {
-            child.setAttribute("visible", true);
-            found = true;
-            continue;
-        }
-
-        child.setAttribute("visible", false);
-    }
-
-    if (!found) {
-        el.appendChild(loadModel(lod));
-    }
+    loadModel(el, lod);
 }
 
-function loadModel(lod) {
+function loadModel(el, lod) {
     var file = ROOM.renderingFiles[lod];
-    var modelEl = document.createElement("a-entity");
-    modelEl.setAttribute("lod", lod);
-    modelEl.setAttribute("visible", true);
 
     switch (lod) {
         case LOD.SPRITE:
             // TODO: maybe add a position offset to the sprite.
-            modelEl.setAttribute("geometry", "primitive", "plane");
-            modelEl.setAttribute("material", "src", file);
+            el.removeAttribute("instanced-mesh-member");
+            el.setAttribute("geometry", "primitive", "plane");
+            el.setAttribute("material", "src", file);
             break;
         default:
             // modelEl.setAttribute("instanced-mesh-member", "mesh:#mesh1;");
-            modelEl.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
-            modelEl.setAttribute("position", "0 0.1 0");
+            el.removeAttribute("geometry");
+            el.removeAttribute("material");
+            el.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
 
             // modelEl.setAttribute("gltf-setter", "lod:" + lod);
             // modelEl.setAttribute("gltf-model", file);
             break;
     }
-
-    return modelEl;
 }
 
 function lodFromDistance(value, thHighMedium, thMediumLow, thLowSprite = null) {
