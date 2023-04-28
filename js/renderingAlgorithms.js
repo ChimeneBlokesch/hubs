@@ -24,53 +24,32 @@ const LOD = {
     HIGH: 3
 }
 
+const ALGO2LOD = {
+    [RENDERING_ALGORITHMS.SPRITE]: LOD.SPRITE,
+    [RENDERING_ALGORITHMS.MODEL_LOW]: LOD.LOW,
+    [RENDERING_ALGORITHMS.MODEL_MEDIUM]: LOD.MEDIUM,
+    [RENDERING_ALGORITHMS.MODEL_HIGH]: LOD.HIGH
+}
+
 /* Changes the type of the rendering (2D / 3D and low / medium / high LOD) if needed.
  * When init is set to true, it will always change. The changes are based
  * on the used rendering algorithm. */
 function chooseType(el, init = false) {
     switch (ROOM.renderingAlgo) {
-        case RENDERING_ALGORITHMS.MODEL_LOW:
-            // Only specify the lod at initialization.
-            if (init) {
-                changeType(el, LOD.LOW);
-            }
-
-            break;
-        case RENDERING_ALGORITHMS.MODEL_MEDIUM:
-            // Only specify the lod at initialization.
-            if (init) {
-                changeType(el, LOD.MEDIUM);
-            }
-
-            break;
-        case RENDERING_ALGORITHMS.MODEL_HIGH:
-            // Only specify the lod at initialization.
-            if (init) {
-                changeType(el, LOD.HIGH);
-            }
-
-            break;
-        case RENDERING_ALGORITHMS.SPRITE:
-            // Only specify the lod at initialize.
-            if (init) {
-                changeType(el, LOD.SPRITE);
-            }
-
-            break;
-        case RENDERING_ALGORITHMS.MODEL_COMBI:
-            // Choose the lod based on the distance to the player.
-            var dist = getUserAvatar().position.distanceTo(el.object3D.position);
-            var lod = lodFromDistance(dist, ROOM.thHighMedium, ROOM.thMediumLow);
-            changeType(el, lod);
-            break;
         case RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE:
+        case RENDERING_ALGORITHMS.MODEL_COMBI:
+            var thLowSprite = (ROOM.renderingAlgo == RENDERING_ALGORITHMS.MODEL_COMBI) ? null : ROOM.thLowSprite;
             // Choose the lod based on the distance to the player.
             var dist = getUserAvatar().position.distanceTo(el.object3D.position);
             var lod = lodFromDistance(dist, ROOM.thHighMedium,
-                ROOM.thMediumLow, ROOM.thLowSprite);
+                ROOM.thMediumLow, thLowSprite);
             changeType(el, lod);
             break;
         default:
+            // Only specify the lod at initialization.
+            if (init) {
+                changeType(el, ALGO2LOD[ROOM.renderingAlgo]);
+            }
             break;
     }
 }
