@@ -78,6 +78,10 @@ function chooseType(el, init = false) {
 /* Changes the rendering type by setting the right attribute and removing the
  * other attribute. */
 function changeType(el, lod) {
+    if (el.getAttribute("lod") == lod) {
+        return;
+    }
+
     if (el.childCount == 0) {
         el.appendChild(loadModel(lod));
         return;
@@ -85,14 +89,14 @@ function changeType(el, lod) {
 
     var found = false;
 
-    for (var child of el.children) {
+    for (var child of el.childNodes) {
         if (child.getAttribute("lod") == lod) {
-            child.setAttribute("visible", "true");
+            child.setAttribute("visible", true);
             found = true;
-            return;
+            continue;
         }
 
-        child.setAttribute("visible", "false");
+        child.setAttribute("visible", false);
     }
 
     if (!found) {
@@ -104,7 +108,7 @@ function loadModel(lod) {
     var file = ROOM.renderingFiles[lod];
     var modelEl = document.createElement("a-entity");
     modelEl.setAttribute("lod", lod);
-    modelEl.setAttribute("visible", "true");
+    modelEl.setAttribute("visible", true);
 
     switch (lod) {
         case LOD.SPRITE:
@@ -113,7 +117,12 @@ function loadModel(lod) {
             modelEl.setAttribute("material", "src", file);
             break;
         default:
-            modelEl.setAttribute("gltf-model", file);
+            // modelEl.setAttribute("instanced-mesh-member", "mesh:#mesh1;");
+            modelEl.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
+            modelEl.setAttribute("position", "0 0.1 0");
+
+            // modelEl.setAttribute("gltf-setter", "lod:" + lod);
+            // modelEl.setAttribute("gltf-model", file);
             break;
     }
 

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<head>
+    <!-- <script async
+        src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+    <script type="importmap">
+        {
+        "imports": {
+            "three": "https://unpkg.com/three@0.147.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.147.0/examples/jsm/"
+        }
+        }
+    </script> -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/instanced-mesh@v0.6.0/src/instanced-mesh.min.js"></script>
+    <script type="text/javascript" src="js/grid.js"></script>
+    <script type="text/javascript" src="js/renderingAlgorithms.js"></script>
+    <script type="text/javascript" src="js/roomProperties.js"></script>
+    <script type="text/javascript" src="js/roomRoman.js"></script>
+    <script type="text/javascript" src="js/HubsHelper.js"></script>
+    <script type="text/javascript" src="js/components/NPC.js"></script>
+    <!-- <script type="module" src="js/components/gltf-setter.js"></script> -->
+    <script type="text/javascript" src="js/initNPCs.js"></script>
+    <script type="text/javascript" src="js/experimenting.js"></script>
+</head>
+<!-- NPCs.map(function(n){return n.object3D.position}) -->
+
+<body>
+    <a-scene>
+        <a-box id="mesh1" color="red"
+            instanced-mesh="debug:true;positioning:world;updateMode:auto;"></a-box>
+        <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4"
+            color="#7BC8A4"></a-plane>
+        <a-sky color="#ECECEC"></a-sky>
+        <!-- <a-entity image="#RomanSprite" npc></a-entity> -->
+        <a-sphere width="3"></a-sphere>
+        <a-entity id="avatar-rig" position="0 0 -4"></a-entity>
+        <!-- <a-entity position="2 2 -2" geometry="primitive:plane"
+            material="src:url(models/sprite/sprite.png)"></a-entity> -->
+    </a-scene>
+    <table id="npcTable"></table>
+    <script>var NPCs = initializeNPCs();</script>
+    <!-- <script>
+        var elements = [];
+        var NPCs = initializeNPCs();
+        var table = document.getElementById("npcTable");
+
+        for (var npc in NPCs) {
+            var row = document.createElement("tr");
+            var position = document.createElement("td");
+            var direction = document.createElement("td");
+            row.appendChild(position);
+            row.appendChild(direction);
+
+            elements.push({ "position": position, "direction": direction });
+            table.appendChild(row);
+        }
+
+        setInterval(function () {
+            for (var i = 0; i < NPCs.length; i++) {
+                var npc = NPCs[i];
+                var row = elements[i];
+                row["position"].innerHTML = npc.object3D.position.toArray();
+                row["direction"].innerHTML = npc.object3D.rotation.toArray();
+            }
+        }, 100000);
+    </script> -->
+</body>
+
+</html>

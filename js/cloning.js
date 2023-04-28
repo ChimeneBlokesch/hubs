@@ -6,7 +6,7 @@ The 25th International Conference on 3D Web Technology.Web3D ’20. Virtual Even
 Republic of Korea: Association for Computing Machinery, 2020. isbn: 9781450381697.
 doi: 10.1145 / 3424616.3424708.url: https://doi.org/10.1145/3424616.342
 */
-function cloneGLTF(gltf) {
+export function cloneGLTF(gltf) {
     var clone = {
         animations: gltf.animations,
         scene: SkeletonUtils.clone(gltf.scene)
@@ -61,9 +61,9 @@ function cloneGLTF(gltf) {
 }
 
 
-window.cloneGLTF = cloneGLTF;
-var gltf = await new THREE.GLTFLoader().loadAsync('models/low/sprite.gltf');
-var clone = cloneGLTF(gltf);
+// window.cloneGLTF = cloneGLTF;
+// var gltf = await new THREE.GLTFLoader().loadAsync('models/low/sprite.gltf');
+// var clone = cloneGLTF(gltf);
 
 
 // Input: modelURL, n, sum;
@@ -84,7 +84,7 @@ var clone = cloneGLTF(gltf);
 // );
 // Onput:Various parameterization GLB models
 
-function parameterizationGLTF(modelURL, n, sum) {
+export function parameterizationGLTF(modelURL, n, sum) {
     var GLTFLoader = new THREE.GLTFLoader();
     var arr = [];
 

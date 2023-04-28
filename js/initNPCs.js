@@ -2,6 +2,7 @@
 function initializeNPCs() {
     var npcs = []
     var parent = document.querySelector("a-scene");
+    ROOM.loadModels(parent);
 
     for (var i = 0; i < ROOM.paths.length; i++) {
         var path = ROOM.paths[i];
