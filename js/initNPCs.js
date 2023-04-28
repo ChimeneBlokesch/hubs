@@ -12,6 +12,7 @@ function initializeNPCs() {
             var el = document.createElement("a-entity");
             el.setAttribute("npc", "speed:" + path.speedNPC + ";pathIndex:" + i + ";");
             el.setAttribute("networked", "");
+            el.object3D.rotation.y = path.rotationNPC;
             parent.appendChild(el);
             npcs.push(el);
 

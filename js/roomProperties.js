@@ -19,7 +19,7 @@ class RoomProperties {
 
             let el = document.createElement("a-gltf-model");
             el.setAttribute("id", "lod" + lod);
-            el.setAttribute("instanced-mesh", "positioning:world;updateMode:auto;");
+            el.setAttribute("instanced-mesh", "positioning:world;updateMode:auto;capacity:10000;");
             el.setAttribute("src", this.renderingFiles[lod]);
             parent.appendChild(el);
         }

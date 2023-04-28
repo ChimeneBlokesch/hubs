@@ -29,6 +29,17 @@ function getPositions(npcs) {
     return positions;
 }
 
+
+function getRotations(npcs) {
+    var rotations = [];
+
+    for (var npc of npcs) {
+        rotations.push(npc.object3D.rotation.clone());
+    }
+
+    return rotations;
+}
+
 function getDistances(npcs) {
     var distances = [];
 
