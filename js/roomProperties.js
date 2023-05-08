@@ -29,14 +29,13 @@ class RoomProperties {
             el.setAttribute("geometry", "primitive:plane");
             el.setAttribute("material", {
                 "src": this.renderingFiles[lod],
-                "alpha": true,
                 "transparent": true
             });
         }
 
         el.setAttribute(attName, this.renderingFiles[lod]);
         el.setAttribute("id", "lod" + lod);
-        el.setAttribute("instanced-mesh", "positioning:world;updateMode:auto;capacity:1000;");
+        el.setAttribute("instanced-mesh", "positioning:world;updateMode:auto;capacity:500;");
         this.parent.appendChild(el);
         this.loadedEntities[lod] = true;
     }
