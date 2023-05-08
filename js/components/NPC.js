@@ -20,12 +20,11 @@ AFRAME.registerComponent('npc', {
         }
 
         // Determine the next target.
-        nextTarget(this.path, this.target, this.el.object3D.position, this.el.object3D.rotation);
+        this.path.nextTarget(this.el.object3D.position, timeDelta);
 
         // Go forwards to the new target.
-        forward(this.el, this.target, this.helperVector, timeDelta, this.data.speed);
+        // forward(this.el, this.target, this.helperVector, timeDelta, this.data.speed);
 
-        this.path.wrapPosition(this.el.object3D.position);
 
         chooseType(this.el);
     }
