@@ -12,8 +12,10 @@
         }
     </script> -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <!-- Include instancedMesh -->
     <script
         src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/instanced-mesh@v0.6.0/src/instanced-mesh.min.js"></script>
+    <!-- <script type="module" src="js/components/instanced-mesh.js"></script> -->
     <script type="text/javascript" src="js/grid.js"></script>
     <script type="text/javascript" src="js/renderingAlgorithms.js"></script>
     <script type="text/javascript" src="js/roomProperties.js"></script>
@@ -28,24 +30,26 @@
 
 <body>
     <a-scene stats>
-        <a-assets>
-            <a-asset-item id="assetlod0"
-                src="models/sprite/sprite.png"></a-asset-item>
-            <a-asset-item id="assetlod1"
-                src="models/cylinder.gltf"></a-asset-item>
-            <a-asset-item id="assetlod2"
-                src="models/cylinder.gltf"></a-asset-item>
-            <a-asset-item id="assetlod3"
-                src="models/cylinder.gltf"></a-asset-item>
+        <a-assets timeout="100000">
+            <a-asset-item id="assetlod0" src="models/sprite/sprite.png"
+                response-type="arraybuffer"></a-asset-item>
+            <a-asset-item id="assetlod1" src="models/low/sprite.glb"
+                response-type="arraybuffer"></a-asset-item>
+            <a-asset-item id="assetlod2" src="models/medium/sprite.glb"
+                response-type="arraybuffer"></a-asset-item>
+            <a-asset-item id="assetlod3" src="models/high/sprite.glb"
+                response-type="arraybuffer"></a-asset-item>
         </a-assets>
-        <a-entity id="lod0" geometry="primitive:plane" material="src:#assetlod0"
-            instanced-mesh="positioning:world;updateMode:auto;capacity:50;"></a-entity>
-        <a-entity id="lod1" gltf-model="#assetlod1"
+        <a-image src="models/sprite/spriteNPC.png" position="1 1 -2"></a-image>
+        <!-- <a-entity geometry="primitive:plane"
+            material="src:url(models/sprite/yorkie.png);alpha:true;transparent:true;side:double;"
+            position="-1 1 -2"></a-entity> -->
+        <!-- <a-entity id="lod1" gltf-model="#assetlod1"
             instanced-mesh="positioning:world;updateMode:auto;capacity:50;"></a-entity>
         <a-entity id="lod2" gltf-model="#assetlod2"
             instanced-mesh="positioning:world;updateMode:auto;capacity:50;"></a-entity>
         <a-entity id="lod3" gltf-model="#assetlod3"
-            instanced-mesh="positioning:world;updateMode:auto;capacity:50;"></a-entity>
+            instanced-mesh="positioning:world;updateMode:auto;capacity:50;"></a-entity> -->
         <!-- <a-box id="mesh1" color="red"
             instanced-mesh="debug:true;positioning:world;updateMode:auto;capacity:5000;"></a-box> -->
         <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4"

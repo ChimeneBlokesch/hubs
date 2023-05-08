@@ -1,20 +1,43 @@
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
-/* From algorithm 1 of
+/* Functions from the pseudocode given in:
 Xue Piao e.a. “Towards Web3D-Based Lightweight Crowd Evacuation Simulation”. In:
 The 25th International Conference on 3D Web Technology.Web3D ’20. Virtual Event,
 Republic of Korea: Association for Computing Machinery, 2020. isbn: 9781450381697.
 doi: 10.1145 / 3424616.3424708.url: https://doi.org/10.1145/3424616.342
 */
+
+function getScene(gltf) {
+    var possibleAttributes = [("scene", false), ("children", true), ("scenes", true)];
+
+    for (var [name, isArray] in possibleAttributes) {
+        var value = gltf.valueOf(name);
+
+        if (value != null) {
+            if (isArray) {
+                return value[0];
+            }
+
+            return value;
+        }
+    }
+
+    return null;
+}
+
+/* From algorithm 1 of the article. */
 export function cloneGLTF(gltf) {
+    // console.log(gltf);
+    var scene = getScene(gltf);
+
     var clone = {
         animations: gltf.animations,
-        scene: SkeletonUtils.clone(gltf.scene)
-    }
+        scene: SkeletonUtils.clone(scene)
+    };
 
     var skinnedMeshes = {};
 
-    gltf.scene.traverse(node => {
+    scene.traverse(node => {
         if (node.isSkinnedMesh) {
             skinnedMeshes[node.uuid] = node;
         }
@@ -33,14 +56,9 @@ export function cloneGLTF(gltf) {
         }
     });
 
-    console.log("CloneSkinnedMeshes:");
-    console.log(cloneSkinnedMeshes);
-
-    for (var uuid in cloneSkinnedMeshes) {
+    for (let uuid in cloneSkinnedMeshes) {
         var cloneSkinnedMesh = cloneSkinnedMeshes[uuid];
-        console.log("CloneSkinnedMesh:");
-        console.log(cloneSkinnedMesh);
-        var skinnedMesh = skinnedMeshes[cloneSkinnedMesh.uuid];
+        var skinnedMesh = skinnedMeshes[uuid];
 
         if (skinnedMesh == null) {
             continue;
@@ -49,7 +67,7 @@ export function cloneGLTF(gltf) {
         var skeleton = skinnedMesh.skeleton;
         var orderedCloneBones = [];
 
-        for (var bone of skeleton.bones) {
+        for (let bone of skeleton.bones) {
             var cloneBone = cloneBones[bone.name];
             orderedCloneBones.push(cloneBone);
         }

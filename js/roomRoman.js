@@ -1,13 +1,13 @@
 function pathRomanMiddle() {
-    var minX = -10;
-    var maxX = -5;
+    var minX = -2;
+    var maxX = 2;
     var minZ = -25;
     var maxZ = 25;
 
     var amountNPCs = 50;
     var cellSizeX = 1;
     var cellSizeZ = 0.8;
-    var speedNPC = 1;
+    var speedNPC = 0.01;
     var rotationNPC = 0;
     var probForward = 1;
     var probForwardDiag = 0.15;
@@ -58,13 +58,13 @@ function selectRomanRoom() {
     var paths = [pathRomanMiddle(), pathRomanLeft(), pathRomanRight()];
 
     var renderingFile = {
-        [LOD.LOW]: "models/cylinder.gltf",
-        [LOD.MEDIUM]: "models/cylinder.gltf",
-        [LOD.HIGH]: "models/cylinder.gltf",
-        // [LOD.LOW]: "models/low/sprite.glb",
-        // [LOD.MEDIUM]: "models/medium/sprite.gltf",
-        // [LOD.HIGH]: "models/high/sprite.gltf",
-        [LOD.SPRITE]: "models/sprite/sprite.png"
+        // [LOD.LOW]: "models/cylinder.gltf",
+        // [LOD.MEDIUM]: "models/cylinder.gltf",
+        // [LOD.HIGH]: "models/cylinder.gltf",
+        [LOD.SPRITE]: "models/sprite/spriteNPC.png",
+        [LOD.LOW]: "models/low/sprite.glb",
+        [LOD.MEDIUM]: "models/medium/sprite.glb",
+        [LOD.HIGH]: "models/high/sprite.glb"
     };
 
     var renderingAlgo = RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE;

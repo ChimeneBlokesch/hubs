@@ -46,29 +46,25 @@ function chooseType(el, init = false) {
             var dist = getUserAvatar().position.distanceTo(el.object3D.position);
             var lod = lodFromDistance(dist, ROOM.thHighMedium,
                 ROOM.thMediumLow, thLowSprite);
-            changeType(el, lod);
+            setModel(el, lod);
             break;
         default:
             // Only specify the lod at initialization.
             if (init) {
-                changeType(el, ALGO2LOD[ROOM.renderingAlgo]);
+                setModel(el, ALGO2LOD[ROOM.renderingAlgo]);
             }
             break;
     }
 }
 
-/* Changes the rendering type by setting the right attribute and removing the
- * other attribute. */
-function changeType(el, lod) {
+function setModel(el, lod) {
     if (el.getAttribute("lod") == lod) {
         return;
     }
 
-    loadModel(el, lod);
-}
+    // Assure the model is loaded.
+    ROOM.loadModel(lod);
 
-function loadModel(el, lod) {
-    ROOM.setLoadedEntity(lod);
     el.removeAttribute("instanced-mesh-member");
     el.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
     return;

@@ -9,6 +9,36 @@ class RoomProperties {
         this.thMediumLow = thMediumLow;
         this.thLowSprite = thLowSprite;
         this.loadedGLTFs = this.getLoadedGLTFs();
+        this.loadedEntities = {};
+    }
+
+    get parent() {
+        return document.querySelector("a-scene");
+    }
+
+    loadModel(lod) {
+        if (this.loadedEntities[lod] != null) {
+            // Model already loaded.
+            return;
+        }
+
+        let el = document.createElement("a-entity");
+        let attName = "gltf-model";
+
+        if (lod == LOD.SPRITE) {
+            el.setAttribute("geometry", "primitive:plane");
+            el.setAttribute("material", {
+                "src": this.renderingFiles[lod],
+                "alpha": true,
+                "transparent": true
+            });
+        }
+
+        el.setAttribute(attName, this.renderingFiles[lod]);
+        el.setAttribute("id", "lod" + lod);
+        el.setAttribute("instanced-mesh", "positioning:world;updateMode:auto;capacity:1000;");
+        this.parent.appendChild(el);
+        this.loadedEntities[lod] = true;
     }
 
     loadModels(parent) {
@@ -30,10 +60,6 @@ class RoomProperties {
             parent.appendChild(el);
             this.loadedEntities[lod] = el;
         }
-    }
-
-    setLoadedEntity(lod) {
-        document.getElementById("lod" + lod).removeAttribute("visible");
     }
 
     getLoadedGLTF(lod) {

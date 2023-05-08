@@ -9,8 +9,7 @@ AFRAME.registerComponent('npc', {
 
         this.helperVector = new THREE.Vector3();
         this.path = ROOM.paths[this.data.pathIndex];
-        // this.el.object3D.scale.multiplyScalar(0.003);
-        // chooseType(this.el, init = true);
+        chooseType(this.el, true);
         // this.tick = AFRAME.utils.throttleTick(this.tick, 500, this);
     },
 
