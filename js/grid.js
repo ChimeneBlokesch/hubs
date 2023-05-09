@@ -1,9 +1,3 @@
-// The y-axis is the up-down axis in A-Frame.
-var upAxis = new THREE.Vector3(0, 1, 0);
-
-// Already initialize helper vector.
-var v = new THREE.Vector3();
-
 class Path {
     constructor(minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
         speedNPC, rotationNPC) {
@@ -86,7 +80,7 @@ class Path {
         return [curPosX, curPosZ];
     }
 
-    nextTarget(position, timeDelta) {
+    nextPosition(position, timeDelta) {
         var delta = this.speedNPC * timeDelta / 1000;
 
         switch (this.widthAxis) {

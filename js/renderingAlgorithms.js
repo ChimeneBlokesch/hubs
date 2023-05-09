@@ -67,25 +67,6 @@ function setModel(el, lod) {
 
     el.removeAttribute("instanced-mesh-member");
     el.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
-    return;
-    switch (lod) {
-        case LOD.SPRITE:
-            var file = ROOM.renderingFiles[lod];
-            // TODO: maybe add a position offset to the sprite.
-            el.removeAttribute("instanced-mesh-member");
-            el.setAttribute("geometry", "primitive", "plane");
-            el.setAttribute("material", "src", file);
-            break;
-        default:
-            // modelEl.setAttribute("instanced-mesh-member", "mesh:#mesh1;");
-            el.removeAttribute("geometry");
-            el.removeAttribute("material");
-            el.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
-
-            // modelEl.setAttribute("gltf-setter", "lod:" + lod);
-            // modelEl.setAttribute("gltf-model", file);
-            break;
-    }
 }
 
 function lodFromDistance(value, thHighMedium, thMediumLow, thLowSprite = null) {

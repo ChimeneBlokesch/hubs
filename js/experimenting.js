@@ -1,18 +1,14 @@
 function calcAmountLods(npcs, lods) {
     var count = 0;
-    var strLods = lods.map(lod => lod.toString());
 
     for (var npc of npcs) {
-        // var file = getModelFilename(npc);
+        var curLod = npc.getAttribute("instanced-mesh-member").mesh.id.split("lod")[1];
 
-        for (var child of npc.childNodes) {
-            if (strLods.includes(child.getAttribute("lod")) && child.getAttribute("visible")) {
+        for (var lod of lods) {
+            if (curLod == lod) {
                 count++;
+                break;
             }
-            // if (file == ROOM.renderingFiles[lod]) {
-            //     count++;
-            //     break;
-            // }
         }
     }
 
