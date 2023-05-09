@@ -2,10 +2,11 @@
 function initializeNPCs() {
     var npcs = []
     var parent = document.querySelector("a-scene");
+    var curPos = new THREE.Vector3();
 
     for (var i = 0; i < ROOM.paths.length; i++) {
         var path = ROOM.paths[i];
-        var curPosX, curPosZ;
+        path.setStartPosition(curPos);
 
         for (var j = 0; j < path.amountNPCs; j++) {
             var el = document.createElement("a-entity");
@@ -16,11 +17,10 @@ function initializeNPCs() {
             npcs.push(el);
 
             // Calculate the position of the next NPC.
-            [curPosX, curPosZ] = path.initNextPosition(curPosX, curPosZ);
+            path.initNextPosition(curPos);
 
             // Set the position of the NPC.
-            el.object3D.position.x = curPosX;
-            el.object3D.position.z = curPosZ;
+            el.object3D.position.set(curPos.x, curPos.y, curPos.z);
         }
     }
 

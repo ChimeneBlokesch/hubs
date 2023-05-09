@@ -1,6 +1,6 @@
 class Path {
     constructor(minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
-        speedNPC, rotationNPC) {
+        speedNPC, rotationNPC, walkReversed = false) {
         this.minX = minX;
         this.maxX = maxX;
         this.minZ = minZ;
@@ -10,6 +10,9 @@ class Path {
         this.cellSizeZ = cellSizeZ;
         this.speedNPC = speedNPC;
         this.rotationNPC = rotationNPC;
+        this.factorWalkReversed = walkReversed ? -1 : 1;
+        this.direction = this.calcDirection();
+        this.directionTemp = new THREE.Vector3();
     }
 
     get lengthX() {
@@ -22,6 +25,69 @@ class Path {
 
     get widthAxis() {
         return this.lengthX < this.lengthZ ? 'x' : 'z';
+    }
+
+    get cellWidth() {
+        return this.widthAxis === 'x' ? this.cellSizeX : this.cellSizeZ;
+    }
+
+    get startWidthAxis() {
+        return this.widthAxis === 'x' ? this.minX : this.minZ;
+    }
+
+    get dx() {
+        return this.cellSizeX / 2;
+    }
+
+    get dz() {
+        return this.cellSizeZ / 2;
+    }
+
+    calcDirection() {
+        switch (this.widthAxis) {
+            case 'x':
+                return new THREE.Vector3(0, 0, this.factorWalkReversed);
+            case 'z':
+                return new THREE.Vector3(this.factorWalkReversed, 0, 0);
+        }
+    }
+
+    setStartPosition(vector) {
+        if (this.walkReversed) {
+            vector.set(this.maxX - this.dx, 0, this.maxZ - this.dz);
+            return;
+        }
+
+        vector.set(this.minX + this.dx, 0, this.minZ + this.dz);
+    }
+
+    /* Returns the next center. If the width is full, return the center of the
+     * cell at the beginning of the next row.  */
+    initNextPosition(curPos) {
+        switch (this.widthAxis) {
+            case 'x':
+                curPos.x += this.cellSizeX;
+
+                if (curPos.x > this.maxX) {
+                    // Go to the beginning of the next row.
+                    curPos.x = this.minX + this.dx;
+                    curPos.z += this.dz;
+                    break;
+                }
+
+                break;
+            case 'z':
+                curPos.z += this.cellSizeZ;
+
+                if (curPos.z > this.maxZ) {
+                    // Go to the beginning of the next row.
+                    curPos.z = this.minZ + this.dz;
+                    curPos.x += this.dx;
+                    break;
+                }
+
+                break;
+        }
     }
 
     /* Update the position if it's outside the grid to the position in
@@ -48,50 +114,10 @@ class Path {
         return true;
     }
 
-    /* Returns the next center. If the width is full, return the center of the
-     * cell at the beginning of the next row.  */
-    initNextPosition(curPosX, curPosZ) {
-        // First full up the width axis, then the length axis.
-        if (curPosX == null || curPosZ == null) {
-            curPosX = this.minX + this.cellSizeX / 2;
-            curPosZ = this.minZ + this.cellSizeZ / 2;
-            return [curPosX, curPosZ];
-        }
-
-        switch (this.widthAxis) {
-            case 'x':
-                if (curPosX + this.cellSizeX > this.maxX) {
-                    // Go to the beginning of the next row.
-                    return [this.minX + this.cellSizeX / 2, curPosZ + this.cellSizeZ];
-                }
-
-                curPosX += this.cellSizeX;
-                break;
-            case 'z':
-                if (curPosZ + this.cellSizeZ > this.maxZ) {
-                    // Go to the beginning of the next row.
-                    return [curPosX + this.cellSizeX, this.minZ + this.cellSizeZ / 2];
-                }
-
-                curPosZ += this.cellSizeZ;
-                break;
-        }
-
-        return [curPosX, curPosZ];
-    }
-
     nextPosition(position, timeDelta) {
         var delta = this.speedNPC * timeDelta / 1000;
-
-        switch (this.widthAxis) {
-            case 'x':
-                position.z += delta;
-                break;
-            case 'z':
-                position.x += delta;
-                break;
-        }
-
+        this.directionTemp.copy(this.direction);
+        position.add(this.directionTemp.multiplyScalar(delta));
         this.wrapPosition(position);
     }
 }
