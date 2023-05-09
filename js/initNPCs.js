@@ -10,17 +10,25 @@ function initializeNPCs() {
 
         for (var j = 0; j < path.amountNPCs; j++) {
             var el = document.createElement("a-entity");
-            el.setAttribute("npc", "speed:" + path.speedNPC + ";pathIndex:" + i + ";");
+
+            el.setAttribute("npc", {
+                "speed": path.speedNPC,
+                "pathIndex": i
+            });
+
             el.setAttribute("networked", "");
+
             el.object3D.rotation.y = path.rotationNPC;
+
             parent.appendChild(el);
-            npcs.push(el);
+
+            // Set the position of the NPC.
+            el.object3D.position.set(curPos.x, curPos.y, curPos.z);
 
             // Calculate the position of the next NPC.
             path.initNextPosition(curPos);
 
-            // Set the position of the NPC.
-            el.object3D.position.set(curPos.x, curPos.y, curPos.z);
+            npcs.push(el);
         }
     }
 

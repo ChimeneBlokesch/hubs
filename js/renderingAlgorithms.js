@@ -24,6 +24,7 @@ const LOD = {
     HIGH: 3
 }
 
+// One-to-one mapping from rendering algorithm to LOD.
 const ALGO2LOD = {
     [RENDERING_ALGORITHMS.SPRITE]: LOD.SPRITE,
     [RENDERING_ALGORITHMS.MODEL_LOW]: LOD.LOW,
@@ -57,18 +58,24 @@ function chooseType(el, init = false) {
     }
 }
 
+/* Sets the model corresponding to the LOD to the object. */
 function setModel(el, lod) {
     if (el.getAttribute("lod") == lod) {
+        // No change.
         return;
     }
 
     // Assure the model is loaded.
     ROOM.loadModel(lod);
 
+    // Remove the old model.
     el.removeAttribute("instanced-mesh-member");
+
+    // Add the new model.
     el.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
 }
 
+/* Determines the LOD based on the distance and the thresholds.  */
 function lodFromDistance(value, thHighMedium, thMediumLow, thLowSprite = null) {
     if (value < thHighMedium) {
         return LOD.HIGH;

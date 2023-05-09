@@ -11,10 +11,13 @@ class RoomProperties {
         this.loadedEntities = {};
     }
 
+    /* Selects the scene element. */
     get parent() {
         return document.querySelector("a-scene");
     }
 
+    /* Creates a a-entity element with instanced mesh component
+     * for the model corresponding to the given LOD. */
     loadModel(lod) {
         if (this.loadedEntities[lod] != null) {
             // Model already loaded.
@@ -28,8 +31,6 @@ class RoomProperties {
             el.setAttribute("geometry", "primitive:plane");
             el.setAttribute("material", {
                 "src": this.renderingFiles[lod],
-                // "transparent": true,
-
                 "alphaTest": 0.5,
                 "side": "double"
             });
@@ -37,7 +38,12 @@ class RoomProperties {
 
         el.setAttribute(attName, this.renderingFiles[lod]);
         el.setAttribute("id", "lod" + lod);
-        el.setAttribute("instanced-mesh", "positioning:world;updateMode:auto;capacity:500;");
+        el.setAttribute("instanced-mesh", {
+            "positioning": "world",
+            "updateMode": "auto",
+            "capacity": 500
+        });
+
         this.parent.appendChild(el);
         this.loadedEntities[lod] = true;
     }

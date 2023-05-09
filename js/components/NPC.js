@@ -5,17 +5,17 @@ AFRAME.registerComponent('npc', {
     },
     init: function () {
         this.path = ROOM.paths[this.data.pathIndex];
+        // Initializes the type of the rendering.
         chooseType(this.el, true);
-        // this.tick = AFRAME.utils.throttleTick(this.tick, 500, this);
     },
 
     tick: function (timeDelta) {
-        if (this.data.speed <= 0) {
-            chooseType(this.el);
-            return;
+        if (this.data.speed > 0) {
+            // Calculates the new position.
+            this.path.nextPosition(this.el.object3D.position, timeDelta);
         }
 
-        this.path.nextPosition(this.el.object3D.position, timeDelta);
+        // Changes the type of the rendering if needed.
         chooseType(this.el);
     }
 });
