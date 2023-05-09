@@ -28,8 +28,10 @@ class RoomProperties {
             el.setAttribute("geometry", "primitive:plane");
             el.setAttribute("material", {
                 "src": this.renderingFiles[lod],
-                "transparent": true,
+                // "transparent": true,
+
                 "alphaTest": 0.5,
+                "side": "double"
             });
         }
 

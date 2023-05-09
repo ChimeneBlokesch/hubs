@@ -4,7 +4,7 @@ function pathRomanMiddle() {
     var minZ = -50;
     var maxZ = 50;
 
-    var amountNPCs = 100;
+    var amountNPCs = 200;
     var cellSizeX = 1;
     var cellSizeZ = 0.8;
     var speedNPC = 0.01;

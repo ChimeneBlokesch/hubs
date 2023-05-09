@@ -8,50 +8,49 @@ class Path {
         this.amountNPCs = amountNPCs;
         this.cellSizeX = cellSizeX;
         this.cellSizeZ = cellSizeZ;
-        this.speedNPC = speedNPC;
+        this.speedNPC = (walkReversed ? -1 : 1) * speedNPC;
         this.rotationNPC = rotationNPC;
-        this.factorWalkReversed = walkReversed ? -1 : 1;
         this.direction = this.calcDirection();
         this.directionTemp = new THREE.Vector3();
     }
 
+    /* Returns the length of the path in the x-axis. */
     get lengthX() {
         return this.maxX - this.minX;
     }
 
+    /* Returns the length of the path in the z-axis. */
     get lengthZ() {
         return this.maxZ - this.minZ;
     }
 
+    /* Returns a 'x' when the x-axis is along the width of the path and
+     * 'z' otherwise. */
     get widthAxis() {
         return this.lengthX < this.lengthZ ? 'x' : 'z';
     }
 
-    get cellWidth() {
-        return this.widthAxis === 'x' ? this.cellSizeX : this.cellSizeZ;
-    }
-
-    get startWidthAxis() {
-        return this.widthAxis === 'x' ? this.minX : this.minZ;
-    }
-
+    /* The half of the length of the cell in the z-axis. */
     get dx() {
         return this.cellSizeX / 2;
     }
 
+    /* The half of the length of the cell in the z-axis. */
     get dz() {
         return this.cellSizeZ / 2;
     }
 
+    /* Calculates the direction vector based on the speed and width axis. */
     calcDirection() {
         switch (this.widthAxis) {
             case 'x':
-                return new THREE.Vector3(0, 0, this.factorWalkReversed);
+                return new THREE.Vector3(0, 0, this.speedNPC);
             case 'z':
-                return new THREE.Vector3(this.factorWalkReversed, 0, 0);
+                return new THREE.Vector3(this.speedNPC, 0, 0);
         }
     }
 
+    /* Sets the start position of a NPC to the given vector. */
     setStartPosition(vector) {
         if (this.walkReversed) {
             vector.set(this.maxX - this.dx, 0, this.maxZ - this.dz);
@@ -61,8 +60,8 @@ class Path {
         vector.set(this.minX + this.dx, 0, this.minZ + this.dz);
     }
 
-    /* Returns the next center. If the width is full, return the center of the
-     * cell at the beginning of the next row.  */
+    /* Returns the next center of a cell. If the width is full,
+     * return the center of the cell at the beginning of the next row.  */
     initNextPosition(curPos) {
         switch (this.widthAxis) {
             case 'x':
@@ -90,34 +89,26 @@ class Path {
         }
     }
 
+    /* Calculates the next position of a NPC on the path. */
+    nextPosition(position, timeDelta) {
+        this.directionTemp.copy(this.direction);
+        position.add(this.directionTemp.multiplyScalar(timeDelta / 1000));
+        this.wrapPosition(position);
+    }
+
     /* Update the position if it's outside the grid to the position in
     * the wrapped grid. Returns true if the update was needed and false otherwise. */
     wrapPosition(position) {
-        var inRangeX = this.minX < position.x && position.x < this.maxX;
-        var inRangeZ = this.minZ < position.z && position.z < this.maxZ;
-
-        if (inRangeX && inRangeZ) {
-            // No wrapping needed.
-            return false;
+        if (position.x < this.minX) {
+            position.x += this.lengthX;
+        } else if (position.x > this.maxX) {
+            position.x -= this.lengthX;
         }
 
-        if (!inRangeX) {
-            var sign = position.x > this.maxX ? -1 : 1;
-            position.x += sign * this.lengthX;
+        if (position.z < this.minZ) {
+            position.z += this.lengthZ;
+        } else if (position.z > this.maxZ) {
+            position.z -= this.lengthZ;
         }
-
-        if (!inRangeZ) {
-            var sign = position.z > this.maxZ ? -1 : 1;
-            position.z += sign * this.lengthZ;
-        }
-
-        return true;
-    }
-
-    nextPosition(position, timeDelta) {
-        var delta = this.speedNPC * timeDelta / 1000;
-        this.directionTemp.copy(this.direction);
-        position.add(this.directionTemp.multiplyScalar(delta));
-        this.wrapPosition(position);
     }
 }
