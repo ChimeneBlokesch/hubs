@@ -1,13 +1,13 @@
 AFRAME.registerComponent('moving-forward', {
     schema: {
-        pathIndex: { type: 'number', default: 0 }
+        pathEl: { type: 'selector' }
     },
     init: function () {
-        this.path = ROOM.paths[this.data.pathIndex];
+        this.pathComponent = this.data.pathEl.components.path;
     },
 
     tick: function (time, timeDelta) {
         // Calculates the new position.
-        this.path.nextPosition(this.el.object3D.position, timeDelta);
+        this.pathComponent.nextPosition(this.el.object3D.position, timeDelta);
     }
 });

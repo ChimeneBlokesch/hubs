@@ -1,4 +1,4 @@
-const ROOM = selectRomanRoom();
+// const ROOM = selectRomanRoom();
 
 function getUserAvatar() {
     return document.querySelector("#avatar-rig").object3D;
