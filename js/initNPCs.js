@@ -11,10 +11,11 @@ function initializeNPCs() {
         for (var j = 0; j < path.amountNPCs; j++) {
             var el = document.createElement("a-entity");
 
-            el.setAttribute("npc", {
-                "speed": path.speedNPC,
+            el.setAttribute("moving-forward", {
                 "pathIndex": i
             });
+
+            el.setAttribute("choosing-type", "");
 
             el.setAttribute("networked", "");
 
