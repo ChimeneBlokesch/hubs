@@ -32,7 +32,7 @@ class RoomProperties {
             el.setAttribute("material", {
                 "src": this.renderingFiles[lod],
                 "alphaTest": 0.5,
-                "side": "double"
+                // "side": "double"
             });
         }
 
@@ -41,7 +41,7 @@ class RoomProperties {
         el.setAttribute("instanced-mesh", {
             "positioning": "world",
             "updateMode": "auto",
-            "capacity": 500
+            "capacity": 10000
         });
 
         this.parent.appendChild(el);

@@ -40,6 +40,18 @@ class Path {
         return this.cellSizeZ / 2;
     }
 
+    /* Selects the function of corresponding to the width axis,
+     * which is the x- or z-axis.  */
+    get initNextPosition() {
+        switch (this.widthAxis) {
+            case 'x':
+                return this.initNextPositionX;
+
+            case 'z':
+                return this.initNextPositionZ;
+        }
+    }
+
     /* Calculates the direction vector based on the speed and width axis. */
     calcDirection() {
         switch (this.widthAxis) {
@@ -62,35 +74,41 @@ class Path {
 
     /* Returns the next center of a cell. If the width is full,
      * return the center of the cell at the beginning of the next row.  */
-    initNextPosition(curPos) {
-        switch (this.widthAxis) {
-            case 'x':
-                curPos.x += this.cellSizeX;
+    initNextPositionX(curPos) {
 
-                if (curPos.x > this.maxX) {
-                    // Go to the beginning of the next row.
-                    curPos.x = this.minX + this.dx;
-                    curPos.z += this.dz;
-                    break;
-                }
+        curPos.x += this.cellSizeX;
 
-                break;
-            case 'z':
-                curPos.z += this.cellSizeZ;
-
-                if (curPos.z > this.maxZ) {
-                    // Go to the beginning of the next row.
-                    curPos.z = this.minZ + this.dz;
-                    curPos.x += this.dx;
-                    break;
-                }
-
-                break;
+        if (curPos.x <= this.maxX) {
+            return;
         }
+
+        // Go to the beginning of the next row.
+        curPos.x = this.minX + this.dx;
+        curPos.z += this.dz;
+    }
+
+    /* Returns the next center of a cell. If the width is full,
+     * return the center of the cell at the beginning of the next row.  */
+    initNextPositionZ(curPos) {
+        curPos.z += this.cellSizeZ;
+
+        if (curPos.z <= this.maxZ) {
+            return;
+        }
+
+        // Go to the beginning of the next row.
+        curPos.z = this.minZ + this.dz;
+        curPos.x += this.dx;
+
     }
 
     /* Calculates the next position of a NPC on the path. */
     nextPosition(position, timeDelta) {
+        if (this.speedNPC == 0) {
+            // No movement.
+            return;
+        }
+
         this.directionTemp.copy(this.direction);
         position.add(this.directionTemp.multiplyScalar(timeDelta / 1000));
         this.wrapPosition(position);

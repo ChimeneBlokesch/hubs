@@ -1,13 +1,13 @@
 function pathRomanMiddle() {
     var minX = -2;
     var maxX = 2;
-    var minZ = -50;
-    var maxZ = 50;
+    var minZ = -100;
+    var maxZ = 100;
 
-    var amountNPCs = 200;
+    var amountNPCs = 600;
     var cellSizeX = 1;
-    var cellSizeZ = 0.8;
-    var speedNPC = 0.01;
+    var cellSizeZ = 2;
+    var speedNPC = 0.2;
     var rotationNPC = 0;
 
     return new Path(minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
@@ -20,9 +20,9 @@ function pathRomanLeft() {
     var minZ = -50;
     var maxZ = 50;
 
-    var amountNPCs = 100;
+    var amountNPCs = 200;
     var cellSizeX = 1;
-    var cellSizeZ = 0.8;
+    var cellSizeZ = 2;
     var speedNPC = 0;
     var rotationNPC = Math.PI / 2;
 
@@ -36,9 +36,9 @@ function pathRomanRight() {
     var minZ = -50;
     var maxZ = 50;
 
-    var amountNPCs = 100;
+    var amountNPCs = 120;
     var cellSizeX = 1;
-    var cellSizeZ = 0.8;
+    var cellSizeZ = 2;
     var speedNPC = 0;
     var rotationNPC = -Math.PI / 2;
 
@@ -57,7 +57,7 @@ function selectRomanRoom() {
         [LOD.HIGH]: "models/high/sprite.glb"
     };
 
-    var renderingAlgo = RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE;
+    var renderingAlgo = RENDERING_ALGORITHMS.SPRITE;
     var thHighMedium = 2;
     var thMediumLow = 5;
     var thLowSprite = 10;
