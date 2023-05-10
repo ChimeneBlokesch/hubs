@@ -1,6 +1,5 @@
 /* Generates the NPC objects and adds them to the scene. */
 function initializeNPCs() {
-    var npcs = []
     var parent = document.querySelector("a-scene");
     var curPos = new THREE.Vector3();
 
@@ -34,6 +33,4 @@ function initializeNPCs() {
             npcs.push(el);
         }
     }
-
-    return npcs;
 }
