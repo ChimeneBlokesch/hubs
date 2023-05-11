@@ -1,10 +1,3 @@
-// const ROOM = selectRomanRoom();
-
-function getUserAvatar() {
-    return document.querySelector("#avatar-rig").object3D;
-};
-
-
 // Function as shown in
 // https://www.youtube.com/watch?v=sq8d2-M-O_Q&t=1742s at 4:15
 function HubsElementChange(el, newScale = null, newPos = null, newRot = null) {

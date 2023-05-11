@@ -8,6 +8,7 @@ window.onload = function () {
         "renderer": [{
             "id": "renderer",
             "properties": {
+                "avatar": "avatar-rig",
                 "renderingFiles": {
                     "sprite": "models/sprite/spriteNPC.png",
                     "low": "models/low/sprite.glb",
@@ -69,12 +70,13 @@ window.onload = function () {
         }]
     };
 
+    var parent = document.querySelector("a-scene");
+
     for (let attrName of ["renderer", "path"]) {
         let attrs = attributes[attrName];
 
         for (let i = 0; i < attrs.length; i++) {
             let attr = attrs[i];
-            let parent = document.querySelector("a-scene");
             let el = document.createElement("a-entity");
             el.setAttribute("id", attr.id);
             el.setAttribute(attrName, attr.properties);

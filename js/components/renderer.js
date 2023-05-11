@@ -1,5 +1,8 @@
 AFRAME.registerComponent('renderer', {
     schema: {
+        // Player avatar
+        avatar: { type: 'selector' },
+
         // The files that will be used to render the model per LOD.
         renderingFiles: { type: 'string', default: "" },
 
@@ -69,7 +72,7 @@ AFRAME.registerComponent('renderer', {
                 thLowSprite = this.data.thLowSprite;
             case RENDERING_ALGORITHMS.MODEL_COMBI:
                 // Choose the lod based on the distance to the player.
-                var dist = getUserAvatar().position.distanceTo(el.object3D.position);
+                var dist = this.data.avatar.object3D.position.distanceTo(el.object3D.position);
                 var lod = lodFromDistance(dist, this.data.thHighMedium,
                     this.data.thMediumLow, thLowSprite);
                 this.setModel(el, lod);
