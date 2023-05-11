@@ -1,4 +1,4 @@
-function pathRomanMiddle(parent) {
+function pathRomanMiddle(parent, idRenderer) {
     var id = "mid";
     var minX = -2;
     var maxX = 2;
@@ -12,12 +12,12 @@ function pathRomanMiddle(parent) {
     var rotationNPC = 0;
 
     createPath(parent, id, minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
-        speedNPC, rotationNPC);
+        speedNPC, rotationNPC, idRenderer);
 
     return id;
 }
 
-function pathRomanLeft(parent) {
+function pathRomanLeft(parent, idRenderer) {
     var id = "left";
     var minX = -4;
     var maxX = -3;
@@ -31,12 +31,12 @@ function pathRomanLeft(parent) {
     var rotationNPC = Math.PI / 2;
 
     createPath(parent, id, minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
-        speedNPC, rotationNPC);
+        speedNPC, rotationNPC, idRenderer);
 
     return id;
 }
 
-function pathRomanRight(parent) {
+function pathRomanRight(parent, idRenderer) {
     var id = "right";
     var minX = 3;
     var maxX = 4;
@@ -50,7 +50,7 @@ function pathRomanRight(parent) {
     var rotationNPC = -Math.PI / 2;
 
     createPath(parent, id, minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
-        speedNPC, rotationNPC);
+        speedNPC, rotationNPC, idRenderer);
 
     return id;
 
@@ -58,7 +58,12 @@ function pathRomanRight(parent) {
 
 window.onload = function () {
     var parent = getScene();
-    var idPaths = [pathRomanMiddle(parent), pathRomanLeft(parent), pathRomanRight(parent)];
+    var idRenderer = "renderer";
+    var idPaths = [
+        pathRomanMiddle(parent, idRenderer),
+        pathRomanLeft(parent, idRenderer),
+        pathRomanRight(parent, idRenderer)
+    ];
 
     var renderingFile = {
         [LOD.SPRITE]: "models/sprite/spriteNPC.png",
@@ -67,7 +72,6 @@ window.onload = function () {
         [LOD.HIGH]: "models/high/sprite.glb"
     };
 
-    var idRenderer = "renderer";
     var renderingAlgo = RENDERING_ALGORITHMS.SPRITE;
     var thHighMedium = 2;
     var thMediumLow = 5;
@@ -75,8 +79,6 @@ window.onload = function () {
 
     createRenderer(parent, idRenderer, renderingFile, renderingAlgo,
         thHighMedium, thMediumLow, thLowSprite);
-
-    initializeNPCs(idPaths, idRenderer);
 }
 
 // function selectRomanRoom() {

@@ -1,22 +1,8 @@
 /* Generates the NPC objects and adds them to the scene. */
 function initializeNPCs(idPaths, idRenderer) {
     var curPos = new THREE.Vector3();
-    var root = document.querySelector("a-scene");
 
     for (var idPath of idPaths) {
-        console.log("idPath: " + idPath);
-        var pathEl = document.querySelector("#" + idPath);
-        console.log("pathEl: ");
-        console.log(pathEl);
-        var pathComponent = pathEl.components.path;
-        console.log("pathComponent: ");
-        console.log(pathComponent);
-        var pathData = pathEl.getDOMAttribute("path");
-        console.log("pathData: ");
-        console.log(pathData);
-
-        pathComponent.setStartPosition(curPos);
-
         for (var j = 0; j < pathData.amountNPCs; j++) {
             var el = document.createElement("a-entity");
 
