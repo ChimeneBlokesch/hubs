@@ -100,6 +100,8 @@ AFRAME.registerComponent('renderer', {
         // Assure the model is loaded.
         this.loadModel(lod);
 
+        el.removeAttribute("instanced-mesh-member");
+
         // Add the new model.
         el.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
     },
