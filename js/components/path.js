@@ -1,31 +1,52 @@
 AFRAME.registerComponent('path', {
     schema: {
+        // The path is a rectangle parallel to the x- or z-axis.
         minX: { type: 'number', default: 0 },
         maxX: { type: 'number', default: 0 },
         minZ: { type: 'number', default: 0 },
         maxZ: { type: 'number', default: 0 },
+
+        // The amount of NPCs that will be spawned.
         amountNPCs: { type: 'number', default: 0 },
+
+        // The size of the cells in the path in the x- or z-axis.
         cellSizeX: { type: 'number', default: 0 },
         cellSizeZ: { type: 'number', default: 0 },
+
+        // The speed of the NPCs.
         speedNPC: { type: 'number', default: 0 },
+
+        // The rotation of the NPCs in radians.
         rotationNPC: { type: 'number', default: 0 },
+
+        // If true, the NPCs will walk from the maximal coordinates to the
+        // minimal coordinates. Otherwise, the NPCs will walk from the minimal
+        // coordinates to the maximal coordinates.
         walkReversed: { type: 'boolean', default: false },
+
+        // The id of the renderer element that will be used to render the NPCs.
         idRenderer: { type: 'string' }
     },
 
     init: function () {
+        // The length of the path in the x- and z-axis.
         this.lengthX = this.data.maxX - this.data.minX;
         this.lengthZ = this.data.maxZ - this.data.minZ;
+
+        // The width axis is the axis with the smallest length.
         this.widthAxis = this.lengthX < this.lengthZ ? 'x' : 'z';
+
+        // Half the size of the cells in the x- and z-axis.
         this.dx = this.data.cellSizeX / 2;
         this.dz = this.data.cellSizeZ / 2;
 
-        /* Selects the function of corresponding to the width axis,
-         * which is the x- or z-axis.  */
+        // Selects the function corresponding to the width axis.
         this.initNextPosition = this.widthAxis == 'x' ? this.initNextPositionX : this.initNextPositionZ;
 
         this.helperVector = new THREE.Vector3();
         this.parent = document.querySelector("a-scene");
+
+        // The direction of the NPCs to walk forward.
         this.direction = this.calcDirection();
 
         this.initializeNPCs();
@@ -97,8 +118,9 @@ AFRAME.registerComponent('path', {
         vector.set(this.data.minX + this.dx, 0, this.data.minZ + this.dz);
     },
 
-    /* Returns the next center of a cell. If the width is full,
-     * return the center of the cell at the beginning of the next row.  */
+    /* Returns the next center of a cell, to be used for the next NPC.
+     * If the width is full, return the center of the cell at the
+     * beginning of the next row. */
     initNextPositionX: function (curPos) {
         // Go to the next cell.
         curPos.x += this.data.cellSizeX;
