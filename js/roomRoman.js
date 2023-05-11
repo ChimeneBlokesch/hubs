@@ -1,105 +1,84 @@
-function pathRomanMiddle(parent, idRenderer) {
-    var id = "mid";
-    var minX = -2;
-    var maxX = 2;
-    var minZ = -100;
-    var maxZ = 100;
-
-    var amountNPCs = 300;
-    var cellSizeX = 1;
-    var cellSizeZ = 2;
-    var speedNPC = 0.2;
-    var rotationNPC = 0;
-
-    createPath(parent, id, minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
-        speedNPC, rotationNPC, idRenderer);
-
-    return id;
-}
-
-function pathRomanLeft(parent, idRenderer) {
-    var id = "left";
-    var minX = -4;
-    var maxX = -3;
-    var minZ = -50;
-    var maxZ = 50;
-
-    var amountNPCs = 200;
-    var cellSizeX = 1;
-    var cellSizeZ = 2;
-    var speedNPC = 0;
-    var rotationNPC = Math.PI / 2;
-
-    createPath(parent, id, minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
-        speedNPC, rotationNPC, idRenderer);
-
-    return id;
-}
-
-function pathRomanRight(parent, idRenderer) {
-    var id = "right";
-    var minX = 3;
-    var maxX = 4;
-    var minZ = -50;
-    var maxZ = 50;
-
-    var amountNPCs = 200;
-    var cellSizeX = 1;
-    var cellSizeZ = 2;
-    var speedNPC = 0;
-    var rotationNPC = -Math.PI / 2;
-
-    createPath(parent, id, minX, maxX, minZ, maxZ, amountNPCs, cellSizeX, cellSizeZ,
-        speedNPC, rotationNPC, idRenderer);
-
-    return id;
-
-}
+/* This file adds a-entity's to the scene for the Roman Triumph. Only add
+ * this file for this room. */
 
 window.onload = function () {
-    var parent = getScene();
-    var idRenderer = "renderer";
-    var idPaths = [
-        pathRomanMiddle(parent, idRenderer),
-        pathRomanLeft(parent, idRenderer),
-        pathRomanRight(parent, idRenderer)
-    ];
 
-    var renderingFile = {
-        [LOD.SPRITE]: "models/sprite/spriteNPC.png",
-        [LOD.LOW]: "models/low/sprite.glb",
-        [LOD.MEDIUM]: "models/medium/sprite.glb",
-        [LOD.HIGH]: "models/high/sprite.glb"
+    var attributes =
+    {
+        "renderer": [{
+            "id": "renderer",
+            "properties": {
+                "renderingFiles": {
+                    "sprite": "models/sprite/spriteNPC.png",
+                    "low": "models/low/sprite.glb",
+                    "medium": "models/medium/sprite.glb",
+                    "high": "models/high/sprite.glb"
+                },
+                "renderingAlgo": "model_sprite",
+                "thHighMedium": 2,
+                "thMediumLow": 5,
+                "thLowSprite": 10
+            }
+        }
+        ],
+
+        "path": [{
+            "id": "mid",
+            "properties": {
+                "minX": -2,
+                "maxX": 2,
+                "minZ": -100,
+                "maxZ": 100,
+                "amountNPCs": 300,
+                "cellSizeX": 1,
+                "cellSizeZ": 2,
+                "speedNPC": 0.2,
+                "rotationNPC": 0,
+                "idRenderer": "renderer"
+            }
+        },
+        {
+            "id": "left",
+            "properties": {
+                "minX": -4,
+                "maxX": -3,
+                "minZ": -50,
+                "maxZ": 50,
+                "amountNPCs": 200,
+                "cellSizeX": 1,
+                "cellSizeZ": 2,
+                "speedNPC": 0,
+                "rotationNPC": Math.PI / 2,
+                "idRenderer": "renderer"
+            }
+        },
+        {
+            "id": "right",
+            "properties": {
+                "minX": 3,
+                "maxX": 4,
+                "minZ": -50,
+                "maxZ": 50,
+                "amountNPCs": 200,
+                "cellSizeX": 1,
+                "cellSizeZ": 2,
+                "speedNPC": 0,
+                "rotationNPC": -Math.PI / 2,
+                "idRenderer": "renderer"
+            }
+        }]
     };
 
-    var renderingAlgo = RENDERING_ALGORITHMS.SPRITE;
-    var thHighMedium = 2;
-    var thMediumLow = 5;
-    var thLowSprite = 10;
+    for (let attrName of ["renderer", "path"]) {
+        let attrs = attributes[attrName];
 
-    createRenderer(parent, idRenderer, renderingFile, renderingAlgo,
-        thHighMedium, thMediumLow, thLowSprite);
+        for (let i = 0; i < attrs.length; i++) {
+            let attr = attrs[i];
+            let parent = document.querySelector("a-scene");
+            let el = document.createElement("a-entity");
+            el.setAttribute("id", attr.id);
+            el.setAttribute(attrName, attr.properties);
+            parent.appendChild(el);
+        }
+    }
 }
-
-// function selectRomanRoom() {
-//     var paths = {
-//         "mid": pathRomanMiddle(),
-//         "left": pathRomanLeft(),
-//         "right": pathRomanRight()
-//     };
-
-//     var renderingFile = {
-//         [LOD.SPRITE]: "models/sprite/spriteNPC.png",
-//         [LOD.LOW]: "models/low/sprite.glb",
-//         [LOD.MEDIUM]: "models/medium/sprite.glb",
-//         [LOD.HIGH]: "models/high/sprite.glb"
-//     };
-
-//     var renderingAlgo = RENDERING_ALGORITHMS.SPRITE;
-//     var thHighMedium = 2;
-//     var thMediumLow = 5;
-//     var thLowSprite = 10;
-
-//     return new RoomProperties(paths, renderingFile, renderingAlgo,
-//         thHighMedium, thMediumLow, thLowSprite);
-// }

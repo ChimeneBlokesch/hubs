@@ -28,9 +28,12 @@ AFRAME.registerComponent('path', {
         this.parent = document.querySelector("a-scene");
         this.direction = this.calcDirection();
 
-
-
         this.initializeNPCs();
+
+        if (this.data.speedNPC == 0) {
+            // This component isn't needed anymore.
+            this.el.removeAttribute("path");
+        }
     },
 
     initializeNPCs: function () {
@@ -112,11 +115,6 @@ AFRAME.registerComponent('path', {
 
     /* Calculates the next position of a NPC on the path. */
     nextPosition: function (position, timeDelta) {
-        if (this.data.speedNPC == 0) {
-            // No movement.
-            return;
-        }
-
         this.helperVector.copy(this.direction);
         position.add(this.helperVector.multiplyScalar(timeDelta / 1000));
         this.wrapPosition(position);

@@ -15,7 +15,7 @@ AFRAME.registerComponent('rendering-type', {
 
         if (ALGO2LOD[this.rendererData.renderingAlgo] != null) {
             // No need to update the type of the rendering.
-            this.tick = null;
+            this.el.removeAttribute("rendering-type");
             return;
         }
 
