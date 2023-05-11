@@ -23,7 +23,6 @@ AFRAME.registerComponent('renderer', {
         // Copy the LODs. When a LOD is loaded,
         // the key of the LOD will be removed.
         this.loadedEntities = Object.values(LOD);
-        console.log(this.loadedEntities);
     },
 
     /* Creates a a-entity element with instanced mesh component
@@ -56,7 +55,7 @@ AFRAME.registerComponent('renderer', {
             "capacity": 10000
         });
 
-        document.querySelector("a-scene").appendChild(el);
+        this.el.sceneEl.appendChild(el);
         delete this.loadedEntities[index];
     },
 

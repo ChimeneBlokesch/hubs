@@ -44,7 +44,6 @@ AFRAME.registerComponent('path', {
         this.initNextPosition = this.widthAxis == 'x' ? this.initNextPositionX : this.initNextPositionZ;
 
         this.helperVector = new THREE.Vector3();
-        this.parent = document.querySelector("a-scene");
 
         // The direction of the NPCs to walk forward.
         this.direction = this.calcDirection();
@@ -84,7 +83,7 @@ AFRAME.registerComponent('path', {
             npc.object3D.rotation.y = this.data.rotationNPC;
 
             // Add the NPC to the scene.
-            this.parent.appendChild(npc);
+            this.el.sceneEl.appendChild(npc);
 
             // Set the position of the NPC.
             npc.object3D.position.copy(this.helperVector);
