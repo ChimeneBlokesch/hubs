@@ -74,7 +74,7 @@ AFRAME.registerComponent('path', {
             }
 
             // Add a component to render the NPC.
-            npc.setAttribute("rendering-type", { "renderer": "#" + this.data.idRenderer });
+            npc.setAttribute("rendered-object", { "renderer": "#" + this.data.idRenderer });
 
             // Add a component to use the same NPC for each user in the
             // networked A-Frame.

@@ -57,7 +57,7 @@ AFRAME.registerComponent('renderer', {
         delete this.loadedEntities[index];
     },
 
-    /* Changes the type of the rendering (2D / 3D and low / medium / high LOD) if needed.
+    /* Changes the type of the rendering (2D / 3D and low / medium / high LOD).
      * When init is set to true, it will always change. The changes are based
      * on the used rendering algorithm. */
     chooseType: function (el, init = false) {
@@ -79,6 +79,7 @@ AFRAME.registerComponent('renderer', {
                 if (init) {
                     this.setModel(el, ALGO2LOD[this.data.renderingAlgo]);
                 }
+
                 break;
         }
     },

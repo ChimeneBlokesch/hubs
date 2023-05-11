@@ -12,7 +12,7 @@ function initializeNPCs(idPaths, idRenderer) {
                 });
             }
 
-            el.setAttribute("rendering-type", { "renderer": "#" + idRenderer });
+            el.setAttribute("rendered-object", { "renderer": "#" + idRenderer });
 
             el.setAttribute("networked", "");
 
