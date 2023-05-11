@@ -8,17 +8,14 @@ window.onload = function () {
         "renderer": [{
             "id": "renderer",
             "properties": {
-                "avatar": "avatar-rig",
                 "renderingFiles": {
                     "sprite": "models/sprite/spriteNPC.png",
                     "low": "models/low/sprite.glb",
                     "medium": "models/medium/sprite.glb",
                     "high": "models/high/sprite.glb"
                 },
-                "renderingAlgo": "model_sprite",
-                "thHighMedium": 2,
-                "thMediumLow": 5,
-                "thLowSprite": 10
+                "renderingAlgo": "model_combi_sprite",
+                "distanceThresholds": [2, 5, 10, 1000]
             }
         }
         ],

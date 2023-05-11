@@ -1,22 +1,12 @@
 AFRAME.registerComponent('renderer', {
     schema: {
-        // Player avatar
-        avatar: { type: 'selector' },
-
         // The files that will be used to render the model per LOD.
         renderingFiles: { type: 'string', default: "" },
 
         // The algorithm that will be used to render the model.
         renderingAlgo: { type: 'string', default: "" },
 
-        // The threshold between high and medium LOD.
-        thHighMedium: { type: 'number', default: 0 },
-
-        // The threshold between medium and low LOD.
-        thMediumLow: { type: 'number', default: 0 },
-
-        // The threshold between low and sprite LOD.
-        thLowSprite: { type: 'number', default: 0 },
+        distanceThresholds: { type: 'array' }
     },
 
     init: function () {
@@ -78,18 +68,11 @@ AFRAME.registerComponent('renderer', {
             }
         }
 
-        var thLowSprite;
-
         switch (this.data.renderingAlgo) {
             case RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE:
-                // Only set threshold when sprites are used.
-                thLowSprite = this.data.thLowSprite;
             case RENDERING_ALGORITHMS.MODEL_COMBI:
-                // Choose the lod based on the distance to the player.
-                var dist = this.data.avatar.object3D.position.distanceTo(el.object3D.position);
-                var lod = lodFromDistance(dist, this.data.thHighMedium,
-                    this.data.thMediumLow, thLowSprite);
-                this.setModel(el, lod);
+                // Choose the lod based on the distance to the camera.
+                this.setModel(el, this.lodFromDistance(el, cam));
                 break;
             default:
                 // Only specify the lod at initialization.
@@ -114,9 +97,6 @@ AFRAME.registerComponent('renderer', {
             return;
         }
 
-        // Remove the old model.
-        el.removeAttribute("instanced-mesh-member");
-
         // Assure the model is loaded.
         this.loadModel(lod);
 
@@ -125,19 +105,21 @@ AFRAME.registerComponent('renderer', {
     },
 
     /* Determines the LOD based on the distance and the thresholds.  */
-    lodFromDistance: function (value, thHighMedium, thMediumLow, thLowSprite = null) {
-        if (value < thHighMedium) {
-            return LOD.HIGH;
+    lodFromDistance: function (el, cam) {
+        var dist = cam.el.object3D.position.distanceTo(el.object3D.position);
+        var lods = [LOD.HIGH, LOD.MEDIUM, LOD.LOW];
+
+        if (this.data.renderingAlgo == RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE) {
+            lods.push(LOD.SPRITE);
         }
 
-        if (value < thMediumLow) {
-            return LOD.MEDIUM;
+        for (var i = 0; i < lods.length; i++) {
+            if (dist < this.data.distanceThresholds[i]) {
+                return lods[i];
+            }
         }
 
-        if (thLowSprite == null || value < thLowSprite) {
-            return LOD.LOW;
-        }
-
-        return LOD.SPRITE;
+        // Too far away. Don't render.
+        return null;
     }
 });
