@@ -1,21 +1,34 @@
 AFRAME.registerComponent('renderer', {
     schema: {
+        // The files that will be used to render the model per LOD.
         renderingFiles: { type: 'string', default: "" },
+
+        // The algorithm that will be used to render the model.
         renderingAlgo: { type: 'string', default: "" },
+
+        // The threshold between high and medium LOD.
         thHighMedium: { type: 'number', default: 0 },
+
+        // The threshold between medium and low LOD.
         thMediumLow: { type: 'number', default: 0 },
+
+        // The threshold between low and sprite LOD.
         thLowSprite: { type: 'number', default: 0 },
     },
 
     init: function () {
-        this.parent = document.querySelector("a-scene");
-        this.loadedEntities = {};
+        // Copy the LODs. When a LOD is loaded,
+        // the key of the LOD will be removed.
+        this.loadedEntities = Object.values(LOD);
+        console.log(this.loadedEntities);
     },
 
     /* Creates a a-entity element with instanced mesh component
      * for the model corresponding to the given LOD. */
     loadModel: function (lod) {
-        if (this.loadedEntities[lod] != null) {
+        var index = this.loadedEntities.indexOf(lod);
+
+        if (index == -1) {
             // Model already loaded.
             return;
         }
@@ -40,8 +53,8 @@ AFRAME.registerComponent('renderer', {
             "capacity": 10000
         });
 
-        this.parent.appendChild(el);
-        this.loadedEntities[lod] = true;
+        document.querySelector("a-scene").appendChild(el);
+        delete this.loadedEntities[index];
     },
 
     /* Changes the type of the rendering (2D / 3D and low / medium / high LOD) if needed.
