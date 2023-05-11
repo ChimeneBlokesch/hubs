@@ -1,13 +1,13 @@
 AFRAME.registerComponent('moving-forward', {
     schema: {
+        // An element with the path component.
         pathEl: { type: 'selector' }
     },
-    init: function () {
-        this.pathComponent = this.data.pathEl.components.path;
-    },
 
+    /* Update the position per frame. */
     tick: function (time, timeDelta) {
         // Calculates the new position.
-        this.pathComponent.nextPosition(this.el.object3D.position, timeDelta);
+        this.data.pathEl.components.path.nextPosition(this.el.object3D.position,
+            timeDelta);
     }
 });
