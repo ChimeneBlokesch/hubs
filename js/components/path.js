@@ -36,25 +36,35 @@ AFRAME.registerComponent('path', {
         }
     },
 
+    /* Creates the elements for the NPCs. */
     initializeNPCs: function () {
+        // Initialize start position and use the helper vector as the current
+        // position.
         this.setStartPosition(this.helperVector);
 
         for (var i = 0; i < this.data.amountNPCs; i++) {
             var npc = document.createElement("a-entity");
 
             if (this.data.speedNPC != 0) {
+                // Add a component to move the NPC.
                 npc.setAttribute("moving-forward", {
                     "pathEl": this.el
                 });
             }
 
+            // Add a component to render the NPC.
             npc.setAttribute("rendering-type", { "renderer": "#" + this.data.idRenderer });
 
+            // Add a component to use the same NPC for each user in the
+            // networked A-Frame.
             npc.setAttribute("networked", "");
 
+            // Sets the rotation of the NPC.
             npc.object3D.rotation.y = this.data.rotationNPC;
 
+            // Add the NPC to the scene.
             this.parent.appendChild(npc);
+
             // Set the position of the NPC.
             npc.object3D.position.copy(this.helperVector);
 
@@ -67,8 +77,10 @@ AFRAME.registerComponent('path', {
     calcDirection: function () {
         switch (this.widthAxis) {
             case 'x':
+                // To walk forward, the position changes in the z-axis.
                 return new THREE.Vector3(0, 0, this.data.speedNPC);
             case 'z':
+                // To walk forward, the position changes in the x-axis.
                 return new THREE.Vector3(this.data.speedNPC, 0, 0);
         }
     },
@@ -76,20 +88,23 @@ AFRAME.registerComponent('path', {
     /* Sets the start position of a NPC to the given vector. */
     setStartPosition: function (vector) {
         if (this.data.walkReversed) {
+            // First position is at the maximal coordinates of the path.
             vector.set(this.data.maxX - this.dx, 0, this.data.maxZ - this.dz);
             return;
         }
 
+        // First position is at the minimal coordinates of the path.
         vector.set(this.data.minX + this.dx, 0, this.data.minZ + this.dz);
     },
 
     /* Returns the next center of a cell. If the width is full,
      * return the center of the cell at the beginning of the next row.  */
     initNextPositionX: function (curPos) {
+        // Go to the next cell.
         curPos.x += this.data.cellSizeX;
 
         if (curPos.x <= this.data.maxX) {
-            // The width is not full yet.
+            // No change of row needed.
             return;
         }
 
@@ -101,9 +116,11 @@ AFRAME.registerComponent('path', {
     /* Returns the next center of a cell. If the width is full,
      * return the center of the cell at the beginning of the next row.  */
     initNextPositionZ: function (curPos) {
+        // Go to the next cell.
         curPos.z += this.data.cellSizeZ;
 
         if (curPos.z <= this.data.maxZ) {
+            // No change of row needed.
             return;
         }
 
@@ -115,14 +132,13 @@ AFRAME.registerComponent('path', {
 
     /* Calculates the next position of a NPC on the path. */
     nextPosition: function (position, timeDelta) {
+        // Uses the helper vector to calculate the delta position.
         this.helperVector.copy(this.direction);
         position.add(this.helperVector.multiplyScalar(timeDelta / 1000));
-        this.wrapPosition(position);
-    },
 
-    /* Update the position if it's outside the grid to the position in
-    * the wrapped grid. Returns true if the update was needed and false otherwise. */
-    wrapPosition: function (position) {
+        // Update the position if it's outside the grid to the position in
+        // the wrapped grid.
+
         if (position.x < this.data.minX) {
             position.x += this.lengthX;
         } else if (position.x > this.data.maxX) {
