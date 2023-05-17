@@ -7,9 +7,11 @@ AFRAME.registerComponent('gltf-instanced-skinned-mesh', {
     },
 
     init: function () {
+        this.groups = [];
         var loader = new THREE.GLTFLoader();
         loader.load(
             this.data.src, (gltf) => {
+
                 // https://codesandbox.io/s/2yfgiu
 
                 this.model = gltf.scene.getObjectByProperty('type', 'SkinnedMesh');
@@ -19,27 +21,53 @@ AFRAME.registerComponent('gltf-instanced-skinned-mesh', {
                     return;
                 }
 
-                console.log(this.model);
-                this.mesh = new InstancedSkinnedMesh(this.model.geometry, this.model.material, this.data.capacity);
-
-                this.mesh.copy(this.model);
-                this.mesh.bind(this.model.skeleton, this.model.bindMatrix);
-                this.model.visible = false;
-                this.mesh.frustumCulled = false;
-                // https://github.com/mrdoob/three.js/compare/dev...wizgrav:three.js:dev
-                this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
-                console.log(this.model);
                 this.mixer = new THREE.AnimationMixer(gltf.scene);
                 this.mixer.clipAction(gltf.animations[0]).play();
                 this.duration = gltf.animations[0].duration;
 
-                const g = new THREE.Group();
-
+                var g = new THREE.Group();
+                g.add(gltf.scene);
                 this.el.sceneEl.object3D.add(g);
 
-                g.add(gltf.scene);
+                gltf.scene.traverse((model) => {
+                    if (model.type != "SkinnedMesh") {
+                        return;
+                    }
 
-                g.add(this.mesh);
+                    var mesh = new InstancedSkinnedMesh(model.geometry, model.material, this.data.capacity);
+                    mesh.copy(model);
+                    mesh.bind(model.skeleton, model.bindMatrix);
+                    model.visible = false;
+                    mesh.frustumCulled = false;
+                    // https://github.com/mrdoob/three.js/compare/dev...wizgrav:three.js:dev
+                    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
+
+                    g.add(mesh);
+                    this.groups.push({ "model": model, "mesh": mesh });
+                });
+                return;
+
+                // console.log(this.model);
+                // this.mesh = new InstancedSkinnedMesh(this.model.geometry, this.model.material, this.data.capacity);
+
+                // this.mesh.copy(this.model);
+                // this.mesh.bind(this.model.skeleton, this.model.bindMatrix);
+                // this.model.visible = false;
+                // this.mesh.frustumCulled = false;
+                // // https://github.com/mrdoob/three.js/compare/dev...wizgrav:three.js:dev
+                // this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
+                // console.log(this.model);
+                // this.mixer = new THREE.AnimationMixer(gltf.scene);
+                // this.mixer.clipAction(gltf.animations[0]).play();
+                // this.duration = gltf.animations[0].duration;
+
+                // const g = new THREE.Group();
+
+                // this.el.sceneEl.object3D.add(g);
+
+                // g.add(gltf.scene);
+
+                // g.add(this.mesh);
             });
 
         this.indices = {};
@@ -60,12 +88,13 @@ AFRAME.registerComponent('gltf-instanced-skinned-mesh', {
     },
 
     tick: function (time, timeDelta) {
-        if (!this.mesh) return;
+        for (var group of this.groups) {
+            var mesh = group.mesh;
+            mesh.instanceMatrix.needsUpdate = true;
 
-        this.mesh.instanceMatrix.needsUpdate = true;
-
-        if (this.mesh.skeleton && this.mesh.skeleton.bonetexture) {
-            this.mesh.skeleton.bonetexture.needsUpdate = true;
+            if (mesh.skeleton && mesh.skeleton.bonetexture) {
+                mesh.skeleton.bonetexture.needsUpdate = true;
+            }
         }
     }
 });

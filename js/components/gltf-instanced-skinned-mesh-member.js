@@ -18,30 +18,58 @@ AFRAME.registerComponent('gltf-instanced-skinned-mesh-member', {
 
     tick: function (time, timeDelta) {
         // https://codesandbox.io/s/2yfgiu
-        if (!this.component.mesh) return;
-
-        let model = this.component.model;
-
-        model.position.set(
-            this.el.object3D.position.x,
-            this.el.object3D.position.y,
-            this.el.object3D.position.z
-        );
-
-        model.updateMatrix();
-
+        if (this.component.model == undefined) return;
         this.time += timeDelta / 1000;
         this.time %= this.component.duration;
 
         this.component.mixer.setTime(this.time);
 
-        model.skeleton.bones.forEach((b) => {
-            b.updateMatrixWorld();
-        });
+        for (var group of this.component.groups) {
+            let model = group.model;
 
-        let mesh = this.component.mesh;
-        mesh.setMatrixAt(this.index, model.matrix);
-        mesh.setBonesAt(this.index, model.skeleton);
+            model.position.set(
+                this.el.object3D.position.x,
+                this.el.object3D.position.y,
+                this.el.object3D.position.z
+            );
+
+            model.updateMatrix();
+
+            model.skeleton.bones.forEach((b) => {
+                b.updateMatrixWorld();
+            });
+
+            var mesh = group.mesh;
+            mesh.setMatrixAt(this.index, model.matrix);
+            mesh.setBonesAt(this.index, model.skeleton);
+
+        }
+
+        // return;
+        // if (!this.component.mesh) return;
+
+        // let model = this.component.model;
+
+        // model.position.set(
+        //     this.el.object3D.position.x,
+        //     this.el.object3D.position.y,
+        //     this.el.object3D.position.z
+        // );
+
+        // model.updateMatrix();
+
+        // this.time += timeDelta / 1000;
+        // this.time %= this.component.duration;
+
+        // this.component.mixer.setTime(this.time);
+
+        // model.skeleton.bones.forEach((b) => {
+        //     b.updateMatrixWorld();
+        // });
+
+        // let mesh = this.component.mesh;
+        // mesh.setMatrixAt(this.index, model.matrix);
+        // mesh.setBonesAt(this.index, model.skeleton);
 
     }
 });
