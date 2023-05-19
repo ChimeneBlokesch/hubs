@@ -73,7 +73,8 @@ gekeken
 zeggen
 zou moeten
 geeft
-heeft ervoor gezorgt
+heeft ervoor gezorgd
+gezorgt
 dit alles
 dan ook
 dit alles zorgt voor
@@ -87,3 +88,4 @@ zo wordt bijvoorbeeld
 Mede daardoor wordt onder andere
 eigenlijk
 alles op alles
+Mozilla Hubs

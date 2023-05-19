@@ -141,7 +141,7 @@ def process_data(input_file: str, output_file: str, search_str: str, color: str,
 
 
 if __name__ == "__main__":
-    input_file = "Projectplan.pdf"
+    input_file = "Scriptie.pdf"
     signal_words = read_words("words_signal.txt")
     forbidden_words = read_words("words_forbidden.txt")
     redundant_words = read_words("words_redundant.txt")

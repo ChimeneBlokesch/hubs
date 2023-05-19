@@ -75,8 +75,9 @@ AFRAME.registerComponent('renderer', {
                 this.setModel(el, this.lodFromDistance(el, cam));
                 break;
             default:
-                // Only specify the lod at initialization.
-                if (init) {
+                // Only specify the lod at initialization or if it is
+                // not visible now.
+                if (init || el.getAttribute("instanced-mesh-member") == null) {
                     this.setModel(el, ALGO2LOD[this.data.renderingAlgo]);
                 }
 

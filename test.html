@@ -42,33 +42,6 @@
         <!-- <a-entity position="2 2 -2" geometry="primitive:plane"
             material="src:url(models/sprite/sprite.png)"></a-entity> -->
     </a-scene>
-    <table id="npcTable"></table>
-    <!-- <script>initializeNPCs();</script> -->
-    <!-- <script>
-        var elements = [];
-        var NPCs = initializeNPCs();
-        var table = document.getElementById("npcTable");
-
-        for (var npc in NPCs) {
-            var row = document.createElement("tr");
-            var position = document.createElement("td");
-            var direction = document.createElement("td");
-            row.appendChild(position);
-            row.appendChild(direction);
-
-            elements.push({ "position": position, "direction": direction });
-            table.appendChild(row);
-        }
-
-        setInterval(function () {
-            for (var i = 0; i < NPCs.length; i++) {
-                var npc = NPCs[i];
-                var row = elements[i];
-                row["position"].innerHTML = npc.object3D.position.toArray();
-                row["direction"].innerHTML = npc.object3D.rotation.toArray();
-            }
-        }, 100000);
-    </script> -->
 </body>
 
 </html>

@@ -1,76 +1,127 @@
-AFRAME.registerComponent('gltf-instanced-skinned-mesh', {
-    dependencies: ['gltf-model'],
+import { InstancedSkinnedMesh } from '../../lib/InstancedSkinnedMesh.js';
 
+AFRAME.registerComponent('gltf-instanced-skinned-mesh', {
     schema: {
         src: { type: 'string' },
+        draco: { type: 'boolean', default: false },
         capacity: { type: 'int', default: 1000 }
     },
 
     init: function () {
-        this.groups = [];
+        this.skinnedMeshes = [];
+        this.instancedMeshes = [];
+        this.bones = {};
+
+        this.indices = {};
         var loader = new THREE.GLTFLoader();
+
+        if (this.data.draco) {
+            var dracoLoader = new THREE.DRACOLoader();
+            dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+            loader.setDRACOLoader(dracoLoader);
+        }
+
         loader.load(
             this.data.src, (gltf) => {
-
                 // https://codesandbox.io/s/2yfgiu
-
-                this.model = gltf.scene.getObjectByProperty('type', 'SkinnedMesh');
-
-                if (!this.model) {
-                    console.warn("No SkinnedMesh found in gltf file " + this.data.src);
-                    return;
-                }
-
                 this.mixer = new THREE.AnimationMixer(gltf.scene);
-                this.mixer.clipAction(gltf.animations[0]).play();
-                this.duration = gltf.animations[0].duration;
+                var anim = gltf.animations[12];
+                this.mixer.clipAction(anim).play();
+                this.duration = anim.duration;
+
+
+                var scene = this.el.sceneEl.object3D;
+                scene.add(gltf.scene);
 
                 var g = new THREE.Group();
-                g.add(gltf.scene);
-                this.el.sceneEl.object3D.add(g);
+                scene.add(g);
+                this.dummy = new THREE.Object3D();
+
+
+
+                var g2 = new THREE.Group();
+                scene.add(g2);
+                // var o = gltf.scene.getObjectByProperty("type", "Mesh");
+                // var mesh = new THREE.InstancedMesh(o.geometry, o.material, this.data.capacity);
+                // mesh.setMatrixAt(0, this.dummy.matrix);
+                // mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+                // g2.add(mesh);
+                // this.instancedMeshes.push({ "model": o, "mesh": mesh });
+                // mesh.name = o.name;
+                // console.log(o);
+                // console.log(mesh);
+                var helper = new THREE.SkeletonHelper(scene);
+                helper.material.linewidth = 10;
+                helper.visible = true;
+                g.add(helper);
 
                 gltf.scene.traverse((model) => {
+                    if (model.type == "Mesh") {
+                        console.log("mesh")
+                        console.log(model);
+                        // return;
+                        // https://jsfiddle.net/ybsv71hg/
+                        // model.bindMatrix = new THREE.Matrix4();
+                        // model.bindMatrix.elements = [];
+                        // model.bindMatrixInverse = new THREE.Matrix4();
+                        // model.bindMatrixInverse.elements = [];
+                        // console.log(model.bindMatrix);
+                        mesh = new THREE.InstancedMesh(model.geometry, model.material, this.data.capacity);
+                        mesh.setMatrixAt(0, this.dummy.matrix);
+                        mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+                        console.log(mesh);
+
+                        this.instancedMeshes.push({ "model": model, "mesh": mesh });
+                        // model.visible = false;
+                        // mesh.frustumCulled = false;
+                        g.add(mesh);
+
+                        return;
+                    }
+
+                    if (model.type == "Bone") {
+                        var mesh = new THREE.Bone();
+                        mesh.copy(model);
+
+                        this.bones[mesh.name] = mesh;
+                        // model.visible = false;
+                        return;
+
+                    }
+
                     if (model.type != "SkinnedMesh") {
+                        // model.visible = false;
                         return;
                     }
 
                     var mesh = new InstancedSkinnedMesh(model.geometry, model.material, this.data.capacity);
-                    mesh.copy(model);
-                    mesh.bind(model.skeleton, model.bindMatrix);
+
                     model.visible = false;
                     mesh.frustumCulled = false;
+                    mesh.bind(model.skeleton, model.bindMatrix);
                     // https://github.com/mrdoob/three.js/compare/dev...wizgrav:three.js:dev
                     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
+                    console.log(model.skeleton);
 
                     g.add(mesh);
-                    this.groups.push({ "model": model, "mesh": mesh });
+                    this.skinnedMeshes.push({ "model": model, "mesh": mesh });
                 });
-                return;
 
-                // console.log(this.model);
-                // this.mesh = new InstancedSkinnedMesh(this.model.geometry, this.model.material, this.data.capacity);
 
-                // this.mesh.copy(this.model);
-                // this.mesh.bind(this.model.skeleton, this.model.bindMatrix);
-                // this.model.visible = false;
-                // this.mesh.frustumCulled = false;
-                // // https://github.com/mrdoob/three.js/compare/dev...wizgrav:three.js:dev
-                // this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
-                // console.log(this.model);
-                // this.mixer = new THREE.AnimationMixer(gltf.scene);
-                // this.mixer.clipAction(gltf.animations[0]).play();
-                // this.duration = gltf.animations[0].duration;
+                // for (let skinnedMeshProperty of this.skinnedMeshes) {
+                //     var skinnedMesh = skinnedMeshProperty.mesh;
+                //     var orderedCloneBones = [];
+                //     var skeleton = skinnedMeshProperty.model.skeleton;
 
-                // const g = new THREE.Group();
+                //     for (var bone of skeleton.bones) {
+                //         orderedCloneBones.push(this.bones[bone.name]);
+                //     }
 
-                // this.el.sceneEl.object3D.add(g);
-
-                // g.add(gltf.scene);
-
-                // g.add(this.mesh);
+                //     var cloneSkeleton = new THREE.Skeleton(orderedCloneBones, skeleton.boneInverses);
+                //     console.log(cloneSkeleton);
+                //     skinnedMesh.bind(cloneSkeleton, skinnedMesh.bindMatrix);
+                // }
             });
-
-        this.indices = {};
     },
 
     newIndex: function () {
@@ -88,8 +139,17 @@ AFRAME.registerComponent('gltf-instanced-skinned-mesh', {
     },
 
     tick: function (time, timeDelta) {
-        for (var group of this.groups) {
-            var mesh = group.mesh;
+        for (var skinnedMesh of this.skinnedMeshes) {
+            var mesh = skinnedMesh.mesh;
+            mesh.instanceMatrix.needsUpdate = true;
+
+            if (mesh.skeleton && mesh.skeleton.bonetexture) {
+                mesh.skeleton.bonetexture.needsUpdate = true;
+            }
+        }
+
+        for (var instancedMesh of this.instancedMeshes) {
+            var mesh = instancedMesh.mesh;
             mesh.instanceMatrix.needsUpdate = true;
 
             if (mesh.skeleton && mesh.skeleton.bonetexture) {

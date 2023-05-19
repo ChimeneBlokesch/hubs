@@ -10,11 +10,11 @@ window.onload = function () {
             "properties": {
                 "renderingFiles": {
                     "sprite": "models/sprite/spriteNPC.png",
-                    "low": "models/low/sprite.glb",
-                    "medium": "models/medium/sprite.glb",
-                    "high": "models/high/sprite.glb"
+                    "low": "models/cheering2.glb",
+                    "medium": "models/cheering2.glb",
+                    "high": "models/cheering2.glb"
                 },
-                "renderingAlgo": "model_combi_sprite",
+                "renderingAlgo": "model_low",
                 "distanceThresholds": [2, 5, 10, 1000]
             }
         }
@@ -23,13 +23,13 @@ window.onload = function () {
         "path": [{
             "id": "mid",
             "properties": {
-                "minX": -2,
-                "maxX": 2,
+                "minX": -5,
+                "maxX": 5,
                 "minZ": -100,
                 "maxZ": 100,
                 "amountNPCs": 300,
-                "cellSizeX": 1,
-                "cellSizeZ": 2,
+                "cellSizeX": 2,
+                "cellSizeZ": 5,
                 "speedNPC": 0.2,
                 "rotationNPC": 0,
                 "idRenderer": "renderer"
@@ -38,8 +38,8 @@ window.onload = function () {
         {
             "id": "left",
             "properties": {
-                "minX": -4,
-                "maxX": -3,
+                "minX": -7,
+                "maxX": -5,
                 "minZ": -50,
                 "maxZ": 50,
                 "amountNPCs": 200,
@@ -53,8 +53,8 @@ window.onload = function () {
         {
             "id": "right",
             "properties": {
-                "minX": 3,
-                "maxX": 4,
+                "minX": 5,
+                "maxX": 7,
                 "minZ": -50,
                 "maxZ": 50,
                 "amountNPCs": 200,
