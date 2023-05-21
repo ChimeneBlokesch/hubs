@@ -36,13 +36,6 @@ AFRAME.registerComponent('path', {
         // The width axis is the axis with the smallest length.
         this.widthAxis = this.lengthX < this.lengthZ ? 'x' : 'z';
 
-        // Half the size of the cells in the x- and z-axis.
-        this.dx = this.data.cellSizeX / 2;
-        this.dz = this.data.cellSizeZ / 2;
-
-        // Selects the function corresponding to the width axis.
-        this.initNextPosition = this.widthAxis == 'x' ? this.initNextPositionX : this.initNextPositionZ;
-
         this.helperVector = new THREE.Vector3();
 
         // The direction of the NPCs to walk forward.
@@ -60,7 +53,18 @@ AFRAME.registerComponent('path', {
     initializeNPCs: function () {
         // Initialize start position and use the helper vector as the current
         // position.
-        this.setStartPosition(this.helperVector);
+        // this.setStartPosition(this.helperVector);
+        var colNum = 0;
+        var nextRowVector = new THREE.Vector3();
+        var nextColVector = new THREE.Vector3();
+        const amountNPCsPerRow = this.initVectors(nextRowVector, nextColVector,
+            this.helperVector);
+        console.log("nextRowVector ");
+        console.log(nextRowVector);
+        console.log("nextColVector ");
+        console.log(nextColVector);
+        console.log("curPos ");
+        console.log(this.helperVector);
 
         for (var i = 0; i < this.data.amountNPCs; i++) {
             var npc = document.createElement("a-entity");
@@ -89,66 +93,73 @@ AFRAME.registerComponent('path', {
             npc.object3D.position.copy(this.helperVector);
 
             // Calculate the position of the next NPC.
-            this.initNextPosition(this.helperVector);
+            colNum = this.initNextPosition(this.helperVector,
+                nextRowVector, nextColVector, amountNPCsPerRow, colNum);
+
+            console.log("pos " + colNum);
+            console.log(this.helperVector);
+
         }
+    },
+
+    initVectors: function (nextRowVector, nextColVector, startPos) {
+        var amountNPCsPerRow = Math.floor(this.lengthX / this.data.cellSizeX);
+        var factor = this.data.walkReversed ? -1 : 1;
+
+        switch (this.widthAxis) {
+            case 'x':
+                nextRowVector.x = -factor * (amountNPCsPerRow - 1) * this.data.cellSizeX;
+                nextRowVector.z = factor * this.data.cellSizeZ;
+
+                nextColVector.x = factor * this.data.cellSizeX;
+                break;
+            case 'z':
+                nextRowVector.x = factor * this.data.cellSizeX;
+                nextRowVector.z = -factor * (amountNPCsPerRow - 1) * this.data.cellSizeZ;
+
+                nextColVector = factor * this.data.cellSizeZ;
+
+                break;
+        }
+
+        if (this.data.walkReversed) {
+            startPos.x = this.data.maxX - this.data.cellSizeX / 2;
+            startPos.z = this.data.maxZ - this.data.cellSizeZ / 2;
+            return amountNPCsPerRow;
+        }
+
+        startPos.x = this.data.minX + this.data.cellSizeX / 2;
+        startPos.z = this.data.minZ + this.data.cellSizeZ / 2;
+        return amountNPCsPerRow;
+    },
+
+    initNextPosition: function (curPos, nextRowVector, nextColVector, amountNPCsPerRow, colNum) {
+        colNum += 1;
+
+        if (colNum == amountNPCsPerRow) {
+            // Set curPos to begin of first row.
+            curPos.add(nextRowVector);
+            colNum = 0;
+            return colNum;
+        }
+
+        // Set crPos to next column.
+        curPos.add(nextColVector);
+        return colNum;
     },
 
     /* Calculates the direction vector based on the speed and width axis. */
     calcDirection: function () {
+        var factor = this.data.walkReversed ? -1 : 1;
+
         switch (this.widthAxis) {
             case 'x':
                 // To walk forward, the position changes in the z-axis.
-                return new THREE.Vector3(0, 0, this.data.speedNPC);
+                return new THREE.Vector3(0, 0, factor * this.data.speedNPC);
             case 'z':
                 // To walk forward, the position changes in the x-axis.
-                return new THREE.Vector3(this.data.speedNPC, 0, 0);
+                return new THREE.Vector3(factor * this.data.speedNPC, 0, 0);
         }
-    },
-
-    /* Sets the start position of a NPC to the given vector. */
-    setStartPosition: function (vector) {
-        if (this.data.walkReversed) {
-            // First position is at the maximal coordinates of the path.
-            vector.set(this.data.maxX - this.dx, 0, this.data.maxZ - this.dz);
-            return;
-        }
-
-        // First position is at the minimal coordinates of the path.
-        vector.set(this.data.minX + this.dx, 0, this.data.minZ + this.dz);
-    },
-
-    /* Returns the next center of a cell, to be used for the next NPC.
-     * If the width is full, return the center of the cell at the
-     * beginning of the next row. */
-    initNextPositionX: function (curPos) {
-        // Go to the next cell.
-        curPos.x += this.data.cellSizeX;
-
-        if (curPos.x <= this.data.maxX) {
-            // No change of row needed.
-            return;
-        }
-
-        // Go to the beginning of the next row.
-        curPos.x = this.data.minX + this.dx;
-        curPos.z += this.dz;
-    },
-
-    /* Returns the next center of a cell. If the width is full,
-     * return the center of the cell at the beginning of the next row.  */
-    initNextPositionZ: function (curPos) {
-        // Go to the next cell.
-        curPos.z += this.data.cellSizeZ;
-
-        if (curPos.z <= this.data.maxZ) {
-            // No change of row needed.
-            return;
-        }
-
-        // Go to the beginning of the next row.
-        curPos.z = this.data.minZ + this.dz;
-        curPos.x += this.dx;
-
     },
 
     /* Calculates the next position of a NPC on the path. */

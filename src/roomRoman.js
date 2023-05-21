@@ -23,28 +23,29 @@ window.onload = function () {
         "path": [{
             "id": "mid",
             "properties": {
-                "minX": -5,
-                "maxX": 5,
-                "minZ": -100,
-                "maxZ": 100,
-                "amountNPCs": 300,
+                "minX": -4,
+                "maxX": 6,
+                "minZ": -50,
+                "maxZ": 50,
+                "amountNPCs": 500,
                 "cellSizeX": 2,
-                "cellSizeZ": 5,
+                "cellSizeZ": 2,
                 "speedNPC": 0.2,
-                "rotationNPC": 0,
-                "idRenderer": "renderer"
+                "rotationNPC": Math.PI,
+                "idRenderer": "renderer",
+                "walkReversed": true
             }
         },
         {
             "id": "left",
             "properties": {
-                "minX": -7,
-                "maxX": -5,
+                "minX": -6,
+                "maxX": -3,
                 "minZ": -50,
                 "maxZ": 50,
-                "amountNPCs": 200,
+                "amountNPCs": 500,
                 "cellSizeX": 1,
-                "cellSizeZ": 2,
+                "cellSizeZ": 1.5,
                 "speedNPC": 0,
                 "rotationNPC": Math.PI / 2,
                 "idRenderer": "renderer"
@@ -53,18 +54,19 @@ window.onload = function () {
         {
             "id": "right",
             "properties": {
-                "minX": 5,
+                "minX": 3,
                 "maxX": 7,
                 "minZ": -50,
                 "maxZ": 50,
-                "amountNPCs": 200,
+                "amountNPCs": 500,
                 "cellSizeX": 1,
-                "cellSizeZ": 2,
+                "cellSizeZ": 1.5,
                 "speedNPC": 0,
                 "rotationNPC": -Math.PI / 2,
                 "idRenderer": "renderer"
             }
-        }]
+        }
+        ]
     };
 
     var parent = document.querySelector("a-scene");
