@@ -6,7 +6,9 @@ AFRAME.registerComponent('renderer', {
         // The algorithm that will be used to render the model.
         renderingAlgo: { type: 'string', default: "" },
 
-        distanceThresholds: { type: 'array' }
+        distanceThresholds: { type: 'array' },
+
+        capacity: { type: 'int' }
     },
 
     init: function () {
@@ -44,7 +46,7 @@ AFRAME.registerComponent('renderer', {
         el.setAttribute("instanced-mesh", {
             "positioning": "world",
             "updateMode": "auto",
-            "capacity": 10000
+            "capacity": this.data.capacity
         });
 
         this.el.sceneEl.appendChild(el);

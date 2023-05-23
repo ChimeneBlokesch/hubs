@@ -15,7 +15,8 @@
                     5,
                     10,
                     1000
-                ]
+                ],
+                "capacity": 1000
             }
         }
     ],
@@ -25,13 +26,13 @@
             "properties": {
                 "minX": -4,
                 "maxX": 6,
-                "minZ": -50,
-                "maxZ": 50,
-                "amountNPCs": 300,
+                "minZ": -100,
+                "maxZ": 0,
+                "amountNPCs": 0,
                 "cellSizeX": 2,
                 "cellSizeZ": 2,
                 "speedNPC": 0.2,
-                "rotationNPC": 3.14,
+                "rotationNPC": 180,
                 "idRenderer": "renderer",
                 "walkReversed": true
             }
@@ -41,13 +42,13 @@
             "properties": {
                 "minX": -6,
                 "maxX": -3,
-                "minZ": -50,
-                "maxZ": 50,
-                "amountNPCs": 500,
+                "minZ": -100,
+                "maxZ": 100,
+                "amountNPCs": 300,
                 "cellSizeX": 1,
                 "cellSizeZ": 1.5,
                 "speedNPC": 0,
-                "rotationNPC": 1.57,
+                "rotationNPC": 90,
                 "idRenderer": "renderer"
             }
         },
@@ -56,13 +57,13 @@
             "properties": {
                 "minX": 3,
                 "maxX": 7,
-                "minZ": -50,
-                "maxZ": 50,
-                "amountNPCs": 500,
+                "minZ": -100,
+                "maxZ": 100,
+                "amountNPCs": 300,
                 "cellSizeX": 1,
                 "cellSizeZ": 1.5,
                 "speedNPC": 0,
-                "rotationNPC": -1.57,
+                "rotationNPC": -90,
                 "idRenderer": "renderer"
             }
         }
