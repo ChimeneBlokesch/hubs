@@ -59,12 +59,6 @@ AFRAME.registerComponent('path', {
         var nextColVector = new THREE.Vector3();
         const amountNPCsPerRow = this.initVectors(nextRowVector, nextColVector,
             this.helperVector);
-        console.log("nextRowVector ");
-        console.log(nextRowVector);
-        console.log("nextColVector ");
-        console.log(nextColVector);
-        console.log("curPos ");
-        console.log(this.helperVector);
 
         for (var i = 0; i < this.data.amountNPCs; i++) {
             var npc = document.createElement("a-entity");
@@ -95,29 +89,25 @@ AFRAME.registerComponent('path', {
             // Calculate the position of the next NPC.
             colNum = this.initNextPosition(this.helperVector,
                 nextRowVector, nextColVector, amountNPCsPerRow, colNum);
-
-            console.log("pos " + colNum);
-            console.log(this.helperVector);
-
         }
     },
 
     initVectors: function (nextRowVector, nextColVector, startPos) {
         var amountNPCsPerRow = Math.floor(this.lengthX / this.data.cellSizeX);
-        var factor = this.data.walkReversed ? -1 : 1;
+        var reversedFactor = this.data.walkReversed ? -1 : 1;
 
         switch (this.widthAxis) {
             case 'x':
-                nextRowVector.x = -factor * (amountNPCsPerRow - 1) * this.data.cellSizeX;
-                nextRowVector.z = factor * this.data.cellSizeZ;
+                nextRowVector.x = -reversedFactor * (amountNPCsPerRow - 1) * this.data.cellSizeX;
+                nextRowVector.z = reversedFactor * this.data.cellSizeZ;
 
-                nextColVector.x = factor * this.data.cellSizeX;
+                nextColVector.x = reversedFactor * this.data.cellSizeX;
                 break;
             case 'z':
-                nextRowVector.x = factor * this.data.cellSizeX;
-                nextRowVector.z = -factor * (amountNPCsPerRow - 1) * this.data.cellSizeZ;
+                nextRowVector.x = reversedFactor * this.data.cellSizeX;
+                nextRowVector.z = -reversedFactor * (amountNPCsPerRow - 1) * this.data.cellSizeZ;
 
-                nextColVector = factor * this.data.cellSizeZ;
+                nextColVector.z = reversedFactor * this.data.cellSizeZ;
 
                 break;
         }
@@ -143,7 +133,7 @@ AFRAME.registerComponent('path', {
             return colNum;
         }
 
-        // Set crPos to next column.
+        // Set curPos to next column.
         curPos.add(nextColVector);
         return colNum;
     },
