@@ -16,7 +16,6 @@ window.onload = function () {
                         el.setAttribute("id", attr.id);
 
                         var properties = attr.properties;
-                        console.log(properties);
 
                         if ("rotationNPC" in properties) {
                             // Convert degrees to radians.

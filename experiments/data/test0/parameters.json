@@ -13,7 +13,7 @@
                 "distanceThresholds": [
                     2,
                     5,
-                    10,
+                    50,
                     1000
                 ],
                 "capacity": 1000
@@ -25,10 +25,10 @@
             "id": "mid",
             "properties": {
                 "minX": -4,
-                "maxX": 6,
+                "maxX": 3,
                 "minZ": -100,
                 "maxZ": 0,
-                "amountNPCs": 0,
+                "amountNPCs": 100,
                 "cellSizeX": 2,
                 "cellSizeZ": 2,
                 "speedNPC": 0.2,
@@ -40,10 +40,10 @@
         {
             "id": "left",
             "properties": {
-                "minX": -6,
-                "maxX": -3,
+                "minX": -10,
+                "maxX": -5,
                 "minZ": -100,
-                "maxZ": 100,
+                "maxZ": 0,
                 "amountNPCs": 300,
                 "cellSizeX": 1,
                 "cellSizeZ": 1.5,
@@ -55,10 +55,10 @@
         {
             "id": "right",
             "properties": {
-                "minX": 3,
-                "maxX": 7,
+                "minX": 4,
+                "maxX": 9,
                 "minZ": -100,
-                "maxZ": 100,
+                "maxZ": 0,
                 "amountNPCs": 300,
                 "cellSizeX": 1,
                 "cellSizeZ": 1.5,

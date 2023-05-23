@@ -17,6 +17,9 @@ AFRAME.registerComponent('renderer', {
         this.loadedEntities = Object.values(LOD);
         this.frustum = new THREE.Frustum();
         this.matrix = new THREE.Matrix4();
+
+        // Assure the model is loaded at start.
+        this.loadModel(ALGO2LOD[this.data.renderingAlgo]);
     },
 
     /* Creates a a-entity element with instanced mesh component

@@ -11,12 +11,6 @@ AFRAME.registerComponent('rendered-object', {
 
         // Initialize the type of the rendering.
         this.rendererComponent.chooseType(this.el, true);
-
-        // if (ALGO2LOD[rendererData.renderingAlgo] != null) {
-        //     // No need to update the type of the rendering. Therefore
-        //     // this component isn't needed anymore.
-        //     this.el.removeAttribute("rendered-object");
-        // }
     },
 
     tick: function (time, timeDelta) {

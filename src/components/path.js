@@ -80,6 +80,8 @@ AFRAME.registerComponent('path', {
             // Sets the rotation of the NPC.
             npc.object3D.rotation.y = this.data.rotationNPC;
 
+            npc.id = "npc" + i;
+
             // Add the NPC to the scene.
             this.el.sceneEl.appendChild(npc);
 
