@@ -32,10 +32,6 @@ AFRAME.registerComponent('stats-file', {
     },
 
     getStatsValue: function (name) {
-        if (name == "FPS") {
-            console.log(this.statsComponent.stats(name).value());
-        }
-
         return this.statsComponent.stats(name).value();
     },
 
