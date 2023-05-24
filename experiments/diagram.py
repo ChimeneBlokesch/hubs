@@ -4,8 +4,11 @@ import json
 import numpy as np
 
 
-def plot_diagram(x_data, y_data, title, xlabel, ylabel, save_path, xlim=None, ylim=None):
-    plt.plot(x_data, y_data)
+def plot_diagram(x_data_list, y_data_list, labels, linestyles, colors, title, xlabel, ylabel, save_path, xlim=None, ylim=None):
+    for x_data, y_data, label, linestyle, color in zip(x_data_list, y_data_list, labels, linestyles, colors):
+        print(color)
+        plt.plot(x_data, y_data, label=label, linestyle=linestyle, color=color)
+
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -16,6 +19,7 @@ def plot_diagram(x_data, y_data, title, xlabel, ylabel, save_path, xlim=None, yl
     if ylim:
         plt.ylim(ylim)
 
+    plt.legend()
     plt.savefig(save_path)
     plt.close()
 
@@ -31,49 +35,81 @@ def getAmountNPCs(path):
     return path["properties"]["amountNPCs"]
 
 
-def make_diagram(name):
-    path = os.path.abspath("data/" + name)
-    # Initialize with the values from an empty a-scene.
-    fps_avg_values = [60]
-    raf_avg_values = [16]
-    amountNPCs_values = [0]
+def make_diagrams():
+    path = os.path.abspath("data/")
+    labels = []
+    fps_avg_list = []
+    raf_avg_list = []
+    amountNPCs_list = []
+    labels = []
+    linestyles = []
+    colors = []
 
-    for folder in os.listdir(path):
-        if not os.path.isdir(os.path.join(path, folder)):
+    all_colors = ["red", "blue", "green", "orange", "purple", "brown",
+                  "pink", "gray", "olive", "cyan", "magenta", "yellow", "black"]
+
+    for i, algo in enumerate(os.listdir(path)):
+        if not os.path.isdir(os.path.join(path, algo)):
             continue
 
-        data_file = os.path.join(path, folder, "data.json")
-        data = read_json(data_file)
+        for moveable_folder in ["walking", "standing"]:
+            if not os.path.isdir(os.path.join(path, algo, moveable_folder)):
+                continue
 
-        fps = data["fps"]
-        raf = data["raf"]
+            # Initialize with the values from an empty a-scene.
+            fps_avg_values = [60]
+            raf_avg_values = [16]
+            amountNPCs_values = [0]
 
-        parameters_file = os.path.join(path, folder, "parameters.json")
-        parameters = read_json(parameters_file)
+            for test_folder in os.listdir(os.path.join(path, algo, moveable_folder)):
+                if not os.path.isdir(os.path.join(path, algo, moveable_folder, test_folder)):
+                    continue
 
-        pathMid = parameters["path"][0]
-        pathLeft = parameters["path"][1]
-        pathRight = parameters["path"][2]
+                data_file = os.path.join(
+                    path, algo, moveable_folder, test_folder, "data.json")
+                data = read_json(data_file)
 
-        amountNPCs = getAmountNPCs(pathMid) if name == "walking" else getAmountNPCs(
-            pathLeft) + getAmountNPCs(pathRight)
+                fps = data["fps"]
+                raf = data["raf"]
 
-        fps_avg_values.append(np.mean(fps))
-        raf_avg_values.append(np.mean(raf))
-        amountNPCs_values.append(amountNPCs)
+                parameters_file = os.path.join(
+                    path, algo, moveable_folder, test_folder, "parameters.json")
+                parameters = read_json(parameters_file)
 
-    naam = "lopende" if name == "walking" else "staande"
+                pathMid = parameters["path"][0]
+                pathLeft = parameters["path"][1]
+                pathRight = parameters["path"][2]
 
-    plot_diagram(amountNPCs_values, fps_avg_values, f"Framerate per aantal {naam} NPCs",
-                 "Aantal NPCs", "FPS", "data/" + name + f"/{name}_fps.png",
-                 xlim=(0, np.max(amountNPCs_values)),
+                amountNPCs = getAmountNPCs(pathMid) if moveable_folder == "walking" else getAmountNPCs(
+                    pathLeft) + getAmountNPCs(pathRight)
+
+                fps_avg_values.append(np.mean(fps))
+                raf_avg_values.append(np.mean(raf))
+                amountNPCs_values.append(amountNPCs)
+
+            fps_avg_list.append(fps_avg_values)
+            raf_avg_list.append(raf_avg_values)
+            amountNPCs_list.append(amountNPCs_values)
+            labels.append(f"{algo} {moveable_folder}")
+
+            colors.append(all_colors[i])
+
+            linestyle = "solid" if moveable_folder == "walking" else "dashed"
+            linestyles.append(linestyle)
+
+            naam = "lopende" if moveable_folder == "walking" else "staande"
+
+    plot_diagram(amountNPCs_list, fps_avg_list, labels, linestyles, colors,
+                 f"Framerate per aantal {naam} NPCs",
+                 "Aantal NPCs", "FPS", "data/fps.png",
+                 xlim=(0, np.max(amountNPCs_list)),
                  ylim=(0, 60))
-    plot_diagram(amountNPCs_values, raf_avg_values, f"Latency per aantal {naam} NPCs",
-                 "Aantal NPCs", "rAF", "data/" + name + f"/{name}_raf.png",
-                 xlim=(0, np.max(amountNPCs_values)),
+    plot_diagram(amountNPCs_list, raf_avg_list, labels, linestyles, colors,
+                 f"Latency per aantal {naam} NPCs",
+                 "Aantal NPCs", "rAF", "data/raf.png",
+                 xlim=(0, np.max(amountNPCs_list)),
                  ylim=(0, 300))
 
 
 if __name__ == "__main__":
-    make_diagram("walking")
-    make_diagram("standing")
+    make_diagrams()
