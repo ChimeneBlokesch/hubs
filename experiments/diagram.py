@@ -4,11 +4,14 @@ import json
 import numpy as np
 
 
-def plot_diagram(x_data, y_data, title, xlabel, ylabel, save_path, ylim=None):
+def plot_diagram(x_data, y_data, title, xlabel, ylabel, save_path, xlim=None, ylim=None):
     plt.plot(x_data, y_data)
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+
+    if xlim:
+        plt.xlim(xlim)
 
     if ylim:
         plt.ylim(ylim)
@@ -30,9 +33,10 @@ def getAmountNPCs(path):
 
 def make_diagram(name):
     path = os.path.abspath("data/" + name)
-    fps_avg_values = []
-    raf_avg_values = []
-    amountNPCs_values = []
+    # Initialize with the values from an empty a-scene.
+    fps_avg_values = [60]
+    raf_avg_values = [16]
+    amountNPCs_values = [0]
 
     for folder in os.listdir(path):
         if not os.path.isdir(os.path.join(path, folder)):
@@ -60,11 +64,14 @@ def make_diagram(name):
 
     naam = "lopende" if name == "walking" else "staande"
 
-    plot_diagram(amountNPCs_values, fps_avg_values, f"FPS per aantal {naam} NPCs",
-                 "Aantal NPCs", "FPS", "data/" + name + "/fps.png",
+    plot_diagram(amountNPCs_values, fps_avg_values, f"Framerate per aantal {naam} NPCs",
+                 "Aantal NPCs", "FPS", "data/" + name + f"/{name}_fps.png",
+                 xlim=(0, np.max(amountNPCs_values)),
                  ylim=(0, 60))
     plot_diagram(amountNPCs_values, raf_avg_values, f"Latency per aantal {naam} NPCs",
-                 "Aantal NPCs", "rAF", "data/" + name + "/raf.png")
+                 "Aantal NPCs", "rAF", "data/" + name + f"/{name}_raf.png",
+                 xlim=(0, np.max(amountNPCs_values)),
+                 ylim=(0, 300))
 
 
 if __name__ == "__main__":
