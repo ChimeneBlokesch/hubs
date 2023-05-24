@@ -1,13 +1,18 @@
 import matplotlib.pyplot as plt
 import os
 import json
+import numpy as np
 
 
-def plot_diagram(x_data, y_data, title, xlabel, ylabel, save_path):
+def plot_diagram(x_data, y_data, title, xlabel, ylabel, save_path, ylim=None):
     plt.plot(x_data, y_data)
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+
+    if ylim:
+        plt.ylim(ylim)
+
     plt.savefig(save_path)
     plt.close()
 
@@ -23,23 +28,45 @@ def getAmountNPCs(path):
     return path["properties"]["amountNPCs"]
 
 
-if __name__ == "__main__":
-    for folder in os.listdir("data"):
-        absfolder = os.path.abspath("data/" + folder)
+def make_diagram(name):
+    path = os.path.abspath("data/" + name)
+    fps_avg_values = []
+    raf_avg_values = []
+    amountNPCs_values = []
 
-        data_file = os.path.join(absfolder, "data.json")
+    for folder in os.listdir(path):
+        if not os.path.isdir(os.path.join(path, folder)):
+            continue
+
+        data_file = os.path.join(path, folder, "data.json")
         data = read_json(data_file)
 
-        time = data["time"]
         fps = data["fps"]
         raf = data["raf"]
 
-        parameters_file = os.path.join(absfolder, "parameters.json")
+        parameters_file = os.path.join(path, folder, "parameters.json")
         parameters = read_json(parameters_file)
 
-        pathMid = parameters["path"]["mid"]
-        pathLeft = parameters["path"]["left"]
-        pathRight = parameters["path"]["right"]
+        pathMid = parameters["path"][0]
+        pathLeft = parameters["path"][1]
+        pathRight = parameters["path"][2]
 
-        amountWalking = getAmountNPCs(pathMid)
-        amountStanding = getAmountNPCs(pathLeft) + getAmountNPCs(pathRight)
+        amountNPCs = getAmountNPCs(pathMid) if name == "walking" else getAmountNPCs(
+            pathLeft) + getAmountNPCs(pathRight)
+
+        fps_avg_values.append(np.mean(fps))
+        raf_avg_values.append(np.mean(raf))
+        amountNPCs_values.append(amountNPCs)
+
+    naam = "lopende" if name == "walking" else "staande"
+
+    plot_diagram(amountNPCs_values, fps_avg_values, f"FPS per aantal {naam} NPCs",
+                 "Aantal NPCs", "FPS", "data/" + name + "/fps.png",
+                 ylim=(0, 60))
+    plot_diagram(amountNPCs_values, raf_avg_values, f"Latency per aantal {naam} NPCs",
+                 "Aantal NPCs", "rAF", "data/" + name + "/raf.png")
+
+
+if __name__ == "__main__":
+    make_diagram("walking")
+    make_diagram("standing")
