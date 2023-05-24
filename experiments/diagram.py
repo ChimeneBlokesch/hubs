@@ -6,7 +6,6 @@ import numpy as np
 
 def plot_diagram(x_data_list, y_data_list, labels, linestyles, colors, title, xlabel, ylabel, save_path, xlim=None, ylim=None):
     for x_data, y_data, label, linestyle, color in zip(x_data_list, y_data_list, labels, linestyles, colors):
-        print(color)
         plt.plot(x_data, y_data, label=label, linestyle=linestyle, color=color)
 
     plt.title(title)
@@ -27,6 +26,11 @@ def plot_diagram(x_data_list, y_data_list, labels, linestyles, colors, title, xl
 def read_json(file_path):
     with open(file_path, 'r') as f:
         # The data is written as an array of numbers.
+
+        if os.stat(file_path).st_size == 0:
+            # Ignore empty files.
+            return []
+
         data = json.load(f)
     return data
 
@@ -69,6 +73,10 @@ def make_diagrams():
                     path, algo, moveable_folder, test_folder, "data.json")
                 data = read_json(data_file)
 
+                if len(data) == 0:
+                    # Ignore empty files.
+                    continue
+
                 fps = data["fps"]
                 raf = data["raf"]
 
@@ -87,6 +95,10 @@ def make_diagrams():
                 raf_avg_values.append(np.mean(raf))
                 amountNPCs_values.append(amountNPCs)
 
+            if len(fps_avg_values) == 1:
+                # Ignore empty files.
+                continue
+
             fps_avg_list.append(fps_avg_values)
             raf_avg_list.append(raf_avg_values)
             amountNPCs_list.append(amountNPCs_values)
@@ -99,15 +111,16 @@ def make_diagrams():
 
             naam = "lopende" if moveable_folder == "walking" else "staande"
 
+    maxAmountNPCs = max([max(amountNPCs) for amountNPCs in amountNPCs_list])
     plot_diagram(amountNPCs_list, fps_avg_list, labels, linestyles, colors,
                  f"Framerate per aantal {naam} NPCs",
                  "Aantal NPCs", "FPS", "data/fps.png",
-                 xlim=(0, np.max(amountNPCs_list)),
+                 xlim=(0, maxAmountNPCs),
                  ylim=(0, 60))
     plot_diagram(amountNPCs_list, raf_avg_list, labels, linestyles, colors,
                  f"Latency per aantal {naam} NPCs",
                  "Aantal NPCs", "rAF", "data/raf.png",
-                 xlim=(0, np.max(amountNPCs_list)),
+                 xlim=(0, maxAmountNPCs),
                  ylim=(0, 300))
 
 
