@@ -53,7 +53,6 @@ AFRAME.registerComponent('path', {
     initializeNPCs: function () {
         // Initialize start position and use the helper vector as the current
         // position.
-        // this.setStartPosition(this.helperVector);
         var colNum = 0;
         var nextRowVector = new THREE.Vector3();
         var nextColVector = new THREE.Vector3();

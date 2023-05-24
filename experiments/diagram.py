@@ -19,6 +19,10 @@ def read_json(file_path):
     return data
 
 
+def getAmountNPCs(path):
+    return path["properties"]["amountNPCs"]
+
+
 if __name__ == "__main__":
     for folder in os.listdir("data"):
         absfolder = os.path.abspath("data/" + folder)
@@ -32,3 +36,10 @@ if __name__ == "__main__":
 
         parameters_file = os.path.join(absfolder, "parameters.json")
         parameters = read_json(parameters_file)
+
+        pathMid = parameters["path"]["mid"]
+        pathLeft = parameters["path"]["left"]
+        pathRight = parameters["path"]["right"]
+
+        amountWalking = getAmountNPCs(pathMid)
+        amountStanding = getAmountNPCs(pathLeft) + getAmountNPCs(pathRight)
