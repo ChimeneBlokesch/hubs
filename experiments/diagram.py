@@ -5,7 +5,15 @@ import numpy as np
 
 
 def plot_diagram(x_data_list, y_data_list, labels, linestyles, colors, title, xlabel, ylabel, save_path, xlim=None, ylim=None):
-    for x_data, y_data, label, linestyle, color in zip(x_data_list, y_data_list, labels, linestyles, colors):
+    for i in range(len(x_data_list)):
+        # Indices to  sort all arrays by x_data.
+        indices = np.argsort(x_data_list[i])
+        x_data = np.array(x_data_list[i])[indices]
+        y_data = np.array(y_data_list[i])[indices]
+        label = labels[i]
+        linestyle = linestyles[i]
+        color = colors[i]
+
         plt.plot(x_data, y_data, label=label, linestyle=linestyle, color=color)
 
     plt.title(title)

@@ -1,0 +1,31 @@
+{
+    "renderer": [
+        {
+            "id": "renderer",
+            "properties": {
+                "renderingAlgo": "model_low",
+                "capacity": 1000
+            }
+        }
+    ],
+    "path": [
+        {
+            "id": "mid",
+            "properties": {
+                "amountNPCs": 0
+            }
+        },
+        {
+            "id": "left",
+            "properties": {
+                "amountNPCs": 500
+            }
+        },
+        {
+            "id": "right",
+            "properties": {
+                "amountNPCs": 500
+            }
+        }
+    ]
+}
