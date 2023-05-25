@@ -142,7 +142,7 @@ def make_diagrams():
                  f"Latency per aantal {naam} NPCs",
                  "Aantal NPCs", "rAF", "data/raf.png",
                  xlim=(0, maxAmountNPCs),
-                 ylim=(0, 300))
+                 ylim=(0, 600))
 
 
 if __name__ == "__main__":
