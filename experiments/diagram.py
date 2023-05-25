@@ -17,7 +17,7 @@ def plot_diagram(x_data_list, y_data_list, labels, linestyles, colors, title, xl
     # Sort by label
     data = sorted(zip(labels, x_data_list, y_data_list,
                   linestyles, colors), key=lambda x: sort_label(x[0]))
-    print(data)
+
     for label, x_data, y_data, linestyle, color in data:
         # Indices to sort all arrays by x_data.
         indices = np.argsort(x_data)
