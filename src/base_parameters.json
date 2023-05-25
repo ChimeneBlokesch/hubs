@@ -11,9 +11,9 @@
                 },
                 "renderingAlgo": "model_low",
                 "distanceThresholds": [
-                    1999,
-                    5,
-                    50,
+                    15,
+                    30,
+                    500,
                     1000
                 ],
                 "capacity": 1000

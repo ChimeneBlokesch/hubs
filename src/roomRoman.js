@@ -1,7 +1,7 @@
 /* This file adds a-entity's to the scene for the Roman Triumph. Only add
  * this file for this room. */
 
-var jsonParametersFile = "experiments/data/model_combi/standing/standing100/parameters.json"
+var jsonParametersFile = "experiments/data/model_combi/standing/standing1/parameters.json"
 
 window.onload = function () {
     fetch('src/base_parameters.json').then(
