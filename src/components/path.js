@@ -93,32 +93,44 @@ AFRAME.registerComponent('path', {
         }
     },
 
+    /* Sets the given vectors and returns the maximal amount of NPCs per row. */
     initVectors: function (nextRowVector, nextColVector, startPos) {
+        // Maximal amount of NPCs per row.
         var amountNPCsPerRow = Math.floor(this.lengthX / this.data.cellSizeX);
         var reversedFactor = this.data.walkReversed ? -1 : 1;
 
         switch (this.widthAxis) {
             case 'x':
+                // Go back to the first column of the row.
                 nextRowVector.x = -reversedFactor * (amountNPCsPerRow - 1) * this.data.cellSizeX;
+                // Go one row further.
                 nextRowVector.z = reversedFactor * this.data.cellSizeZ;
 
+                // Go one column further.
                 nextColVector.x = reversedFactor * this.data.cellSizeX;
                 break;
             case 'z':
+                // Go back to the first column of the row.
                 nextRowVector.x = reversedFactor * this.data.cellSizeX;
+                // Go one row further.
                 nextRowVector.z = -reversedFactor * (amountNPCsPerRow - 1) * this.data.cellSizeZ;
 
+                // Go one column further.
                 nextColVector.z = reversedFactor * this.data.cellSizeZ;
 
                 break;
         }
 
         if (this.data.walkReversed) {
+            // Start at the maximal coordinate. Set the position at the
+            // center of the cell.
             startPos.x = this.data.maxX - this.data.cellSizeX / 2;
             startPos.z = this.data.maxZ - this.data.cellSizeZ / 2;
             return amountNPCsPerRow;
         }
 
+        // Start at the minimal coordinate. Set the position at the
+        // center of the cell.
         startPos.x = this.data.minX + this.data.cellSizeX / 2;
         startPos.z = this.data.minZ + this.data.cellSizeZ / 2;
         return amountNPCsPerRow;
