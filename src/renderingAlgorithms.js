@@ -31,3 +31,22 @@ const ALGO2LOD = {
     [RENDERING_ALGORITHMS.MODEL_MEDIUM]: LOD.MEDIUM,
     [RENDERING_ALGORITHMS.MODEL_HIGH]: LOD.HIGH
 }
+
+function algo2lods(algo) {
+    switch (algo) {
+        case RENDERING_ALGORITHMS.MODEL_LOW:
+            return [LOD.LOW];
+
+        case RENDERING_ALGORITHMS.MODEL_MEDIUM:
+            return [LOD.MEDIUM];
+
+        case RENDERING_ALGORITHMS.MODEL_HIGH:
+            return [LOD.HIGH];
+
+        case RENDERING_ALGORITHMS.MODEL_COMBI:
+            return [LOD.HIGH, LOD.MEDIUM, LOD.LOW];
+
+        case RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE:
+            return [LOD.HIGH, LOD.MEDIUM, LOD.LOW, LOD.SPRITE];
+    }
+}

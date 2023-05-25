@@ -12,26 +12,24 @@ AFRAME.registerComponent('renderer', {
     },
 
     init: function () {
-        // Copy the LODs. When a LOD is loaded,
-        // the key of the LOD will be removed.
-        this.loadedEntities = Object.values(LOD);
         this.frustum = new THREE.Frustum();
         this.matrix = new THREE.Matrix4();
 
-        // Assure the model is loaded at start.
-        this.loadModel(ALGO2LOD[this.data.renderingAlgo]);
+        // Key is the lod.
+        // -- Value is false: model is not loaded.
+        // -- Value is true: busy with loading model.
+        // -- Key deleted: model is loaded.
+        this.busyLoadingLods = {};
+
+        for (let lod of algo2lods(this.data.renderingAlgo)) {
+            this.busyLoadingLods[lod] = false;
+        }
+
     },
 
     /* Creates a a-entity element with instanced mesh component
      * for the model corresponding to the given LOD. */
     loadModel: function (lod) {
-        var index = this.loadedEntities.indexOf(lod);
-
-        if (index == -1) {
-            // Model already loaded.
-            return;
-        }
-
         let el = document.createElement("a-entity");
         let attName = "gltf-model";
 
@@ -49,11 +47,19 @@ AFRAME.registerComponent('renderer', {
         el.setAttribute("instanced-mesh", {
             "positioning": "world",
             "updateMode": "auto",
-            "capacity": this.data.capacity
+            "capacity": this.data.capacity,
         });
 
         this.el.sceneEl.appendChild(el);
-        delete this.loadedEntities[index];
+
+        // The model going to be loaded,
+        // so instanced-mesh-member's can't be set now.
+        this.busyLoadingLods[lod] = el;
+
+        // Key can be deleted, when the model is loaded.
+        el.addEventListener("model-loaded", () => {
+            delete this.busyLoadingLods[lod];
+        });
     },
 
     /* Changes the type of the rendering (2D / 3D and low / medium / high LOD).
@@ -103,23 +109,30 @@ AFRAME.registerComponent('renderer', {
             return;
         }
 
-        // Assure the model is loaded.
-        this.loadModel(lod);
+        // Assure the model is loaded before setting instanced-mesh-member.
+        switch (this.busyLoadingLods[lod]) {
+            case false:
+                // Let the model load.
+                this.loadModel(lod);
+                break;
+            case true:
+                // Busy with loading model.
+                break;
+            case undefined:
+                // The model is loaded. Able to set instanced-mesh-member.
+                // Remove the current model.
+                el.removeAttribute("instanced-mesh-member");
 
-        el.removeAttribute("instanced-mesh-member");
-
-        // Add the new model.
-        el.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
+                // Add the new model.
+                el.setAttribute("instanced-mesh-member", "mesh:#lod" + lod);
+                break;
+        }
     },
 
     /* Determines the LOD based on the distance and the thresholds.  */
     lodFromDistance: function (el, cam) {
         var dist = cam.el.object3D.position.distanceTo(el.object3D.position);
-        var lods = [LOD.HIGH, LOD.MEDIUM, LOD.LOW];
-
-        if (this.data.renderingAlgo == RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE) {
-            lods.push(LOD.SPRITE);
-        }
+        var lods = algo2lods(this.data.renderingAlgo);
 
         for (var i = 0; i < lods.length; i++) {
             if (dist < this.data.distanceThresholds[i]) {
