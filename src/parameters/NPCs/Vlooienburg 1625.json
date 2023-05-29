@@ -4,10 +4,10 @@
             "id": "renderer",
             "properties": {
                 "renderingFiles": {
-                    "sprite": "models/sprite/spriteNPC.png",
-                    "low": "models/low.glb",
-                    "medium": "models/medium.glb",
-                    "high": "models/high.glb"
+                    "sprite": "src/assets/images/NPCs/spriteNPC.png",
+                    "low": "src/assets/models/NPCs/low.glb",
+                    "medium": "src/assets/models/NPCs/medium.glb",
+                    "high": "src/assets/models/NPCs/high.glb"
                 },
                 "renderingAlgo": "model_low",
                 "distanceThresholds": [
@@ -24,11 +24,11 @@
         {
             "id": "mid",
             "properties": {
-                "minX": -4,
-                "maxX": 3,
-                "minZ": -500,
-                "maxZ": 0,
-                "amountNPCs": 1,
+                "minX": 21.50,
+                "maxX": 23,
+                "minZ": -67.50,
+                "maxZ": -13.50,
+                "amountNPCs": 100,
                 "cellSizeX": 2,
                 "cellSizeZ": 2,
                 "speedNPC": 0.2,
@@ -40,11 +40,11 @@
         {
             "id": "left",
             "properties": {
-                "minX": -10,
-                "maxX": -5,
-                "minZ": -500,
-                "maxZ": -2,
-                "amountNPCs": 0,
+                "minX": 21,
+                "maxX": 21.50,
+                "minZ": -67.50,
+                "maxZ": -13.50,
+                "amountNPCs": 50,
                 "cellSizeX": 1,
                 "cellSizeZ": 1.5,
                 "speedNPC": 0,
@@ -56,11 +56,11 @@
         {
             "id": "right",
             "properties": {
-                "minX": 4,
-                "maxX": 9,
-                "minZ": -500,
-                "maxZ": -2,
-                "amountNPCs": 0,
+                "minX": 24.50,
+                "maxX": 25,
+                "minZ": -67.50,
+                "maxZ": -13.50,
+                "amountNPCs": 50,
                 "cellSizeX": 1,
                 "cellSizeZ": 1.5,
                 "speedNPC": 0,
