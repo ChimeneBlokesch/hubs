@@ -5,7 +5,6 @@ import numpy as np
 
 
 def sort_label(label):
-    label = label.split("model_")[1]
     algo = label.split(" ")[0]
     moveable = label.split(" ")[1]
     arr_algo = ["sprite", "low", "medium", "high", "combi", "combi_sprite"]
@@ -15,6 +14,7 @@ def sort_label(label):
 
 def plot_diagram(x_data_list, y_data_list, labels, linestyles, colors, title, xlabel, ylabel, save_path, xlim=None, ylim=None):
     # Sort by label
+    labels = [label.split("model_")[1] for label in labels]
     data = sorted(zip(labels, x_data_list, y_data_list,
                   linestyles, colors), key=lambda x: sort_label(x[0]))
 
@@ -130,16 +130,14 @@ def make_diagrams():
             linestyle = "solid" if moveable_folder == "walking" else "dashed"
             linestyles.append(linestyle)
 
-            naam = "lopende" if moveable_folder == "walking" else "staande"
-
     maxAmountNPCs = max([max(amountNPCs) for amountNPCs in amountNPCs_list])
     plot_diagram(amountNPCs_list, fps_avg_list, labels, linestyles, colors,
-                 f"Framerate per aantal {naam} NPCs",
+                 f"Framerate per aantal NPCs",
                  "Aantal NPCs", "FPS", "data/fps.png",
                  xlim=(0, maxAmountNPCs),
                  ylim=(0, 60))
     plot_diagram(amountNPCs_list, raf_avg_list, labels, linestyles, colors,
-                 f"Latency per aantal {naam} NPCs",
+                 f"Latency per aantal NPCs",
                  "Aantal NPCs", "rAF", "data/raf.png",
                  xlim=(0, maxAmountNPCs),
                  ylim=(0, 600))

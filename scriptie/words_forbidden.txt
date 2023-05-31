@@ -88,5 +88,6 @@ zo wordt bijvoorbeeld
 Mede daardoor wordt onder andere
 eigenlijk
 alles op alles
-Mozilla Hubs
 gerendeerd
+TODO
+2D sprite
