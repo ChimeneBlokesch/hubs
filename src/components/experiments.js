@@ -1,6 +1,8 @@
 AFRAME.registerComponent('stats-file', {
     dependencies: ['stats'],
     schema: {
+        // To ignore the loading time, set 'start' to a value greater than 3.
+        start: { type: 'number', default: 3 },
         // The amount of seconds to be logged to a file.
         seconds: { type: 'number' }
     },
@@ -12,14 +14,19 @@ AFRAME.registerComponent('stats-file', {
         this.fpsValues = [];
         this.rafValues = [];
 
-        this.remainingSeconds = this.data.seconds;
         this.curSeconds = 0;
+        this.endTime = this.data.start + this.data.seconds;
     },
 
     tick: function (time, timeDelta) {
         this.curSeconds += timeDelta / 1000;
 
-        if (this.curSeconds > this.data.seconds) {
+        if (this.curSeconds < this.data.start) {
+            // Ignore the loading time.
+            return;
+        }
+
+        if (this.curSeconds > this.endTime) {
             // Log the results to the file and delete this component.
             this.showStatsValues();
             this.el.removeComponent('stats-file');
