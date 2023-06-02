@@ -63,6 +63,31 @@ def getAmountNPCs(path):
     return path["properties"]["amountNPCs"]
 
 
+def avg_from_tests(path):
+    avg_fps_values = []
+    avg_raf_values = []
+
+    for file in os.listdir(path):
+        if file == "parameters.json":
+            continue
+
+        data = read_json(os.path.join(path, file))
+
+        if len(data) == 0:
+            # Ignore empty files.
+            continue
+
+        fps = data["fps"]
+        raf = data["raf"]
+
+        # The average from one test.
+        avg_fps_values.append(np.mean(fps))
+        avg_raf_values.append(np.mean(raf))
+
+    # The average from all tests.
+    return np.mean(avg_fps_values), np.mean(avg_raf_values)
+
+
 def make_diagrams():
     path = os.path.abspath("data/")
     labels = []
@@ -90,19 +115,11 @@ def make_diagrams():
             amountNPCs_values = [0]
 
             for test_folder in os.listdir(os.path.join(path, algo, moveable_folder)):
-                if not os.path.isdir(os.path.join(path, algo, moveable_folder, test_folder)):
+                test_path = os.path.join(
+                    path, algo, moveable_folder, test_folder)
+
+                if not os.path.isdir(test_path):
                     continue
-
-                data_file = os.path.join(
-                    path, algo, moveable_folder, test_folder, "data.json")
-                data = read_json(data_file)
-
-                if len(data) == 0:
-                    # Ignore empty files.
-                    continue
-
-                fps = data["fps"]
-                raf = data["raf"]
 
                 parameters_file = os.path.join(
                     path, algo, moveable_folder, test_folder, "parameters.json")
@@ -115,8 +132,10 @@ def make_diagrams():
                 amountNPCs = getAmountNPCs(pathMid) if moveable_folder == "walking" else getAmountNPCs(
                     pathLeft) + getAmountNPCs(pathRight)
 
-                fps_avg_values.append(np.mean(fps))
-                raf_avg_values.append(np.mean(raf))
+                avg_fps, avg_raf = avg_from_tests(test_path)
+
+                fps_avg_values.append(avg_fps)
+                raf_avg_values.append(avg_raf)
                 amountNPCs_values.append(amountNPCs)
 
             if len(fps_avg_values) == 1:
