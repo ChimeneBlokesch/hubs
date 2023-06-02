@@ -1,3 +1,5 @@
+import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms"
+
 AFRAME.registerComponent('renderer', {
     schema: {
         // The files that will be used to render the model per LOD.
