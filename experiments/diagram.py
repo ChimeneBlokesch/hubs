@@ -40,6 +40,9 @@ def plot_diagram(x_data_list, y_data_list, labels, linestyles, colors, title, xl
         plt.ylim(ylim)
 
     plt.legend()
+    plt.xticks(np.arange(0, max(x_data) + 1, 100))
+    if ylabel == "FPS":
+        plt.plot([0, 1000], [5, 5], linestyle="dotted", color="red")
     plt.savefig(save_path)
     plt.close()
 
@@ -70,10 +73,10 @@ def make_diagrams():
     linestyles = []
     colors = []
 
-    all_colors = ["red", "blue", "green", "orange", "purple", "brown",
-                  "pink", "gray", "olive", "cyan", "magenta", "yellow", "black"]
+    color_idx = 0
+    color = plt.cm.tab10(range(10))
 
-    for i, algo in enumerate(os.listdir(path)):
+    for algo in os.listdir(path):
         if not os.path.isdir(os.path.join(path, algo)):
             continue
 
@@ -125,10 +128,12 @@ def make_diagrams():
             amountNPCs_list.append(amountNPCs_values)
             labels.append(f"{algo} {moveable_folder}")
 
-            colors.append(all_colors[i])
+            colors.append(color[color_idx])
 
             linestyle = "solid" if moveable_folder == "walking" else "dashed"
             linestyles.append(linestyle)
+
+        color_idx += 1
 
     maxAmountNPCs = max([max(amountNPCs) for amountNPCs in amountNPCs_list])
     plot_diagram(amountNPCs_list, fps_avg_list, labels, linestyles, colors,
