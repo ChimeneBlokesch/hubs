@@ -29,6 +29,14 @@ AFRAME.registerComponent('renderer', {
 
     },
 
+    /* Also remove all lod files. */
+    remove: function () {
+        for (var lod of algo2lods(this.data.renderingAlgo)) {
+            var el = document.getElementById("lod" + lod);
+            el.remove();
+        }
+    },
+
     /* Creates a a-entity element with instanced mesh component
      * for the model corresponding to the given LOD. */
     loadModel: function (lod) {

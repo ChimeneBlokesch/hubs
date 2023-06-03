@@ -1,5 +1,7 @@
 AFRAME.registerComponent('path', {
     schema: {
+        // Name of the path used to give a class name to all NPCs on this path.
+        name: { type: 'string', default: '' },
         // The path is a rectangle parallel to the x- or z-axis.
         minX: { type: 'number', default: 0 },
         maxX: { type: 'number', default: 0 },
@@ -49,6 +51,15 @@ AFRAME.registerComponent('path', {
         }
     },
 
+    /* Also remove all NPCs on this path. */
+    remove: function () {
+        var npcs = document.getElementsByClassName("path" + this.data.name);
+
+        for (var npc of npcs) {
+            npc.remove();
+        }
+    },
+
     /* Creates the elements for the NPCs. */
     initializeNPCs: function () {
         // Initialize start position and use the helper vector as the current
@@ -80,6 +91,7 @@ AFRAME.registerComponent('path', {
             npc.object3D.rotation.y = this.data.rotationNPC;
 
             npc.id = "npc" + i;
+            npc.setAttribute("class", "path" + this.data.name);
 
             // Add the NPC to the scene.
             this.el.sceneEl.appendChild(npc);
