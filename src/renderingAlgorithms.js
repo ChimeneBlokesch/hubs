@@ -1,5 +1,5 @@
 // Different algorithms for rendering.
-const RENDERING_ALGORITHMS = {
+export const RENDERING_ALGORITHMS = {
     // All models are shown as 3D models with low LOD.
     MODEL_LOW: "model_low",
     // All models are shown as 3D models with medium LOD.
@@ -17,7 +17,7 @@ const RENDERING_ALGORITHMS = {
 }
 
 // Level of detail
-const LOD = {
+export const LOD = {
     SPRITE: "sprite",
     LOW: "low",
     MEDIUM: "medium",
@@ -25,14 +25,14 @@ const LOD = {
 }
 
 // One-to-one mapping from rendering algorithm to LOD.
-const ALGO2LOD = {
+export const ALGO2LOD = {
     [RENDERING_ALGORITHMS.SPRITE]: LOD.SPRITE,
     [RENDERING_ALGORITHMS.MODEL_LOW]: LOD.LOW,
     [RENDERING_ALGORITHMS.MODEL_MEDIUM]: LOD.MEDIUM,
     [RENDERING_ALGORITHMS.MODEL_HIGH]: LOD.HIGH
 }
 
-function algo2lods(algo) {
+export function algo2lods(algo) {
     switch (algo) {
         case RENDERING_ALGORITHMS.MODEL_LOW:
             return [LOD.LOW];
