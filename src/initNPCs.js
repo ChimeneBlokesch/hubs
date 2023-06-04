@@ -1,11 +1,23 @@
-import "./components/stats-file";
-import "./components/moving-forward";
-import "./components/path";
-import "./components/rendered-object";
-import "./components/renderer";
+// Server
+// import "./components/stats-file";
+// import "./components/moving-forward";
+// import "./components/path";
+// import "./components/rendered-object";
+// import "./components/renderer";
 
-import { rooms } from "./roomProperties"
-import { RENDERING_ALGORITHMS } from "./renderingAlgorithms";
+// import { rooms } from "./roomProperties"
+// import { RENDERING_ALGORITHMS } from "./renderingAlgorithms";
+
+
+// Local
+import "./components/stats-file.js";
+import "./components/moving-forward.js";
+import "./components/path.js";
+import "./components/rendered-object.js";
+import "./components/renderer.js";
+
+import { rooms } from "./roomProperties.js"
+import { RENDERING_ALGORITHMS } from "./renderingAlgorithms.js";
 
 var experimentVariables = null;
 

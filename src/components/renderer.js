@@ -1,4 +1,8 @@
-import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms"
+// Server
+// import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms"
+
+// Local
+import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms.js"
 
 AFRAME.registerComponent('renderer', {
     schema: {
