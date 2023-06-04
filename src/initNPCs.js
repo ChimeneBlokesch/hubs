@@ -35,14 +35,13 @@ function enableMassSimulation() {
                 experimentVariables[moving].push(path);
 
             }
-            init = true;
         }
 
         nextParameters();
 
         var scene = document.querySelector("a-scene");
         var func = "restartMassSimulation";
-        var filename = experimentVariables["renderingAlgorithms"] + "_" + experimentVariables["path"]["moving"] + "_" + experimentVariables["path"]["totalAmountNPCs"] + ".json";
+        var filename = experimentVariables["parameters"]["renderers"][0]["renderingAlgorithm"] + "_" + experimentVariables["path"]["moving"] + "_" + experimentVariables["path"]["totalAmountNPCs"] + ".json";
         scene.addAttribute("stats-file", { "seconds": 10, "onremove": func, "downloadfilename": filename });
         window["func"] = function () { removeMassSimulation(); enableMassSimulation(); };
     }
@@ -95,7 +94,7 @@ function jsonToElements(json) {
             path["rotationNPC"] *= Math.PI / 180;
         }
 
-        el.setAttribute(attrName, path);
+        el.setAttribute("path", path);
 
         parent.appendChild(el);
     }
