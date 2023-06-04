@@ -26,11 +26,13 @@ function enableMassSimulation() {
         // Start the test with the next parameters.
         if (Object.keys(experimentVariables).length == 0) {
             // Initialize variables.
+            experimentVariables = {};
             experimentVariables["parameters"] = properties;
             experimentVariables["renderingAlgorithms"] = Object.entries(RENDERING_ALGORITHMS);
             experimentVariables["amounts"] = [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
             experimentVariables["path"] = { "walking": [], "standing": [], "totalAmountNPCs": 1, "moving": "standing" };
-            for (var path of properties["path"]) {
+
+            for (var path of Object.values(properties["paths"])) {
                 var moving = path.speed == 0 ? "standing" : "walking";
                 experimentVariables[moving].push(path);
 
@@ -94,7 +96,7 @@ function jsonToElements(json) {
             path["rotationNPC"] *= Math.PI / 180;
         }
 
-        el.setAttribute("path", path);
+        el.setAttribute(attrName, path);
 
         parent.appendChild(el);
     }
