@@ -1,7 +1,5 @@
 AFRAME.registerComponent('path', {
     schema: {
-        // Name of the path used to give a class name to all NPCs on this path.
-        name: { type: 'string', default: '' },
         // The path is a rectangle parallel to the x- or z-axis.
         minX: { type: 'number', default: 0 },
         maxX: { type: 'number', default: 0 },
@@ -49,22 +47,21 @@ AFRAME.registerComponent('path', {
 
         this.initializeNPCs();
 
-        if (this.data.speedNPC == 0) {
-            // This component isn't needed anymore.
-            this.el.removeAttribute("path");
-        }
-
         if (this.data.colorPlane != '') {
-            this.showPlane();
+            this.plane = this.showPlane();
         }
     },
 
-    /* Also remove all NPCs on this path. */
+    /* Also remove all NPCs on this path and the plane to visualize the path. */
     remove: function () {
-        var npcs = document.getElementsByClassName("path" + this.data.name);
+        var npcs = document.getElementsByClassName("path" + this.el.getAttribute("id"));
 
         for (var npc of npcs) {
             npc.remove();
+        }
+
+        if (this.plane != null) {
+            this.plane.remove();
         }
     },
 
@@ -98,8 +95,8 @@ AFRAME.registerComponent('path', {
             // Sets the rotation of the NPC.
             npc.object3D.rotation.y = this.data.rotationNPC;
 
-            npc.id = "npc" + i;
-            npc.setAttribute("class", "path" + this.data.name);
+            npc.setAttribute("id", "npc" + i);
+            npc.setAttribute("class", "path" + this.el.getAttribute("id"));
 
             // Add the NPC to the scene.
             this.el.sceneEl.appendChild(npc);
@@ -207,7 +204,7 @@ AFRAME.registerComponent('path', {
         }
     },
 
-    /* Shows a plane to visualize the path. */
+    /* Shows and returns a plane to visualize the path. */
     showPlane: function () {
         var plane = document.createElement("a-plane");
         var width = this.lengthX;
@@ -225,5 +222,6 @@ AFRAME.registerComponent('path', {
         });
 
         this.el.appendChild(plane);
+        return plane;
     }
 });

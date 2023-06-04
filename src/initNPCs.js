@@ -24,40 +24,39 @@ var experimentVariables = null;
 /* Enable mass simulation if there are room properties corresponding
  * with the scene title. */
 function enableMassSimulation() {
-    console.log("Checking for room properties.")
     var properties = rooms[getSceneName()];
 
     if (properties == null) {
         return;
     }
 
-    console.log("Worked! Mass simulation is going to be added to this room.");
-    console.log(properties);
-
     if (experimentVariables != null) {
         // Start the test with the next parameters.
-        if (Object.keys(experimentVariables).length == 0) {
+        var init = Object.keys(experimentVariables).length == 0;
+
+        if (init) {
             // Initialize variables.
-            experimentVariables = {};
             experimentVariables["parameters"] = properties;
-            experimentVariables["renderingAlgorithms"] = Object.entries(RENDERING_ALGORITHMS);
-            experimentVariables["amounts"] = [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+            experimentVariables["rendering"] = {};
+            experimentVariables["rendering"]["algos"] = Object.values(RENDERING_ALGORITHMS);
+            experimentVariables["rendering"]["curAlgo"] = experimentVariables["rendering"]["algos"][0];
+            experimentVariables["amountList"] = [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
             experimentVariables["path"] = { "walking": [], "standing": [], "totalAmountNPCs": 1, "moving": "standing" };
 
             for (var path of Object.values(properties["paths"])) {
-                var moving = path.speed == 0 ? "standing" : "walking";
-                experimentVariables[moving].push(path);
-
+                var moving = path.speedNPC == 0 ? "standing" : "walking";
+                experimentVariables["path"][moving].push(path);
             }
         }
 
-        nextParameters();
+        nextParameters(init);
+        properties = experimentVariables["parameters"];
 
         var scene = document.querySelector("a-scene");
         var func = "restartMassSimulation";
-        var filename = experimentVariables["parameters"]["renderers"][0]["renderingAlgorithm"] + "_" + experimentVariables["path"]["moving"] + "_" + experimentVariables["path"]["totalAmountNPCs"] + ".json";
-        scene.addAttribute("stats-file", { "seconds": 10, "onremove": func, "downloadfilename": filename });
-        window["func"] = function () { removeMassSimulation(); enableMassSimulation(); };
+        var filename = experimentVariables["rendering"]["curAlgo"] + "_" + experimentVariables["path"]["moving"] + "_" + experimentVariables["path"]["totalAmountNPCs"] + ".json";
+        window[func] = function () { removeMassSimulation(); enableExperimentMode(); };
+        scene.setAttribute("stats-file", { "seconds": 10, "onstop": func, "downloadfilename": filename });
     }
 
     jsonToElements(properties);
@@ -108,14 +107,14 @@ function jsonToElements(json) {
             path["rotationNPC"] *= Math.PI / 180;
         }
 
-        el.setAttribute("path", path);
+        el.setAttribute("path", { ...path });
 
         parent.appendChild(el);
     }
 }
 
+/* Remove all elements for the mass simulation. */
 function removeMassSimulation() {
-    // Remove all elements for the mass simulation.
     for (var name of ["renderer", "path"]) {
         for (var el of document.querySelectorAll("[" + name + "]")) {
             el.remove();
@@ -132,54 +131,81 @@ function enableExperimentMode() {
     }
 }
 
+/* Returns the value in the list one index higher than the given value. */
 function nextValueInList(arr, old) {
     var idx = arr.indexOf(old);
     idx += 1;
 
-    if (idx == arr.length()) {
+    if (idx == arr.length) {
         return arr[0];
     }
 
     return arr[idx];
 }
 
+/* Splits the amount of NPCs between the given paths. */
 function changeAmountNPCs(amount, paths) {
-    var amountPerPath = amount / paths.length;
+    var amountPerPath = Math.floor(amount / paths.length);
+    var remainder = amount - paths.length * amountPerPath;
 
-    for (var path of paths) {
-        path["amountNPCs"] = amountPerPath;
+    for (var [i, path] of paths.entries()) {
+        var extra = i < remainder ? 1 : 0;
+        path["amountNPCs"] = amountPerPath + extra;
     }
 }
 
-function nextParameters() {
+/* Set the given algorithm for every renderer in the list. */
+function setRenderingAlgorithm(renderers, algo) {
+    for (var renderer of Object.values(renderers)) {
+        // Next rendering algorithm.
+        renderer["renderingAlgorithm"] = algo;
+    }
+}
+
+/* Set the parameters to the next value. If 'init' is true, all parameters are
+ * set using the current values in 'experimentVariables'. */
+function nextParameters(init) {
     var params = experimentVariables["parameters"];
 
-    // Check if the last amount has been tested.
-    if (experimentVariables["path"]["totalAmountNPCs"] == experimentVariables["amount"].slice(-1)) {
-        // Go back to first amount.
-        experimentVariables["path"]["totalAmountNPCs"] = experimentVariables["amount"][0];
+    if (init) {
+        // Set amount of NPCs per path;
+        var curMoving = experimentVariables["path"]["moving"];
+        var otherMoving = oldMoving == "walking" ? "standing" : "walking";
+        changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][curMoving]);
+        changeAmountNPCs(0, experimentVariables["path"][otherMoving]);
 
-        var oldMoving = experimentVariables["path"]["moving"];
-        var newMoving = oldMoving == "walking" ? "standing" : "walking";
-        experimentVariables["path"]["isMoving"] = newMoving;
-        changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][newMoving]);
-        changeAmountNPCs(0, experimentVariables["path"][oldMoving]);
-
-        if (experimentVariables["path"]["isMoving"] == "standing") {
-            // Only switch amount and isMoving.
-            return;
-        }
-
-        // Switch also rendering algorithm.
-
-        for (var renderer of params["renderer"]) {
-            // Next rendering algorithm.
-            renderer["properties"]["renderingAlgorithm"] = nextValueInList(renderer["properties"]["renderingAlgorithm"]);
-        }
-
+        // Set rendering algorithm per renderer.
+        var renderingAlgorithm = experimentVariables["rendering"]["curAlgo"];
+        setRenderingAlgorithm(params["renderers"], renderingAlgorithm);
         return;
     }
 
-    // Only the amount should be changed.
-    experimentVariables["path"]["amountNPCs"] = nextValueInList(experimentVariables["amounts"], experimentVariables["path"]["amountNPCs"]);
+    // Check if the last amount has not been tested.
+    if (experimentVariables["path"]["totalAmountNPCs"] != experimentVariables["amountList"].slice(-1)) {
+        // Only the amount should be changed.
+        experimentVariables["path"]["amountNPCs"] = nextValueInList(experimentVariables["amountList"], experimentVariables["path"]["amountNPCs"]);
+        return;
+    }
+
+    // Go back to first amount.
+    experimentVariables["path"]["totalAmountNPCs"] = experimentVariables["amountList"][0];
+
+    // Toggle between 'standing' and 'moving' paths.
+    var oldMoving = experimentVariables["path"]["moving"];
+    var newMoving = oldMoving == "walking" ? "standing" : "walking";
+    experimentVariables["path"]["isMoving"] = newMoving;
+    changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][newMoving]);
+    changeAmountNPCs(0, experimentVariables["path"][oldMoving]);
+
+    if (experimentVariables["path"]["isMoving"] == "standing") {
+        // Only switch amount and standing/walking.
+        return;
+    }
+
+    // Switch also rendering algorithm.
+    var oldAlgo = experimentVariables["rendering"]["curAlgo"];
+    var nextAlgo = nextValueInList(experimentVariables["rendering"]["algos"], oldAlgo);
+    experimentVariables["rendering"]["curAlgo"] = nextAlgo;
+
+    setRenderingAlgorithm(params["renderers"], nextAlgo);
 }

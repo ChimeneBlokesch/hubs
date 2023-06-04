@@ -19,7 +19,7 @@ var roomVlooienburg = {
                     "medium": medium,
                     "high": high
                 },
-                "renderingAlgo": "model_low",
+                "renderingAlgorithm": "model_low",
                 "distanceThresholds": [
                     15,
                     30,
@@ -89,7 +89,7 @@ var roomTest = {
                     "medium": medium,
                     "high": high
                 },
-                "renderingAlgo": "model_low",
+                "renderingAlgorithm": "model_low",
                 "distanceThresholds": [
                     15,
                     30,
@@ -105,7 +105,7 @@ var roomTest = {
                 "minX": -4,
                 "maxX": 3,
                 "minZ": -500,
-                "maxZ": 0,
+                "maxZ": -4,
                 "amountNPCs": 100,
                 "cellSizeX": 2,
                 "cellSizeZ": 1.5,
@@ -119,7 +119,7 @@ var roomTest = {
                 "minX": -10,
                 "maxX": -5,
                 "minZ": -500,
-                "maxZ": -2,
+                "maxZ": -4,
                 "amountNPCs": 50,
                 "cellSizeX": 1,
                 "cellSizeZ": 2,
@@ -133,7 +133,7 @@ var roomTest = {
                 "minX": 4,
                 "maxX": 9,
                 "minZ": -500,
-                "maxZ": -2,
+                "maxZ": -4,
                 "amountNPCs": 50,
                 "cellSizeX": 1,
                 "cellSizeZ": 1.5,

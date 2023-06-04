@@ -11,24 +11,26 @@ AFRAME.registerComponent('stats-file', {
         downloadfilename: { type: 'string', default: 'stats.json' },
         // True if the stats should be logged to the console.
         log: { type: 'boolean', default: true },
-        // True if the pageg should be reloaded after the stats are logged.
-        reload: { type: 'boolean', default: false },
         // Function without parameters stored in the 'window' global variable.
-        onremove: { type: 'string' }
+        // It's called when the time ended.
+        onstop: { type: 'string' }
     },
 
     init: function () {
         this.statsComponent = this.el.components.stats;
+        this.onstart();
+    },
 
-        this.secondsValues = [];
-        this.fpsValues = [];
-        this.rafValues = [];
-
-        this.curSeconds = 0;
-        this.endTime = this.data.start + this.data.seconds;
+    update: function () {
+        this.onstart();
     },
 
     tick: function (time, timeDelta) {
+        if (this.hasEnded) {
+            // Don't log the statistics.
+            return;
+        }
+
         this.curSeconds += timeDelta / 1000;
 
         if (this.curSeconds < this.data.start) {
@@ -39,12 +41,7 @@ AFRAME.registerComponent('stats-file', {
         if (this.curSeconds > this.endTime) {
             // Log the results to the file and delete this component.
             this.showStatsValues();
-
-            if (this.data.reload) {
-                location.reload();
-            }
-
-            this.el.removeComponent('stats-file');
+            this.stop();
             return;
         }
 
@@ -53,8 +50,8 @@ AFRAME.registerComponent('stats-file', {
         this.rafValues.push(this.getStatsValue('rAF'));
     },
 
-    /* Call the given 'onremove' function if it's in 'window'.  */
-    remove: function () {
+    /* Call the given 'onstop' function if it's in 'window'.  */
+    stop: function () {
         var func = window[this.data.onremove];
 
         if (func == null) {
@@ -62,13 +59,27 @@ AFRAME.registerComponent('stats-file', {
         }
 
         func();
+        this.hasEnded = true;
     },
 
+    /* Starts logging time, framerate and latency. */
+    onstart: function () {
+        this.secondsValues = [];
+        this.fpsValues = [];
+        this.rafValues = [];
+
+        this.curSeconds = 0;
+        this.endTime = this.data.start + this.data.seconds;
+        this.hasEnded = false;
+    },
+
+    /* Returns the value for the FPS or rAF. */
     getStatsValue: function (name) {
         return this.statsComponent.stats(name).value();
     },
 
-
+    /* Shows the results by printing it to the console or
+     * downloading a file. */
     showStatsValues: function () {
         if (this.data.log) {
             this.logStatsValues();
@@ -79,6 +90,7 @@ AFRAME.registerComponent('stats-file', {
         }
     },
 
+    /* Show the results in the log. */
     logStatsValues: function () {
         console.log({
             "time": this.secondsValues,
@@ -87,6 +99,7 @@ AFRAME.registerComponent('stats-file', {
         });
     },
 
+    /* Download the results. */
     downloadStatsValues: function () {
         var data = {
             "time": this.secondsValues,

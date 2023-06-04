@@ -10,7 +10,7 @@ AFRAME.registerComponent('renderer', {
         renderingFiles: { type: 'string', default: "" },
 
         // The algorithm that will be used to render the model.
-        renderingAlgo: { type: 'string', default: "" },
+        renderingAlgorithm: { type: 'string', default: "" },
 
         distanceThresholds: { type: 'array' },
 
@@ -27,7 +27,7 @@ AFRAME.registerComponent('renderer', {
         // -- Key deleted: model is loaded.
         this.busyLoadingLods = {};
 
-        for (let lod of algo2lods(this.data.renderingAlgo)) {
+        for (let lod of algo2lods(this.data.renderingAlgorithm)) {
             this.busyLoadingLods[lod] = false;
         }
 
@@ -35,7 +35,7 @@ AFRAME.registerComponent('renderer', {
 
     /* Also remove all lod files. */
     remove: function () {
-        for (var lod of algo2lods(this.data.renderingAlgo)) {
+        for (var lod of algo2lods(this.data.renderingAlgorithm)) {
             var el = document.getElementById("lod" + lod);
             el.remove();
         }
@@ -93,7 +93,7 @@ AFRAME.registerComponent('renderer', {
             }
         }
 
-        switch (this.data.renderingAlgo) {
+        switch (this.data.renderingAlgorithm) {
             case RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE:
             case RENDERING_ALGORITHMS.MODEL_COMBI:
                 // Choose the lod based on the distance to the camera.
@@ -103,7 +103,7 @@ AFRAME.registerComponent('renderer', {
                 // Only specify the lod at initialization or if it is
                 // not visible now.
                 if (init || el.getAttribute("instanced-mesh-member") == null) {
-                    this.setModel(el, ALGO2LOD[this.data.renderingAlgo]);
+                    this.setModel(el, ALGO2LOD[this.data.renderingAlgorithm]);
                 }
 
                 break;
