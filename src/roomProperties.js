@@ -1,6 +1,12 @@
-import low from "./assets/models/NPCs/low.glb"
-import medium from "./assets/models/NPCs/medium.glb"
-import high from "./assets/models/NPCs/high.glb"
+// Server
+// import low from "./assets/models/NPCs/low.glb"
+// import medium from "./assets/models/NPCs/medium.glb"
+// import high from "./assets/models/NPCs/high.glb"
+
+// Local
+var low = "./assets/models/NPCs/low.glb"
+var medium = "./assets/models/NPCs/medium.glb"
+var high = "./assets/models/NPCs/high.glb"
 
 var roomVlooienburg = {
     "Vlooienburg 1625": {
@@ -37,7 +43,8 @@ var roomVlooienburg = {
                 "speedNPC": 0.2,
                 "rotationNPC": 180,
                 "idRenderer": "renderer1",
-                "walkReversed": true
+                "walkReversed": true,
+                "colorPlane": "red"
             },
             "left": {
                 "minX": 21,
@@ -50,7 +57,8 @@ var roomVlooienburg = {
                 "speedNPC": 0,
                 "rotationNPC": 90,
                 "idRenderer": "renderer1",
-                "walkReversed": true
+                "walkReversed": true,
+                "colorPlane": "blue"
             },
             "right": {
                 "minX": 24.50,
@@ -63,7 +71,8 @@ var roomVlooienburg = {
                 "speedNPC": 0,
                 "rotationNPC": -90,
                 "idRenderer": "renderer1",
-                "walkReversed": true
+                "walkReversed": true,
+                "colorPlane": "green"
             }
         }
     }

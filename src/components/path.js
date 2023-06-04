@@ -27,7 +27,11 @@ AFRAME.registerComponent('path', {
         walkReversed: { type: 'boolean', default: false },
 
         // The id of the renderer element that will be used to render the NPCs.
-        idRenderer: { type: 'string' }
+        idRenderer: { type: 'string' },
+
+        // Set a color to visualize the path.
+        // For example 'red', 'green' or 'blue'.
+        colorPlane: { type: 'string', default: '' }
     },
 
     init: function () {
@@ -48,6 +52,10 @@ AFRAME.registerComponent('path', {
         if (this.data.speedNPC == 0) {
             // This component isn't needed anymore.
             this.el.removeAttribute("path");
+        }
+
+        if (this.data.colorPlane != '') {
+            this.showPlane();
         }
     },
 
@@ -197,5 +205,25 @@ AFRAME.registerComponent('path', {
         } else if (position.z > this.data.maxZ) {
             position.z -= this.lengthZ;
         }
+    },
+
+    /* Shows a plane to visualize the path. */
+    showPlane: function () {
+        var plane = document.createElement("a-plane");
+        var width = this.lengthX;
+        var height = this.lengthZ;
+
+        console.log("colorPlane", this.data.colorPlane);
+        plane.setAttribute("color", this.data.colorPlane);
+        plane.setAttribute("width", width);
+        plane.setAttribute("height", height);
+        plane.setAttribute("rotation", "-90 0 0");
+        plane.setAttribute("position", {
+            x: this.data.minX + width / 2,
+            y: 0,
+            z: this.data.minZ + height / 2
+        });
+
+        this.el.appendChild(plane);
     }
 });
