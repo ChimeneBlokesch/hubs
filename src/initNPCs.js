@@ -96,7 +96,7 @@ function jsonToElements(json) {
             path["rotationNPC"] *= Math.PI / 180;
         }
 
-        el.setAttribute(attrName, path);
+        el.setAttribute("path", path);
 
         parent.appendChild(el);
     }
