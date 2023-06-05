@@ -38,14 +38,14 @@ function enableMassSimulation() {
             // Initialize variables.
             experimentVariables["parameters"] = properties;
             experimentVariables["rendering"] = {};
-            experimentVariables["rendering"]["algos"] = Object.values(RENDERING_ALGORITHMS);
+            experimentVariables["rendering"]["algos"] = ["model_low", "model_medium"] // Object.values(RENDERING_ALGORITHMS);
             experimentVariables["rendering"]["curAlgo"] = experimentVariables["rendering"]["algos"][0];
-            experimentVariables["amountList"] = [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-            experimentVariables["path"] = { "walking": [], "standing": [], "totalAmountNPCs": 1, "moving": "standing" };
+            experimentVariables["amountList"] = [1, 100]// TODO: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+            experimentVariables["path"] = { "walking": [], "standing": [], "totalAmountNPCs": 1, "isMoving": "standing" };
 
             for (var path of Object.values(properties["paths"])) {
-                var moving = path.speedNPC == 0 ? "standing" : "walking";
-                experimentVariables["path"][moving].push(path);
+                var isMoving = path.speedNPC == 0 ? "standing" : "walking";
+                experimentVariables["path"][isMoving].push(path);
             }
         }
 
@@ -54,7 +54,8 @@ function enableMassSimulation() {
 
         var scene = document.querySelector("a-scene");
         var func = "restartMassSimulation";
-        var filename = experimentVariables["rendering"]["curAlgo"] + "_" + experimentVariables["path"]["moving"] + "_" + experimentVariables["path"]["totalAmountNPCs"] + ".json";
+        var filename = experimentVariables["rendering"]["curAlgo"] + "_" + experimentVariables["path"]["isMoving"] + "_" + experimentVariables["path"]["totalAmountNPCs"] + ".json";
+        console.log(filename);
         window[func] = function () { removeMassSimulation(); enableMassSimulation(); };
         scene.removeAttribute("stats-file");
         scene.setAttribute("stats-file", { "start": 3, "seconds": 10, "onstop": func, "downloadfilename": filename });
@@ -132,16 +133,14 @@ function enableExperimentMode() {
     }
 }
 
-/* Returns the value in the list one index higher than the given value. */
+/* Returns a list with two elements. The first value is the boolean
+ * to know if the first index is taken. The second value is the next value in
+ * the list. */
 function nextValueInList(arr, old) {
     var idx = arr.indexOf(old);
     idx += 1;
-
-    if (idx == arr.length) {
-        return arr[0];
-    }
-
-    return arr[idx];
+    idx %= arr.length;
+    return [idx == 0, arr[idx]];
 }
 
 /* Splits the amount of NPCs between the given paths. */
@@ -167,13 +166,13 @@ function setRenderingAlgorithm(renderers, algo) {
  * set using the current values in 'experimentVariables'. */
 function nextParameters(init) {
     var params = experimentVariables["parameters"];
-    var curMoving = experimentVariables["path"]["moving"];
-    var otherMoving = curMoving == "walking" ? "standing" : "walking";
+    var curIsMoving = experimentVariables["path"]["isMoving"];
+    var otherIsMoving = curIsMoving == "walking" ? "standing" : "walking";
 
     if (init) {
         // Set amount of NPCs per path;
-        changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][curMoving]);
-        changeAmountNPCs(0, experimentVariables["path"][otherMoving]);
+        changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][curIsMoving]);
+        changeAmountNPCs(0, experimentVariables["path"][otherIsMoving]);
 
         // Set rendering algorithm per renderer.
         var renderingAlgorithm = experimentVariables["rendering"]["curAlgo"];
@@ -181,31 +180,35 @@ function nextParameters(init) {
         return;
     }
 
+    var [doneAmount, newAmount] = nextValueInList(experimentVariables["amountList"], experimentVariables["path"]["totalAmountNPCs"]);
+    experimentVariables["path"]["totalAmountNPCs"] = newAmount;
+    changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][curIsMoving]);
+
     // Check if the last amount has not been tested.
-    if (experimentVariables["path"]["totalAmountNPCs"] != experimentVariables["amountList"].slice(-1)) {
+    if (!doneAmount) {
         // Only the amount should be changed.
-        experimentVariables["path"]["totalAmountNPCs"] = nextValueInList(experimentVariables["amountList"], experimentVariables["path"]["totalAmountNPCs"]);
-        changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][curMoving]);
-        return;
-    }
-
-    // Go back to first amount.
-    experimentVariables["path"]["totalAmountNPCs"] = experimentVariables["amountList"][0];
-
-    // Toggle between 'standing' and 'moving' paths.
-    experimentVariables["path"]["isMoving"] = otherMoving;
-    changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][otherMoving]);
-    changeAmountNPCs(0, experimentVariables["path"][curMoving]);
-
-    if (experimentVariables["path"]["isMoving"] == "standing") {
-        // Only switch amount and standing/walking.
+        console.log("Only the amount should be changed.");
         return;
     }
 
     // Switch also rendering algorithm.
+    console.log("Switch also rendering algorithm.");
     var oldAlgo = experimentVariables["rendering"]["curAlgo"];
-    var nextAlgo = nextValueInList(experimentVariables["rendering"]["algos"], oldAlgo);
+    var [doneAlgo, nextAlgo] = nextValueInList(experimentVariables["rendering"]["algos"], oldAlgo);
     experimentVariables["rendering"]["curAlgo"] = nextAlgo;
 
     setRenderingAlgorithm(params["renderers"], nextAlgo);
+    console.log(nextAlgo + " " + experimentVariables["rendering"]["algos"].slice(-1));
+
+    if (!doneAlgo) {
+        // Only the amount and the rendering algorithm should be changed.
+        console.log("Only the amount and the rendering algorithm should be changed.");
+        return;
+    }
+
+    // Toggle between 'standing' and 'moving' paths.
+    console.log("Toggle between 'standing' and 'moving' paths.");
+    experimentVariables["path"]["isMoving"] = otherIsMoving;
+    changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][otherIsMoving]);
+    changeAmountNPCs(0, experimentVariables["path"][curIsMoving]);
 }
