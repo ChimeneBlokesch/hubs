@@ -54,7 +54,7 @@ AFRAME.registerComponent('path', {
 
     /* Also remove all NPCs on this path and the plane to visualize the path. */
     remove: function () {
-        var npcs = document.getElementsByClassName("path" + this.el.getAttribute("id"));
+        var npcs = document.querySelectorAll(".path" + this.el.getAttribute("id"));
 
         for (var npc of npcs) {
             npc.remove();
@@ -95,8 +95,9 @@ AFRAME.registerComponent('path', {
             // Sets the rotation of the NPC.
             npc.object3D.rotation.y = this.data.rotationNPC;
 
-            npc.setAttribute("id", "npc" + i);
-            npc.setAttribute("class", "path" + this.el.getAttribute("id"));
+            var pathName = this.el.getAttribute("id");
+            npc.setAttribute("id", "npc" + pathName + i);
+            npc.setAttribute("class", "path" + pathName);
 
             // Add the NPC to the scene.
             this.el.sceneEl.appendChild(npc);

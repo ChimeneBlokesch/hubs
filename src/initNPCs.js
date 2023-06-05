@@ -38,9 +38,9 @@ function enableMassSimulation() {
             // Initialize variables.
             experimentVariables["parameters"] = properties;
             experimentVariables["rendering"] = {};
-            experimentVariables["rendering"]["algos"] = ["model_low", "model_medium"] // Object.values(RENDERING_ALGORITHMS);
+            experimentVariables["rendering"]["algos"] = Object.values(RENDERING_ALGORITHMS);
             experimentVariables["rendering"]["curAlgo"] = experimentVariables["rendering"]["algos"][0];
-            experimentVariables["amountList"] = [1, 100]// TODO: [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+            experimentVariables["amountList"] = [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
             experimentVariables["path"] = { "walking": [], "standing": [], "totalAmountNPCs": 1, "isMoving": "standing" };
 
             for (var path of Object.values(properties["paths"])) {
@@ -55,7 +55,6 @@ function enableMassSimulation() {
         var scene = document.querySelector("a-scene");
         var func = "restartMassSimulation";
         var filename = experimentVariables["rendering"]["curAlgo"] + "_" + experimentVariables["path"]["isMoving"] + "_" + experimentVariables["path"]["totalAmountNPCs"] + ".json";
-        console.log(filename);
         window[func] = function () { removeMassSimulation(); enableMassSimulation(); };
         scene.removeAttribute("stats-file");
         scene.setAttribute("stats-file", { "start": 3, "seconds": 10, "onstop": func, "downloadfilename": filename });
@@ -117,7 +116,7 @@ function jsonToElements(json) {
 
 /* Remove all elements for the mass simulation. */
 function removeMassSimulation() {
-    for (var name of ["renderer", "path"]) {
+    for (var name of ["path", "renderer"]) {
         for (var el of document.querySelectorAll("[" + name + "]")) {
             el.remove();
         }
@@ -187,27 +186,22 @@ function nextParameters(init) {
     // Check if the last amount has not been tested.
     if (!doneAmount) {
         // Only the amount should be changed.
-        console.log("Only the amount should be changed.");
         return;
     }
 
     // Switch also rendering algorithm.
-    console.log("Switch also rendering algorithm.");
     var oldAlgo = experimentVariables["rendering"]["curAlgo"];
     var [doneAlgo, nextAlgo] = nextValueInList(experimentVariables["rendering"]["algos"], oldAlgo);
     experimentVariables["rendering"]["curAlgo"] = nextAlgo;
 
     setRenderingAlgorithm(params["renderers"], nextAlgo);
-    console.log(nextAlgo + " " + experimentVariables["rendering"]["algos"].slice(-1));
 
     if (!doneAlgo) {
         // Only the amount and the rendering algorithm should be changed.
-        console.log("Only the amount and the rendering algorithm should be changed.");
         return;
     }
 
     // Toggle between 'standing' and 'moving' paths.
-    console.log("Toggle between 'standing' and 'moving' paths.");
     experimentVariables["path"]["isMoving"] = otherIsMoving;
     changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][otherIsMoving]);
     changeAmountNPCs(0, experimentVariables["path"][curIsMoving]);

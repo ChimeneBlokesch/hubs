@@ -37,7 +37,11 @@ AFRAME.registerComponent('renderer', {
     remove: function () {
         for (var lod of algo2lods(this.data.renderingAlgorithm)) {
             var el = document.getElementById("lod" + lod);
-            el.remove();
+
+            if (el != null) {
+                el.remove();
+
+            }
         }
     },
 
@@ -146,7 +150,7 @@ AFRAME.registerComponent('renderer', {
     /* Determines the LOD based on the distance and the thresholds.  */
     lodFromDistance: function (el, cam) {
         var dist = cam.el.object3D.position.distanceTo(el.object3D.position);
-        var lods = algo2lods(this.data.renderingAlgo);
+        var lods = algo2lods(this.data.renderingAlgorithm);
 
         for (var i = 0; i < lods.length; i++) {
             if (dist < this.data.distanceThresholds[i]) {
