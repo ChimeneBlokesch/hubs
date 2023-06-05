@@ -210,7 +210,6 @@ AFRAME.registerComponent('path', {
         var width = this.lengthX;
         var height = this.lengthZ;
 
-        console.log("colorPlane", this.data.colorPlane);
         plane.setAttribute("color", this.data.colorPlane);
         plane.setAttribute("width", width);
         plane.setAttribute("height", height);

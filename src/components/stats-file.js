@@ -5,12 +5,10 @@ AFRAME.registerComponent('stats-file', {
         start: { type: 'number', default: 3 },
         // The amount of seconds to be logged to a file.
         seconds: { type: 'number' },
-        // True if the stats should be downloaded to a file.
-        download: { type: 'boolean', default: true },
         // Name of the file to download.
-        downloadfilename: { type: 'string', default: 'stats.json' },
+        downloadfilename: { type: 'string', default: '' },
         // True if the stats should be logged to the console.
-        log: { type: 'boolean', default: true },
+        log: { type: 'boolean', default: false },
         // Function without parameters stored in the 'window' global variable.
         // It's called when the time ended.
         onstop: { type: 'string' }
@@ -18,7 +16,6 @@ AFRAME.registerComponent('stats-file', {
 
     init: function () {
         this.statsComponent = this.el.components.stats;
-        this.onstart();
     },
 
     update: function () {
@@ -52,14 +49,14 @@ AFRAME.registerComponent('stats-file', {
 
     /* Call the given 'onstop' function if it's in 'window'.  */
     stop: function () {
-        var func = window[this.data.onremove];
+        this.hasEnded = true;
+        var func = window[this.data.onstop];
 
         if (func == null) {
             return;
         }
 
         func();
-        this.hasEnded = true;
     },
 
     /* Starts logging time, framerate and latency. */
@@ -85,7 +82,7 @@ AFRAME.registerComponent('stats-file', {
             this.logStatsValues();
         }
 
-        if (this.data.download) {
+        if (this.data.downloadfilename != null) {
             this.downloadStatsValues();
         }
     },
