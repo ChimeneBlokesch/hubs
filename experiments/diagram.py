@@ -122,6 +122,10 @@ def make_diagrams():
 
         data["fps"][(moveable, rendering_algorithm)
                     ][amountNPCs]["avg"].append(np.mean(fps))
+        data["fps"][(moveable, rendering_algorithm)
+                    ][amountNPCs]["std"].append(np.std(fps))
+        data["raf"][(moveable, rendering_algorithm)][amountNPCs]["avg"].append(
+            np.mean(raf))
         data["raf"][(moveable, rendering_algorithm)
                     ][amountNPCs]["std"].append(np.std(raf))
 
@@ -180,15 +184,7 @@ def make_diagrams():
         plt.xticks(np.arange(0, max(x_list) + 1, 100))
 
         plt.xlim(0, max(x_list))
-
-        if diagram == "fps":
-            plt.ylim(0, 60)
-        else:
-            plt.ylim(0, 1000)
-
-        # max_y_value = 60 if diagram == "fps" else max(avg_list) + max(std_list)
-        # print(max(avg_list), max(std_list))
-        # plt.ylim(0, max_y_value)
+        plt.ylim(0, 60 if diagram == "fps" else max_y_value)
 
         if diagram == "fps":
             # Minimal framerate.
