@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import os
 import json
 import numpy as np
+import re
 
 
 def sort_label(label):
@@ -90,81 +91,111 @@ def avg_from_tests(path):
 
 def make_diagrams():
     path = os.path.abspath("data/")
-    labels = []
-    fps_avg_list = []
-    raf_avg_list = []
-    amountNPCs_list = []
-    labels = []
-    linestyles = []
-    colors = []
+    data = {"fps": {}, "raf": {}}
 
+    # Extract data from the json files.
+    for file in os.listdir(path):
+        # The three parameters.
+        rendering_algorithm = file.split("_")[0]
+        moveable = file.split("_")[1]
+        # Any content within parentheses is removed.
+        amountNPCs = int(re.sub(r'\([^)]*\)', '',
+                                file.split("_")[2].replace(".json", "")))
+
+        json = read_json(os.path.join(path, file))
+        fps = np.array(json["fps"])
+        raf = np.array(json["raf"])
+
+        if (moveable, rendering_algorithm) not in data["fps"]:
+            data["fps"][(moveable, rendering_algorithm)] = {}
+
+        if (moveable, rendering_algorithm) not in data["raf"]:
+            data["raf"][(moveable, rendering_algorithm)] = {}
+
+        if amountNPCs not in data["fps"][(moveable, rendering_algorithm)]:
+            data["fps"][(moveable, rendering_algorithm)
+                        ][amountNPCs] = {"avg": [], "std": []}
+
+        if amountNPCs not in data["raf"][(moveable, rendering_algorithm)]:
+            data["raf"][(moveable, rendering_algorithm)
+                        ][amountNPCs] = {"avg": [], "std": []}
+
+        data["fps"][(moveable, rendering_algorithm)
+                    ][amountNPCs]["avg"].append(np.mean(fps))
+        data["raf"][(moveable, rendering_algorithm)
+                    ][amountNPCs]["std"].append(np.std(raf))
+
+    # Color per rendering algorithm.
     color_idx = 0
-    color = plt.cm.tab10(range(10))
+    colortable = plt.cm.tab10(range(10))
+    colors = {}
 
-    for algo in os.listdir(path):
-        if not os.path.isdir(os.path.join(path, algo)):
-            continue
+    # Per fps/raf, make a diagram.
+    for diagram in data:
+        max_y_value = 0
 
-        for moveable_folder in ["walking", "standing"]:
-            if not os.path.isdir(os.path.join(path, algo, moveable_folder)):
-                continue
+        # Per line, plot the average and standard deviation.
+        for (moveable, rendering_algorithm) in data[diagram]:
+            avg_list = []
+            std_list = []
+            x_list = []
 
-            # Initialize with the values from an empty a-scene.
-            fps_avg_values = [60]
-            raf_avg_values = [16]
-            amountNPCs_values = [0]
+            for amount in data[diagram][(moveable, rendering_algorithm)]:
+                avg_values = data[diagram][(
+                    moveable, rendering_algorithm)][amount]["avg"]
+                std_values = data[diagram][(
+                    moveable, rendering_algorithm)][amount]["std"]
 
-            for test_folder in os.listdir(os.path.join(path, algo, moveable_folder)):
-                test_path = os.path.join(
-                    path, algo, moveable_folder, test_folder)
+                # The average and standard deviation of all tests.
+                avg_list.append(np.mean(avg_values))
+                std_list.append(np.mean(std_values))
+                x_list.append(amount)
 
-                if not os.path.isdir(test_path):
-                    continue
+            # Sort by x_list.
+            indices = np.argsort(x_list)
+            x_list = np.array(x_list)[indices]
+            avg_list = np.array(avg_list)[indices]
+            std_list = np.array(std_list)[indices]
 
-                parameters_file = os.path.join(
-                    path, algo, moveable_folder, test_folder, "parameters.json")
-                parameters = read_json(parameters_file)
+            max_y_value = max(max_y_value, max(avg_list) + max(std_list))
 
-                pathMid = parameters["path"][0]
-                pathLeft = parameters["path"][1]
-                pathRight = parameters["path"][2]
+            if rendering_algorithm not in colors:
+                colors[rendering_algorithm] = colortable[color_idx]
+                color_idx += 1
 
-                amountNPCs = getAmountNPCs(pathMid) if moveable_folder == "walking" else getAmountNPCs(
-                    pathLeft) + getAmountNPCs(pathRight)
+            color = colors[rendering_algorithm]
 
-                avg_fps, avg_raf = avg_from_tests(test_path)
+            plt.errorbar(x_list, avg_list, std_list,
+                         label=f"{rendering_algorithm} {moveable}",
+                         linestyle="solid" if moveable == "walking" else "dashed",
+                         color=color)
 
-                fps_avg_values.append(avg_fps)
-                raf_avg_values.append(avg_raf)
-                amountNPCs_values.append(amountNPCs)
+        diagram_name = "Framerate" if diagram == "fps" else "Latency"
+        plt.title(f"{diagram_name} per aantal NPCs")
+        plt.xlabel("Aantal NPCs")
+        plt.ylabel(f"{diagram_name} (fps)" if diagram ==
+                   "fps" else f"{diagram_name} (rAF)")
+        plt.legend()
 
-            if len(fps_avg_values) == 1:
-                # Ignore empty files.
-                continue
+        plt.xticks(np.arange(0, max(x_list) + 1, 100))
 
-            fps_avg_list.append(fps_avg_values)
-            raf_avg_list.append(raf_avg_values)
-            amountNPCs_list.append(amountNPCs_values)
-            labels.append(f"{algo} {moveable_folder}")
+        plt.xlim(0, max(x_list))
 
-            colors.append(color[color_idx])
+        if diagram == "fps":
+            plt.ylim(0, 60)
+        else:
+            plt.ylim(0, 1000)
 
-            linestyle = "solid" if moveable_folder == "walking" else "dashed"
-            linestyles.append(linestyle)
+        # max_y_value = 60 if diagram == "fps" else max(avg_list) + max(std_list)
+        # print(max(avg_list), max(std_list))
+        # plt.ylim(0, max_y_value)
 
-        color_idx += 1
+        if diagram == "fps":
+            # Minimal framerate.
+            plt.plot([0, 1000], [5, 5], linestyle="dotted", color="red")
 
-    maxAmountNPCs = max([max(amountNPCs) for amountNPCs in amountNPCs_list])
-    plot_diagram(amountNPCs_list, fps_avg_list, labels, linestyles, colors,
-                 f"Framerate per aantal NPCs",
-                 "Aantal NPCs", "FPS", "data/fps.png",
-                 xlim=(0, maxAmountNPCs),
-                 ylim=(0, 60))
-    plot_diagram(amountNPCs_list, raf_avg_list, labels, linestyles, colors,
-                 f"Latency per aantal NPCs",
-                 "Aantal NPCs", "rAF", "data/raf.png",
-                 xlim=(0, maxAmountNPCs),
-                 ylim=(0, 600))
+        plt.savefig(f"{diagram}.png")
+        plt.close()
 
 
 if __name__ == "__main__":

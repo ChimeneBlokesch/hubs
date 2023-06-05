@@ -1,19 +1,19 @@
 // Different algorithms for rendering.
 export const RENDERING_ALGORITHMS = {
     // All models are shown as 3D models with low LOD.
-    MODEL_LOW: "model_low",
+    MODEL_LOW: "low",
     // All models are shown as 3D models with medium LOD.
-    MODEL_MEDIUM: "model_medium",
+    MODEL_MEDIUM: "medium",
     // All models are shown as 3D models with high LOD.
-    MODEL_HIGH: "model_high",
+    MODEL_HIGH: "high",
     // Combines the three LODs, depending on the distance to
     // the avatar of the user.
-    MODEL_COMBI: "model_combi",
-    // All models are shown as 2D sprites.
-    SPRITE: "model_sprite",
-    // Combines the sprite and the three LODs, depending on the distance to
-    // the avatar of the user.
-    MODEL_COMBI_SPRITE: "model_combi_sprite",
+    MODEL_COMBI: "combi",
+    // // All models are shown as 2D sprites.
+    // SPRITE: "model_sprite",
+    // // Combines the sprite and the three LODs, depending on the distance to
+    // // the avatar of the user.
+    // MODEL_COMBI_SPRITE: "model_combi_sprite",
 }
 
 // Level of detail

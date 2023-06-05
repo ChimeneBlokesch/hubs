@@ -54,10 +54,13 @@ AFRAME.registerComponent('path', {
 
     /* Also remove all NPCs on this path and the plane to visualize the path. */
     remove: function () {
-        var npcs = document.querySelectorAll(".path" + this.el.getAttribute("id"));
+        var className = "path" + this.el.getAttribute("id")
+        var npc = document.querySelector("." + className);
 
-        for (var npc of npcs) {
+        while (npc != null) {
+            npc.classList.remove(className);
             npc.remove();
+            npc = document.querySelector(".path" + this.el.getAttribute("id"));
         }
 
         if (this.plane != null) {
