@@ -181,9 +181,9 @@ def make_diagrams():
                    "fps" else f"{diagram_name} (rAF)")
         plt.legend()
 
-        plt.xticks(np.arange(0, max(x_list) + 1, 100))
+        plt.xticks(np.insert(np.arange(100, max(x_list) + 1, 100), 0, 1))
 
-        plt.xlim(0, max(x_list))
+        plt.xlim(-10, max(x_list) + 10)
         plt.ylim(0, 60 if diagram == "fps" else max_y_value)
 
         if diagram == "fps":

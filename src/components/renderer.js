@@ -1,6 +1,6 @@
 // Server
-// import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms"
 // import "aframe-instanced-mesh";
+// import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms";
 
 // Local
 import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms.js"
