@@ -1,5 +1,6 @@
 // Server
 // import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms"
+// import "aframe-instanced-mesh";
 
 // Local
 import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms.js"
@@ -149,7 +150,11 @@ AFRAME.registerComponent('renderer', {
 
     /* Determines the LOD based on the distance and the thresholds.  */
     lodFromDistance: function (el, cam) {
-        var dist = cam.el.object3D.position.distanceTo(el.object3D.position);
+        // World position of camera.
+        var camPos = new THREE.Vector3();
+        camPos.setFromMatrixPosition(cam.matrixWorld);
+
+        var dist = camPos.distanceTo(el.object3D.position);
         var lods = algo2lods(this.data.renderingAlgorithm);
 
         for (var i = 0; i < lods.length; i++) {
