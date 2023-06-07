@@ -19,7 +19,7 @@ var roomVlooienburg = {
                     "medium": medium,
                     "high": high
                 },
-                "renderingAlgorithm": "model_low",
+                "renderingAlgorithm": "algo_low",
                 "distanceThresholds": [
                     15,
                     30,
@@ -89,7 +89,7 @@ var roomTest = {
                     "medium": medium,
                     "high": high
                 },
-                "renderingAlgorithm": "model_low",
+                "renderingAlgorithm": "algo_low",
                 "distanceThresholds": [
                     15,
                     30,

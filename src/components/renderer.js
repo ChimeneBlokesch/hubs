@@ -3,6 +3,7 @@
 // import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms";
 
 // Local
+import "./instanced-mesh.js";
 import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms.js"
 
 AFRAME.registerComponent('renderer', {
@@ -31,6 +32,7 @@ AFRAME.registerComponent('renderer', {
         for (let lod of algo2lods(this.data.renderingAlgorithm)) {
             this.busyLoadingLods[lod] = false;
         }
+        console.log(this.busyLoadingLods);
 
     },
 
@@ -40,8 +42,9 @@ AFRAME.registerComponent('renderer', {
             var el = document.getElementById("lod" + lod);
 
             if (el != null) {
+                // To be sure the instanced-mesh component is not used.
+                el.removeAttribute("instanced-mesh");
                 el.remove();
-
             }
         }
     },
@@ -99,12 +102,14 @@ AFRAME.registerComponent('renderer', {
         }
 
         switch (this.data.renderingAlgorithm) {
-            case RENDERING_ALGORITHMS.MODEL_COMBI_SPRITE:
-            case RENDERING_ALGORITHMS.MODEL_COMBI:
+            case RENDERING_ALGORITHMS.ALGO_COMBI_SPRITE:
+            case RENDERING_ALGORITHMS.ALGO_COMBI:
+                console.log(this.data.renderingAlgorithm);
                 // Choose the lod based on the distance to the camera.
                 this.setModel(el, this.lodFromDistance(el, cam));
                 break;
             default:
+                console.log(this.data.renderingAlgorithm)
                 // Only specify the lod at initialization or if it is
                 // not visible now.
                 if (init || el.getAttribute("instanced-mesh-member") == null) {
@@ -132,6 +137,7 @@ AFRAME.registerComponent('renderer', {
         switch (this.busyLoadingLods[lod]) {
             case false:
                 // Let the model load.
+                console.log("load " + lod);
                 this.loadModel(lod);
                 break;
             case true:
@@ -140,6 +146,7 @@ AFRAME.registerComponent('renderer', {
             case undefined:
                 // The model is loaded. Able to set instanced-mesh-member.
                 // Remove the current model.
+                console.log("model loaded " + lod);
                 el.removeAttribute("instanced-mesh-member");
 
                 // Add the new model.

@@ -78,11 +78,6 @@ function getSceneName() {
         // Found title meta tag. Extract name.
         var name = meta.attributes.content.value.split("|")[0].trim();
 
-        if (name.toLowerCase().includes("test")) {
-            // Enable debug mode in testing rooms.
-            enableExperimentMode();
-        }
-
         return name;
     }
 }
@@ -90,13 +85,13 @@ function getSceneName() {
 /* Create a-entity's using the parameters given in the json and
  * appends it to the scene. */
 function jsonToElements(json) {
-    var parent = document.querySelector("a-scene");
+    var scene = document.querySelector("a-scene");
 
     for (let [rendererName, renderer] of Object.entries(json["renderers"])) {
         let el = document.createElement("a-entity");
         el.setAttribute("id", rendererName);
         el.setAttribute("renderer", renderer);
-        parent.appendChild(el);
+        scene.appendChild(el);
     }
 
     for (let [pathName, path] of Object.entries(json["paths"])) {
@@ -110,7 +105,7 @@ function jsonToElements(json) {
         }
 
         el.setAttribute("path", pathProperties);
-        parent.appendChild(el);
+        scene.appendChild(el);
     }
 }
 
@@ -126,10 +121,15 @@ function removeMassSimulation() {
 /* In experiment mode, the stats are shown and after a test the mass
  * simulation component is restarted with the next parameters. */
 function enableExperimentMode() {
-    // Add a global function to restart the mass simulation component.
+    // Add a global function to automatically restart the mass simulation
+    // component after each test.
     if (experimentVariables == null) {
         experimentVariables = {};
     }
+
+    // Restart mass simulation.
+    removeMassSimulation();
+    enableMassSimulation();
 }
 
 /* Returns a list with two elements. The first value is the boolean
@@ -206,3 +206,5 @@ function nextParameters(init) {
     changeAmountNPCs(experimentVariables["path"]["totalAmountNPCs"], experimentVariables["path"][otherIsMoving]);
     changeAmountNPCs(0, experimentVariables["path"][curIsMoving]);
 }
+
+window.enableExperimentMode = enableExperimentMode;
