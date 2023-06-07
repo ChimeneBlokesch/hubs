@@ -116,12 +116,15 @@ AFRAME.registerComponent('path', {
 
     /* Sets the given vectors and returns the maximal amount of NPCs per row. */
     initVectors: function (nextRowVector, nextColVector, startPos) {
-        // Maximal amount of NPCs per row.
-        var amountNPCsPerRow = Math.floor(this.lengthX / this.data.cellSizeX);
+        // Maximal amount of NPCs that can be placed in a row.
+        var amountNPCsPerRow = 0;
+
         var reversedFactor = this.data.walkReversed ? -1 : 1;
 
         switch (this.widthAxis) {
             case 'x':
+                amountNPCsPerRow = Math.floor(this.lengthX / this.data.cellSizeX)
+
                 // Go back to the first column of the row.
                 nextRowVector.x = -reversedFactor * (amountNPCsPerRow - 1) * this.data.cellSizeX;
                 // Go one row further.
@@ -131,6 +134,8 @@ AFRAME.registerComponent('path', {
                 nextColVector.x = reversedFactor * this.data.cellSizeX;
                 break;
             case 'z':
+                amountNPCsPerRow = Math.floor(this.lengthZ / this.data.cellSizeZ);
+
                 // Go back to the first column of the row.
                 nextRowVector.x = reversedFactor * this.data.cellSizeX;
                 // Go one row further.
