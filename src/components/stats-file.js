@@ -5,11 +5,7 @@
 var STATS = "stats";
 
 AFRAME.registerComponent('stats-file', {
-    // Server: stats-plus from Mozilla Hubs
     dependencies: [STATS],
-
-    // Local: A-Frame's stats
-    // dependencies: ['stats'],
     schema: {
         // To ignore the loading time, set 'start' to a value greater than 3.
         start: { type: 'number', default: 3 },
@@ -25,11 +21,24 @@ AFRAME.registerComponent('stats-file', {
     },
 
     init: function () {
+        // Use the statsComponent to get the statistics.
         this.statsComponent = this.el.components[STATS];
+
+        if (STATS == "stats-plus") {
+            // Assure the statistics are logged.
+            window.APP.store.state.preferences.showFPSCounter = true;
+        }
     },
 
+    /* Starts logging time, framerate and latency. */
     update: function () {
-        this.onstart();
+        this.secondsValues = [];
+        this.fpsValues = [];
+        this.rafValues = [];
+
+        this.curSeconds = 0;
+        this.endTime = this.data.start + this.data.seconds;
+        this.hasEnded = false;
     },
 
     tick: function (time, timeDelta) {
@@ -67,17 +76,6 @@ AFRAME.registerComponent('stats-file', {
         }
 
         func();
-    },
-
-    /* Starts logging time, framerate and latency. */
-    onstart: function () {
-        this.secondsValues = [];
-        this.fpsValues = [];
-        this.rafValues = [];
-
-        this.curSeconds = 0;
-        this.endTime = this.data.start + this.data.seconds;
-        this.hasEnded = false;
     },
 
     /* Returns the value for the FPS or rAF. */
