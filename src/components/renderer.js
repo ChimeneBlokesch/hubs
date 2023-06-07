@@ -32,8 +32,6 @@ AFRAME.registerComponent('renderer', {
         for (let lod of algo2lods(this.data.renderingAlgorithm)) {
             this.busyLoadingLods[lod] = false;
         }
-        console.log(this.busyLoadingLods);
-
     },
 
     /* Also remove all lod files. */
@@ -104,12 +102,10 @@ AFRAME.registerComponent('renderer', {
         switch (this.data.renderingAlgorithm) {
             case RENDERING_ALGORITHMS.ALGO_COMBI_SPRITE:
             case RENDERING_ALGORITHMS.ALGO_COMBI:
-                console.log(this.data.renderingAlgorithm);
                 // Choose the lod based on the distance to the camera.
                 this.setModel(el, this.lodFromDistance(el, cam));
                 break;
             default:
-                console.log(this.data.renderingAlgorithm)
                 // Only specify the lod at initialization or if it is
                 // not visible now.
                 if (init || el.getAttribute("instanced-mesh-member") == null) {
@@ -137,7 +133,6 @@ AFRAME.registerComponent('renderer', {
         switch (this.busyLoadingLods[lod]) {
             case false:
                 // Let the model load.
-                console.log("load " + lod);
                 this.loadModel(lod);
                 break;
             case true:
@@ -146,7 +141,6 @@ AFRAME.registerComponent('renderer', {
             case undefined:
                 // The model is loaded. Able to set instanced-mesh-member.
                 // Remove the current model.
-                console.log("model loaded " + lod);
                 el.removeAttribute("instanced-mesh-member");
 
                 // Add the new model.
