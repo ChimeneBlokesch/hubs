@@ -1,5 +1,15 @@
+// Server
+// var STATS = "stats-plus";
+
+// Local
+var STATS = "stats";
+
 AFRAME.registerComponent('stats-file', {
-    dependencies: ['stats'],
+    // Server: stats-plus from Mozilla Hubs
+    dependencies: [STATS],
+
+    // Local: A-Frame's stats
+    // dependencies: ['stats'],
     schema: {
         // To ignore the loading time, set 'start' to a value greater than 3.
         start: { type: 'number', default: 3 },
@@ -15,7 +25,7 @@ AFRAME.registerComponent('stats-file', {
     },
 
     init: function () {
-        this.statsComponent = this.el.components.stats;
+        this.statsComponent = this.el.components[STATS];
     },
 
     update: function () {
