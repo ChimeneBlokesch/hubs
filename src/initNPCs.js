@@ -43,23 +43,32 @@ function enableMassSimulation() {
             experimentVariables["amountList"] = [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
             experimentVariables["path"] = { "walking": [], "standing": [], "totalAmountNPCs": 1, "isMoving": "standing" };
 
+            // Split the paths by standing/walking.
             for (var path of Object.values(properties["paths"])) {
                 var isMoving = path.speedNPC == 0 ? "standing" : "walking";
                 experimentVariables["path"][isMoving].push(path);
             }
         }
 
+        // Initialize the parameters or select the next ones.
         nextParameters(init);
         properties = experimentVariables["parameters"];
 
+        // Restart collecting statistics and download a file containing the data.
         var scene = document.querySelector("a-scene");
         var func = "restartMassSimulation";
-        var filename = experimentVariables["rendering"]["curAlgo"] + "_" + experimentVariables["path"]["isMoving"] + "_" + experimentVariables["path"]["totalAmountNPCs"] + ".json";
+        var filename = experimentVariables["rendering"]["curAlgo"] + "_" +
+            experimentVariables["path"]["isMoving"] + "_" +
+            experimentVariables["path"]["totalAmountNPCs"] + ".json";
+
+        // Restart again if the test is done.
         window[func] = function () { removeMassSimulation(); enableMassSimulation(); };
         scene.removeAttribute("stats-file");
         scene.setAttribute("stats-file", { "start": 3, "seconds": 10, "onstop": func, "downloadfilename": filename });
     }
 
+
+    // Extract the data from the json to add the NPCs.
     jsonToElements(properties);
 }
 

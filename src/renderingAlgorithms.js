@@ -32,6 +32,8 @@ export const ALGO2LOD = {
     [RENDERING_ALGORITHMS.ALGO_HIGH]: LOD.HIGH
 }
 
+/* Returns a list of the LODs used by the given rendering algorithm.
+ * The list goes from high to low quality. */
 export function algo2lods(algo) {
     switch (algo) {
         case RENDERING_ALGORITHMS.ALGO_LOW:

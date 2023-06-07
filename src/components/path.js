@@ -157,6 +157,8 @@ AFRAME.registerComponent('path', {
         return amountNPCsPerRow;
     },
 
+    /* Used during the initialization to determine the position of
+     * the next NPC. */
     initNextPosition: function (curPos, nextRowVector, nextColVector, amountNPCsPerRow, colNum) {
         colNum += 1;
 

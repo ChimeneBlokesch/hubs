@@ -5,49 +5,6 @@ import numpy as np
 import re
 
 
-def sort_label(label):
-    algo = label.split(" ")[0]
-    moveable = label.split(" ")[1]
-    arr_algo = ["sprite", "low", "medium", "high", "combi", "combi_sprite"]
-    arr_moveable = ["walking", "standing"]
-    return 2 * arr_algo.index(algo) + arr_moveable.index(moveable)
-
-
-def plot_diagram(x_data_list, y_data_list, labels, linestyles, colors, title, xlabel, ylabel, save_path, xlim=None, ylim=None):
-    # Sort by label
-    labels = [label.split("model_")[1] for label in labels]
-    data = sorted(zip(labels, x_data_list, y_data_list,
-                  linestyles, colors), key=lambda x: sort_label(x[0]))
-
-    for label, x_data, y_data, linestyle, color in data:
-        # Indices to sort all arrays by x_data.
-        indices = np.argsort(x_data)
-        x_data = np.array(x_data)[indices]
-        y_data = np.array(y_data)[indices]
-        label = label
-        linestyle = linestyle
-        color = color
-
-        plt.plot(x_data, y_data, label=label, linestyle=linestyle, color=color)
-
-    plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-
-    if xlim:
-        plt.xlim(xlim)
-
-    if ylim:
-        plt.ylim(ylim)
-
-    plt.legend()
-    plt.xticks(np.arange(0, max(x_data) + 1, 100))
-    if ylabel == "FPS":
-        plt.plot([0, 1000], [5, 5], linestyle="dotted", color="red")
-    plt.savefig(save_path)
-    plt.close()
-
-
 def read_json(file_path):
     with open(file_path, 'r') as f:
         # The data is written as an array of numbers.
