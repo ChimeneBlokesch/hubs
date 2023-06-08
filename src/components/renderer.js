@@ -61,8 +61,12 @@ AFRAME.registerComponent('renderer', {
                 "alphaTest": 0.5,
                 // "side": "double"
             });
-        } else {
+        } else if (GLTF_ATTRIBUTE == "gltf-model-plus") {
+            // Load 3D-model with Mozilla Hubs' gltf-model-plus.
             el.setAttribute(GLTF_ATTRIBUTE, { "src": this.data.renderingFiles[lod] });
+        } else {
+            // Load 3D-model with A-frame's gltf-model.
+            el.setAttribute(GLTF_ATTRIBUTE, this.data.renderingFiles[lod]);
         }
 
         el.setAttribute("id", "lod" + lod);
