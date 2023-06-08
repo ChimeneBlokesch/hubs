@@ -1,10 +1,12 @@
 // Server
 // import "./instanced-mesh";
 // import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms";
+// var GLTF_ATTRIBUTE = "gltf-model-plus";
 
 // Local
 import "./instanced-mesh.js";
 import { LOD, RENDERING_ALGORITHMS, ALGO2LOD, algo2lods } from "../renderingAlgorithms.js"
+var GLTF_ATTRIBUTE = "gltf-model";
 
 AFRAME.registerComponent('renderer', {
     schema: {
@@ -51,7 +53,6 @@ AFRAME.registerComponent('renderer', {
      * for the model corresponding to the given LOD. */
     loadModel: function (lod) {
         let el = document.createElement("a-entity");
-        let attName = "gltf-model";
 
         if (lod == LOD.SPRITE) {
             el.setAttribute("geometry", "primitive:plane");
@@ -60,9 +61,10 @@ AFRAME.registerComponent('renderer', {
                 "alphaTest": 0.5,
                 // "side": "double"
             });
+        } else {
+            el.setAttribute(GLTF_ATTRIBUTE, { "src": this.data.renderingFiles[lod] });
         }
 
-        el.setAttribute(attName, this.data.renderingFiles[lod]);
         el.setAttribute("id", "lod" + lod);
         el.setAttribute("instanced-mesh", {
             "positioning": "world",
@@ -78,6 +80,7 @@ AFRAME.registerComponent('renderer', {
 
         // Key can be deleted, when the model is loaded.
         el.addEventListener("model-loaded", () => {
+            console.log("Model loaded " + lod);
             delete this.busyLoadingLods[lod];
         });
     },

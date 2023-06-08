@@ -123,7 +123,7 @@ AFRAME.registerComponent('path', {
 
         switch (this.widthAxis) {
             case 'x':
-                amountNPCsPerRow = Math.floor(this.lengthX / this.data.cellSizeX)
+                amountNPCsPerRow = Math.floor(this.lengthX / this.data.cellSizeX);
 
                 // Go back to the first column of the row.
                 nextRowVector.x = -reversedFactor * (amountNPCsPerRow - 1) * this.data.cellSizeX;
