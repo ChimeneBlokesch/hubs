@@ -5,7 +5,6 @@
 var STATS = "stats";
 
 AFRAME.registerComponent('stats-file', {
-    dependencies: [STATS],
     schema: {
         // To ignore the loading time, set 'start' to a value greater than 3.
         start: { type: 'number', default: 3 },
@@ -21,6 +20,9 @@ AFRAME.registerComponent('stats-file', {
     },
 
     init: function () {
+        // Ensure there is a stats component.
+        this.el.setAttribute(STATS, true);
+
         // Use the statsComponent to get the statistics.
         this.statsComponent = this.el.components[STATS];
 
