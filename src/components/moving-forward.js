@@ -4,10 +4,25 @@ AFRAME.registerComponent('moving-forward', {
         pathEl: { type: 'selector' }
     },
 
+    init: function () {
+        this.path = this.data.pathEl.components.path;
+    },
+
     /* Update the position per frame. */
     tick: function (time, timeDelta) {
-        // Calculates the new position.
-        this.data.pathEl.components.path.nextPosition(this.el.object3D.position,
+        // if (this.el.components["networked"] != null) {
+        //     // Must have ownership of networked entity to change position.
+        //     NAF.utils.getNetworkedEntity(this.el).then(networkedEl => {
+        //         if (!NAF.utils.isMine(networkedEl)) {
+        //             console.log('networked entity not mine');
+        //             return;
+        //         }
+        //         console.log('networked entity is mine');
+        //     });
+        // }
+
+        // Calculate and set the new position.
+        this.path.nextPosition(this.el.object3D.position,
             timeDelta);
     }
 });

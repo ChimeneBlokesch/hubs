@@ -24,7 +24,7 @@ AFRAME.registerComponent('stats-file', {
         // Use the statsComponent to get the statistics.
         this.statsComponent = this.el.components[STATS];
 
-        if (STATS == "stats-plus") {
+        if (window.APP != null) {
             // Assure the statistics are logged.
             window.APP.store.state.preferences.showFPSCounter = true;
         }

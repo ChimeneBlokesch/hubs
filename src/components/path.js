@@ -1,28 +1,30 @@
+// Server
+// import "./rectangle";
+
+// Local
+import "./rectangle.js";
+
 AFRAME.registerComponent('path', {
     schema: {
-        // The path is a rectangle parallel to the x- or z-axis.
-        minX: { type: 'number', default: 0 },
-        maxX: { type: 'number', default: 0 },
-        minZ: { type: 'number', default: 0 },
-        maxZ: { type: 'number', default: 0 },
+        // Vertices of the rectangle representing the path. The y-value
+        // is only taken from beginLeft.
+        beginLeft: { type: 'vec3' },
+        beginRight: { type: 'vec3' },
+        endLeft: { type: 'vec3' },
+        endRight: { type: 'vec3' },
 
         // The amount of NPCs that will be spawned.
         amountNPCs: { type: 'number', default: 0 },
 
         // The size of the cells in the path in the x- or z-axis.
-        cellSizeX: { type: 'number', default: 0 },
-        cellSizeZ: { type: 'number', default: 0 },
+        cellWidth: { type: 'number', default: 0 },
+        cellHeight: { type: 'number', default: 0 },
 
         // The speed of the NPCs.
         speedNPC: { type: 'number', default: 0 },
 
         // The rotation of the NPCs in radians.
         rotationNPC: { type: 'number', default: 0 },
-
-        // If true, the NPCs will walk from the maximal coordinates to the
-        // minimal coordinates. Otherwise, the NPCs will walk from the minimal
-        // coordinates to the maximal coordinates.
-        walkReversed: { type: 'boolean', default: false },
 
         // The id of the renderer element that will be used to render the NPCs.
         idRenderer: { type: 'string' },
@@ -33,23 +35,22 @@ AFRAME.registerComponent('path', {
     },
 
     init: function () {
-        // The length of the path in the x- and z-axis.
-        this.lengthX = this.data.maxX - this.data.minX;
-        this.lengthZ = this.data.maxZ - this.data.minZ;
-
-        // The width axis is the axis with the smallest length.
-        this.widthAxis = this.lengthX < this.lengthZ ? 'x' : 'z';
+        this.widthAxis = new THREE.Vector3();
+        this.widthAxis.subVectors(this.data.beginRight, this.data.beginLeft);
+        this.heightAxis = new THREE.Vector3();
+        this.heightAxis.subVectors(this.data.endLeft, this.data.beginLeft);
 
         this.helperVector = new THREE.Vector3();
 
-        // The direction of the NPCs to walk forward.
-        this.direction = this.calcDirection();
-
         this.initializeNPCs();
 
-        if (this.data.colorPlane != '') {
-            this.plane = this.showPlane();
-        }
+        this.setVisualization(this.data.colorPlane != '');
+
+        // The line corresponding to the end of the path. Determine if NPCs
+        // cross this line based on the center of this line.
+        var endLine = new THREE.Line3(this.data.endLeft, this.data.endRight);
+        this.endPoint = new THREE.Vector3();
+        endLine.getCenter(this.endPoint);
     },
 
     /* Also remove all NPCs on this path and the plane to visualize the path. */
@@ -63,9 +64,8 @@ AFRAME.registerComponent('path', {
             npc = document.querySelector(".path" + this.el.getAttribute("id"));
         }
 
-        if (this.plane != null) {
-            this.plane.remove();
-        }
+        // Also remove the visualization of the path.
+        this.setVisualization(false);
     },
 
     /* Creates the elements for the NPCs. */
@@ -75,8 +75,10 @@ AFRAME.registerComponent('path', {
         var colNum = 0;
         var nextRowVector = new THREE.Vector3();
         var nextColVector = new THREE.Vector3();
-        const amountNPCsPerRow = this.initVectors(nextRowVector, nextColVector,
-            this.helperVector);
+        var startPos = new THREE.Vector3();
+        const amountNPCsPerRow = this.initVectors(nextColVector, nextRowVector,
+            startPos);
+        var pathName = this.el.getAttribute("id");
 
         for (var i = 0; i < this.data.amountNPCs; i++) {
             var npc = document.createElement("a-entity");
@@ -91,74 +93,66 @@ AFRAME.registerComponent('path', {
             // Add a component to render the NPC.
             npc.setAttribute("rendered-object", { "renderer": "#" + this.data.idRenderer });
 
-            // Add a component to use the same NPC for each user in the
-            // networked A-Frame.
-            npc.setAttribute("networked", "");
-
-            // Sets the rotation of the NPC.
-            npc.object3D.rotation.y = this.data.rotationNPC;
-
-            var pathName = this.el.getAttribute("id");
             npc.setAttribute("id", "npc" + pathName + i);
             npc.setAttribute("class", "path" + pathName);
 
             // Add the NPC to the scene.
             this.el.sceneEl.appendChild(npc);
 
+            // // Add a component to use the same NPC for each user in the
+            // // networked A-Frame.
+            // if (this.data.beginLeft.z == -4) { // TODO: only for debugging
+            //     // Testing room
+            //     npc.setAttribute("networked", "");
+            // }
+
             // Set the position of the NPC.
-            npc.object3D.position.copy(this.helperVector);
+            npc.object3D.position.copy(startPos);
+
+            var target = this.helperVector;
+            target.copy(startPos);
+            target.add(this.heightAxis);
+
+            // Give the NPC the same orientation as the path.
+            npc.object3D.lookAt(target);
+
+            // Sets the rotation of the NPC using the user-defined angle.
+            npc.object3D.rotateY(this.data.rotationNPC);
 
             // Calculate the position of the next NPC.
-            colNum = this.initNextPosition(this.helperVector,
+            colNum = this.initNextPosition(startPos,
                 nextRowVector, nextColVector, amountNPCsPerRow, colNum);
         }
     },
 
     /* Sets the given vectors and returns the maximal amount of NPCs per row. */
-    initVectors: function (nextRowVector, nextColVector, startPos) {
+    initVectors: function (nextColVector, nextRowVector, startPos) {
         // Maximal amount of NPCs that can be placed in a row.
-        var amountNPCsPerRow = 0;
+        var amountNPCsPerRow = Math.floor(this.widthAxis.length() / this.data.cellWidth);
 
-        var reversedFactor = this.data.walkReversed ? -1 : 1;
+        // Go one cell further to the right.
+        nextColVector.copy(this.widthAxis);
+        nextColVector.setLength(this.data.cellWidth);
 
-        switch (this.widthAxis) {
-            case 'x':
-                amountNPCsPerRow = Math.floor(this.lengthX / this.data.cellSizeX);
+        // Use startPos as helper vector first.
+        var colsBackVector = startPos;
+        colsBackVector.copy(nextColVector);
+        colsBackVector.multiplyScalar(-(amountNPCsPerRow - 1));
 
-                // Go back to the first column of the row.
-                nextRowVector.x = -reversedFactor * (amountNPCsPerRow - 1) * this.data.cellSizeX;
-                // Go one row further.
-                nextRowVector.z = reversedFactor * this.data.cellSizeZ;
+        // Go back to the cell on the left of the same row
+        // and go one row further.
+        nextRowVector.copy(this.heightAxis);
+        nextRowVector.setLength(this.data.cellHeight);
+        nextRowVector.add(colsBackVector);
 
-                // Go one column further.
-                nextColVector.x = reversedFactor * this.data.cellSizeX;
-                break;
-            case 'z':
-                amountNPCsPerRow = Math.floor(this.lengthZ / this.data.cellSizeZ);
+        // The start position is on the center of the cell on the beginning left.
+        startPos.copy(nextColVector);
+        startPos.divideScalar(2);
+        startPos.add(this.data.beginLeft);
 
-                // Go back to the first column of the row.
-                nextRowVector.x = reversedFactor * this.data.cellSizeX;
-                // Go one row further.
-                nextRowVector.z = -reversedFactor * (amountNPCsPerRow - 1) * this.data.cellSizeZ;
+        // The distance from the center of the model to the ground of the plane.
+        startPos.y = this.data.beginLeft.y;
 
-                // Go one column further.
-                nextColVector.z = reversedFactor * this.data.cellSizeZ;
-
-                break;
-        }
-
-        if (this.data.walkReversed) {
-            // Start at the maximal coordinate. Set the position at the
-            // center of the cell.
-            startPos.x = this.data.maxX - this.data.cellSizeX / 2;
-            startPos.z = this.data.maxZ - this.data.cellSizeZ / 2;
-            return amountNPCsPerRow;
-        }
-
-        // Start at the minimal coordinate. Set the position at the
-        // center of the cell.
-        startPos.x = this.data.minX + this.data.cellSizeX / 2;
-        startPos.z = this.data.minZ + this.data.cellSizeZ / 2;
         return amountNPCsPerRow;
     },
 
@@ -179,59 +173,48 @@ AFRAME.registerComponent('path', {
         return colNum;
     },
 
-    /* Calculates the direction vector based on the speed and width axis. */
-    calcDirection: function () {
-        var factor = this.data.walkReversed ? -1 : 1;
-
-        switch (this.widthAxis) {
-            case 'x':
-                // To walk forward, the position changes in the z-axis.
-                return new THREE.Vector3(0, 0, factor * this.data.speedNPC);
-            case 'z':
-                // To walk forward, the position changes in the x-axis.
-                return new THREE.Vector3(factor * this.data.speedNPC, 0, 0);
-        }
-    },
-
-    /* Calculates the next position of a NPC on the path. */
+    /* Calculates the next position of a NPC on the path.
+     * Determines if the NPC should go back to the beginning of the path
+     * based on the old distance to the end vector. */
     nextPosition: function (position, timeDelta) {
+        // Calculates the old distance to the end of the path.
+        var oldDistance = position.distanceTo(this.endPoint);
+
         // Uses the helper vector to calculate the delta position.
-        this.helperVector.copy(this.direction);
-        position.add(this.helperVector.multiplyScalar(timeDelta / 1000));
+        this.helperVector.copy(this.heightAxis);
+        this.helperVector.normalize();
+        position.add(this.helperVector.multiplyScalar(this.data.speedNPC * timeDelta / 1000));
 
         // Update the position if it's outside the grid to the position in
         // the wrapped grid.
 
-        if (position.x < this.data.minX) {
-            position.x += this.lengthX;
-        } else if (position.x > this.data.maxX) {
-            position.x -= this.lengthX;
-        }
-
-        if (position.z < this.data.minZ) {
-            position.z += this.lengthZ;
-        } else if (position.z > this.data.maxZ) {
-            position.z -= this.lengthZ;
+        if (position.distanceTo(this.endPoint) > oldDistance) {
+            // Went passed end-vector go back to the beginning of the path.
+            // console.log(position.distanceTo(this.endPoint) + " " + oldDistance)
+            position.sub(this.heightAxis);
         }
     },
 
     /* Shows and returns a plane to visualize the path. */
-    showPlane: function () {
-        var plane = document.createElement("a-plane");
-        var width = this.lengthX;
-        var height = this.lengthZ;
+    setVisualization: function (visibilty) {
+        if (!visibilty) {
+            if (this.plane) {
+                this.plane.remove();
+            }
+            return;
+        }
 
-        plane.setAttribute("color", this.data.colorPlane);
-        plane.setAttribute("width", width);
-        plane.setAttribute("height", height);
-        plane.setAttribute("rotation", "-90 0 0");
-        plane.setAttribute("position", {
-            x: this.data.minX + width / 2,
-            y: 0,
-            z: this.data.minZ + height / 2
+        var plane = document.createElement("a-entity");
+
+        plane.setAttribute("rectangle", {
+            "leftDown": this.data.beginLeft,
+            "rightDown": this.data.beginRight,
+            "leftUp": this.data.endLeft,
+            "rightUp": this.data.endRight,
+            "color": this.data.colorPlane
         });
 
         this.el.appendChild(plane);
-        return plane;
+        this.plane = plane;
     }
 });
