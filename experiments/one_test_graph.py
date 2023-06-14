@@ -31,7 +31,7 @@ if __name__ == "__main__":
             raf_ax.plot(time, raf, label=f"Test {i}")
             i += 1
 
-        name = test.replace("algo", "").replace("_", " ").capitalize()
+        name = test.replace("algo", "").replace("_", " ").capitalize().strip()
         amount = name.split(" ")[-1]
         npc = "NPC" if amount == "1" else "NPCs"
 
