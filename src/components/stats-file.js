@@ -27,7 +27,7 @@ AFRAME.registerComponent('stats-file', {
         this.statsComponent = this.el.components[STATS];
 
         if (window.APP != null) {
-            // Assure the statistics are logged.
+            // Ensure the statistics are logged.
             window.APP.store.state.preferences.showFPSCounter = true;
         }
     },

@@ -24,5 +24,8 @@ AFRAME.registerComponent('moving-forward', {
         // Calculate and set the new position.
         this.path.nextPosition(this.el.object3D.position,
             timeDelta);
+
+        // Mozilla Hubs' 'gltf-model-plus' needs this to change position model.
+        this.el.object3D.matrixNeedsUpdate = true;
     }
 });
