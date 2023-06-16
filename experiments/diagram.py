@@ -128,9 +128,12 @@ def make_diagrams():
                     color_idx += 1
 
                 color = colors[rendering_algorithm]
+                moveable_dutch = "lopend" if moveable == "walking" else "staand"
+                algo_name = rendering_algorithm.replace(
+                    "combi", "LOD")
 
                 plt.errorbar(x_list, avg_list, std_list,
-                             label=f"{rendering_algorithm} {moveable}",
+                             label=f"{algo_name} {moveable_dutch}",
                              linestyle="solid" if moveable == "walking" else "dashed",
                              color=color)
 

@@ -32,11 +32,16 @@ if __name__ == "__main__":
             i += 1
 
         name = test.replace("algo", "").replace("_", " ").capitalize().strip()
+        algo_name = name.split(" ")[0].replace("combi", "LOD")
+        moveable = name.split(" ")[1]
+        moveable_dutch = "lopend" if moveable == "walking" else "staand"
         amount = name.split(" ")[-1]
         npc = "NPC" if amount == "1" else "NPCs"
+        title = f'per tijd voor {room} met ' + \
+            f'{algo_name} {moveable_dutch} {amount} {npc}'
 
         fps_ax.set(xlabel='Tijd (s)', ylabel='Framerate (fps)',
-                   title=f'Framerate per tijd voor {room} met {name} {npc}',
+                   title='Framerate' + title,
                    ylim=(0, 60),
                    xlim=(3, 17),
                    xticks=np.arange(3, 14, 1))
@@ -44,7 +49,7 @@ if __name__ == "__main__":
         fps_ax.legend()
 
         raf_ax.set(xlabel='Tijd (s)', ylabel='Latency (rAF)',
-                   title=f'Latency per tijd voor {room} met {name} {npc}',
+                   title=f'Latency' + title,
                    xlim=(3, 17),
                    xticks=np.arange(3, 14, 1))
 
